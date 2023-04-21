@@ -5,7 +5,7 @@ import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '../../supabase'
+import type { Database }  from "@/types";
 
 
 type SupabaseContext = {
