@@ -35,21 +35,15 @@ export default function Header() {
   }, []);
 
   return (
-    <Box >
+    <Box>
       <AppBar position="static">
         <Toolbar sx={{ justifyContent: "right" }}>
-          {!user ? (
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ theme: ThemeSupa }}
-              providers={["google"]}
-              onlyThirdPartyProviders
-              theme="dark"
-            />
-          ) : (
-            <Button  onClick={handleSignOut} color="inherit">
+          {user ? (
+            <Button onClick={handleSignOut} color="inherit">
               Sign out
             </Button>
+          ) : (
+            <p>you are signed out!</p>
           )}
         </Toolbar>
       </AppBar>
