@@ -35,16 +35,22 @@ export default function Header() {
   }, []);
 
   return (
-    <Box>
-      <AppBar position="static">
-        <Toolbar sx={{ justifyContent: "right" }}>
-          {user ? (
+    <Box sx={{display:"flex",justifyContent:"center"}}>
+      <AppBar
+      sx={{
+        borderRadius:"20px 20px 0 0"}}
+       position="static">
+        <Toolbar sx={{  justifyContent: "right" }}>
+<>
+          
+           { user && 
             <Button onClick={handleSignOut} color="inherit">
-              Sign out
-            </Button>
-          ) : (
-            <p>you are signed out!</p>
-          )}
+            Sign out
+          </Button>}
+</>
+
+          
+        
         </Toolbar>
       </AppBar>
     </Box>
