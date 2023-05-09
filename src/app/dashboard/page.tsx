@@ -41,23 +41,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     getGroceryStores();
-    console.log(groceryStores);
   }, [supabase]);
 
   useEffect(() => {
     const channel = supabase
-      .channel("custom-filter-channel")
+      .channel("custom-grocerystore-channel")
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "grocerystores",
-        },
-        (payload) => {
-          getGroceryStores();
-          console.log("Delete received!", payload);
-        }
+        { event: "INSERT", schema: "public", table: "grocerystores" },
+        getGroceryStores
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "grocerystores" },
+        getGroceryStores
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "grocerystores" },
+        getGroceryStores
       )
       .subscribe();
 
@@ -69,37 +71,37 @@ export default function Dashboard() {
   //add a state for loading
   // use realtime to listen for insert and then fetch new data.
 
-
-  
-  const groceryStoresToRender = groceryStores &&  groceryStores?.map((groceryStore: any) => {
-    return <GroceryStore key={groceryStore.id} {...groceryStore} />;
-  });
+  const groceryStoresToRender =
+    groceryStores &&
+    groceryStores?.map((groceryStore: any) => {
+      return <GroceryStore key={groceryStore.id} {...groceryStore} />;
+    });
 
   //Handleers
-
-  function handleClickAway(event: MouseEvent | TouchEvent): void {
-    console.log("Clciked away");
-  }
-
-  function handleClose(event: {}): void {
-    setOpen(false);
-    setNewGroceryStoreName("");
-  }
-
-  const handleClickOpen = () => {
+  async function handleClickOpen() {
     setOpen(true);
-  };
+  }
 
   async function handleSubmit() {
     const { data, error } = await supabase
       .from("grocerystores")
       .insert([{ name: newGroceryStoreName }]);
-
-    setOpen(false);
-    setNewGroceryStoreName("");
     if (error) {
       throw new Error(error.message);
+    } else {
+      setOpen(false);
+      setNewGroceryStoreName("");
     }
+  }
+
+  
+  function handleClose(event: {}): void {
+    setOpen(false);
+    setNewGroceryStoreName("");
+  }
+  
+  function handleClickAway(event: MouseEvent | TouchEvent): void {
+    console.log("Clciked away");
   }
 
   return (
@@ -145,7 +147,13 @@ export default function Dashboard() {
           </ClickAwayListener>
         </div>
         <>
-          {isLoading ? <p>loading</p> : groceryStores?.length > 0 ? groceryStoresToRender : <p>nothing to see!</p>}
+          {isLoading ? (
+            <p>loading</p>
+          ) : groceryStores?.length > 0 ? (
+            groceryStoresToRender
+          ) : (
+            <p>nothing to see!</p>
+          )}
         </>
       </Container>
     </>
