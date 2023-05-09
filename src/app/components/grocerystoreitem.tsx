@@ -88,7 +88,7 @@ export default function GroceryStoreItem(item: any) {
         style={{ flexShrink: 0 }}
       >
         <CardActionArea
-          onClick={() => console.log("you logged this apparent?")}
+          onClick={() => alert("you logged this apparent?")}
         >
           <CardHeader title={groceryItem.name} subheader={createdAtLocal()} />
           {showExtra && (
