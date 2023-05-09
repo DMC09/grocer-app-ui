@@ -43,6 +43,7 @@ export interface Database {
       }
       grocerystores: {
         Row: {
+          [x: string]: any
           createdAt: string | null
           id: number
           image: string | null
@@ -81,7 +82,7 @@ export interface Database {
 }
 
 
-export type GroceryStoreType = Database['public']['Tables']['grocerystores']['Row'] 
+export type GroceryStoreType = Database['public']['Tables']['grocerystores']['Row']  
 export type GroceryStoreItemType = Database['public']['Tables']['grocerystoreitems']['Row']
 
 export interface GroceryStoreWithItemsType extends GroceryStoreType {
