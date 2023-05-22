@@ -1,26 +1,36 @@
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+"use client";
+
+import {
+  Session,
+  User,
+  createServerComponentSupabaseClient,
+} from "@supabase/auth-helpers-nextjs";
 import { headers, cookies } from "next/headers";
 import LoginPage from "./login/page";
 import Dashboard from "./dashboard/page";
+import { useSupabase } from "./components/supabase/supabase-provider";
 import { useRouter } from "next/navigation";
-import { GroceryStoreType } from "@/types";
+import { useCallback, useEffect, useState } from "react";
 
 // do not cache this page
 export const revalidate = 0;
 
-export default async function HomePage() {
-  const supabase = createServerComponentSupabaseClient({
-    headers,
-    cookies,
-  });
+export default function HomePage() {
+  const router = useRouter();
+  const { supabase, session } = useSupabase();
 
-  const { data: sessionData } = await supabase.auth.getSession();
-  const user = await sessionData?.session?.user;
+  // Use the layout.tsx of the [grocerytoreid] to try an make this a server component but make the logici nthe tempalte
 
-  return (
-    <>
-    
-    {  user ? <Dashboard /> : <LoginPage />}
-    </>
-  );
+  const [sessionData, setSessionData] = useState<Session | null>(session);
+
+  useEffect(() => {
+    sessionData?.user ? router.push("/dashboard") : router.push("/login");
+  }, []);
+
+  // const supabase = createServerComponentSupabaseClient({
+  //   headers,
+  //   cookies,
+  // });
+
+  return <></>;
 }
