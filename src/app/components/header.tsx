@@ -3,21 +3,23 @@
 import { Box, AppBar, Toolbar, IconButton } from "@mui/material";
 import { Typography, Button } from "@supabase/ui";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useSupabase } from "../supabase-provider";
+import { useSupabase } from "./supabase/supabase-provider";
 import { useEffect, useState } from "react";
 import { Auth } from "@supabase/auth-ui-react";
-import { ThemeMinimal, ThemeSupa } from "@supabase/auth-ui-shared";
+import HomeIcon from "@mui/icons-material/Home";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Header() {
-  const { supabase } = useSupabase();
+  const { supabase, session } = useSupabase();
+  const router = useRouter();
 
   const [user, setUser] = useState<unknown>(null);
-  const [session, setSession] = useState<unknown>(null);
+  // const [session, setSession] = useState<unknown>(null);
 
   const getSession = async () => {
     const { data, error } = await supabase.auth.getSession();
     if (data) {
-      setSession(data?.session);
+      // setSession(data?.session);
       setUser(data?.session?.user);
     } else {
       console.log(error);
@@ -26,7 +28,7 @@ export default function Header() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    await setSession(null);
+    // await setSession(null);
     await setUser(null);
   };
 
@@ -35,22 +37,20 @@ export default function Header() {
   }, []);
 
   return (
-    <Box sx={{display:"flex",justifyContent:"center"}}>
-      <AppBar
-      sx={{
-        borderRadius:"20px 20px 0 0"}}
-       position="static">
-        <Toolbar sx={{  justifyContent: "right" }}>
-<>
-          
-           { user && 
-            <Button onClick={handleSignOut} color="inherit">
-            Sign out
-          </Button>}
-</>
+    <Box  sx={{ display: "flex", justifyContent: "center",backgroundColor:"primary.main" }}>
+      <AppBar sx={{}} position="static">
+        <Toolbar sx={{ justifyContent: "right" }}>
+          <>
+            <IconButton onClick={() => router.push("/")}>
+              <HomeIcon />
+            </IconButton>
 
-          
-        
+            {user && (
+              <Button onClick={handleSignOut} color="inherit">
+                Sign out
+              </Button>
+            )}
+          </>
         </Toolbar>
       </AppBar>
     </Box>
