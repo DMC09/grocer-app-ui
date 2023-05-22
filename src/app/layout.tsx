@@ -1,6 +1,9 @@
+import { Session } from "@supabase/supabase-js";
 import Header from "./components/header";
 import "./globals.css";
-import SupabaseProvider from "./supabase-provider";
+import SupabaseProvider from "./components/supabase/supabase-provider";
+import { createServerClient } from "./utils/supabase.server";
+import SupabaseListener from "./components/supabase/superbase-listener";
 
 export const metadata = {
   title: "Create Next App",
@@ -12,17 +15,20 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = createServerClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   return (
     <html lang="en">
       <body>
-        <SupabaseProvider>
-          <div id="app">
+        <SupabaseProvider session={session}>
+          <SupabaseListener serverAccessToken={session?.access_token} />
 
-            <Header />
-            {children}
-
-          </div>
-
+          <Header />
+          {children}
         </SupabaseProvider>
       </body>
     </html>
