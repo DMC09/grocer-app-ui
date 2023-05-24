@@ -3,7 +3,7 @@ import Header from "./components/header";
 import "./globals.css";
 import SupabaseProvider from "./components/supabase/supabase-provider";
 import { createServerClient } from "./utils/supabase.server";
-import SupabaseListener from "./components/supabase/superbase-listener";
+import SupabaseListener from "./components/supabase/supabase-listener";
 
 export const metadata = {
   title: "Create Next App",

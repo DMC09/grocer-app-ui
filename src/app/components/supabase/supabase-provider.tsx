@@ -33,27 +33,13 @@ export default function SupabaseProvider({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(() => {
-      router.refresh();
-    });
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event == "SIGNED_IN") {
-        console.log('Signed in Event in the provider');
-        router.push("/dashboard");
-      }
-    });
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event == "SIGNED_OUT") {
-        console.log('Signed out Event in the provider');
-        router.push("/login");
-      }
-    });
+      router.refresh()
+    })
 
     return () => {
-      subscription.unsubscribe();
-    };
-  }, [router, supabase]);
+      subscription.unsubscribe()
+    }
+  }, [router, supabase])
 
   return (
     <Context.Provider value={{ supabase, session }}>
