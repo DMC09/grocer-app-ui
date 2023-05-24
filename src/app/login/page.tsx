@@ -3,7 +3,14 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { useSupabase } from "../components/supabase/supabase-provider";
 import { ThemeMinimal, ThemeSupa } from "@supabase/auth-ui-shared";
-import { Box, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Divider,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -17,28 +24,14 @@ export default function LoginPage() {
 
   return (
     <>
-      <Container
-        maxWidth={false}
-        sx={{
-          display: "flex",
-          flexFlow: "center",
-          justifyContent: "center",
-          backgroundColor: "secondary.light",
-          border: 5,
-        }}
-      >
-        <Box>
-          <Typography variant="body1" color="text.secondary">
-            Please sign in to use
-          </Typography>
-          <Auth
-            supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
-            providers={["google"]}
-            theme="dark"
-          />
-        </Box>
-      </Container>
+      <Box border={2} width={"33%"}>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{ theme: ThemeSupa }}
+          providers={["google"]}
+          theme="dark"
+        />
+      </Box>
     </>
   );
 }
