@@ -14,7 +14,7 @@ export default function GroceryStoreHeader({
   quantity,
   createdAt,
 }: GroceryStoreType) {
-  // maybe add realtime subscripon to this??
+  // TODO:add realtime subscripon to this??
   const router = useRouter();
   return (
     <>
@@ -24,8 +24,7 @@ export default function GroceryStoreHeader({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          backgroundColor: "background.paper",
-          p: 2,
+          backgroundColor: "primary.main",
         }}
       >
         <IconButton
@@ -36,7 +35,7 @@ export default function GroceryStoreHeader({
         >
           <ArrowBackIosNewIcon sx={{ fontSize: 30 }} />
         </IconButton>
-        <Typography variant="h3" color="text.secondary">
+        <Typography color="#EAEAEA" variant="h3" >
           {name}
         </Typography>
         <Box>

@@ -7,7 +7,7 @@ export default function DashBoardSkeleton() {
     <>
       <Container
         sx={{
-          border: 6,
+          border: 1,
         }}
       >
         <Skeleton variant="rectangular" width={500} height={200} />

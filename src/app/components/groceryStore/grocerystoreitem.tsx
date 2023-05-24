@@ -29,9 +29,8 @@ export default function GroceryStoreItem(item: any) {
 
   const showExtra = true;
 
-
-// TODO: do the edit functinliaty,
-// TODO: Fix all loading skeletons,
+  // TODO: do the edit functinliaty,
+  // TODO: Fix all loading skeletons,
   useEffect(() => {
     const channel = supabase
       .channel("custom-all-channel")
@@ -85,12 +84,9 @@ export default function GroceryStoreItem(item: any) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-start",
-          backgroundColor:"background.paper",
-          bgcolor:"background.paper",
-          color:"background.paper",
           flexWrap: "wrap",
           borderRadius: 5,
-          maxWidth:350
+          maxWidth: 350,
         }}
         style={{ flexShrink: 0 }}
       >
@@ -108,12 +104,8 @@ export default function GroceryStoreItem(item: any) {
             <Typography gutterBottom variant="h5" component="div">
               {groceryItem.name}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {groceryItem.notes}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {groceryItem.quantity}
-            </Typography>
+            <Typography color="#EAEAEA" variant="body2">{groceryItem.notes}</Typography>
+            <Typography variant="body2">{groceryItem.quantity}</Typography>
           </CardContent>
         </CardActionArea>
         <CardActions>
@@ -121,7 +113,7 @@ export default function GroceryStoreItem(item: any) {
             onClick={() => handleDelete(groceryItem.id)}
             aria-label="complete"
           >
-            <CheckCircleIcon color="primary" />
+            <CheckCircleIcon />
           </IconButton>
           <Button
             onClick={() => console.log("now you clicked  the button??")}
