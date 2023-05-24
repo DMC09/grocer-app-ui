@@ -24,12 +24,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SupabaseProvider session={session}>
-          <SupabaseListener serverAccessToken={session?.access_token} />
+        <div id="app">
+          <SupabaseProvider session={session}>
+            <SupabaseListener serverAccessToken={session?.access_token} />
 
-          <Header />
-          {children}
-        </SupabaseProvider>
+            <Header />
+            {children}
+          </SupabaseProvider>
+        </div>
       </body>
     </html>
   );
