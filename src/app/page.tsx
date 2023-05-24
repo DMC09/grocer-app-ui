@@ -19,18 +19,11 @@ export default function HomePage() {
   const router = useRouter();
   const { supabase, session } = useSupabase();
 
-  // Use the layout.tsx of the [grocerytoreid] to try an make this a server component but make the logici nthe tempalte
-
   const [sessionData, setSessionData] = useState<Session | null>(session);
 
   useEffect(() => {
     sessionData?.user ? router.push("/dashboard") : router.push("/login");
   }, []);
-
-  // const supabase = createServerComponentSupabaseClient({
-  //   headers,
-  //   cookies,
-  // });
 
   return <></>;
 }
