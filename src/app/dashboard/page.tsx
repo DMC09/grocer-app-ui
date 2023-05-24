@@ -1,7 +1,5 @@
 "use client";
 
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import GroceryStore from "../components/groceryStore/grocerystore";
 import {
   Badge,
   Box,
@@ -24,9 +22,9 @@ import { useSupabase } from "../components/supabase/supabase-provider";
 import { useEffect, useState } from "react";
 import ClickAwayListener from "@mui/base/ClickAwayListener";
 import { GroceryStoreWithItemsType, GroceryStoreType } from "@/types";
-import { Typography } from "@supabase/ui";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { useRouter, redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import DashboardHeader from "../components/dashboardHeader";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -37,14 +35,11 @@ export default function Dashboard() {
     GroceryStoreType[] | [] | null
   >(null);
 
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // TODO:move the add new store to it's own component 
+  // TODO:move the add new store to it's own component
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
 
-
-// TODO: move this to the client utils 
   const getAllGroceryStores = async () => {
     const { data, error } = await supabase.from("grocerystores").select("*");
     if (data) {
@@ -59,7 +54,6 @@ export default function Dashboard() {
     getAllGroceryStores();
   }, [supabase]);
 
-  // TODO: test if I make differnt edits that hte data is correct
   useEffect(() => {
     const channel = supabase
       .channel("custom-grocerystore-channel")
@@ -85,7 +79,6 @@ export default function Dashboard() {
     };
   }, [supabase]);
 
-
   // figure out a order for the stores
   const groceryStoresToRender = groceryStores?.map((groceryStore: any) => {
     return (
@@ -97,7 +90,7 @@ export default function Dashboard() {
               border: 1,
               borderColor: "primary",
               background: "primary",
-              borderRadius: 3,
+              borderRadius: 1,
               width: 350,
               height: 300,
             }}
@@ -114,8 +107,7 @@ export default function Dashboard() {
                 height={250}
                 image={groceryStore.image}
                 alt={`Image of${groceryStore.name} `}
-                sx={{objectFit: "fill" }}
-
+                sx={{ objectFit: "fill" }}
               />
               {/* <CardContent></CardContent> */}
             </CardActionArea>
@@ -153,64 +145,62 @@ export default function Dashboard() {
 
   return (
     <>
-      <Container
-        sx={{
-          border: 3,
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={handleClickOpen}
-          endIcon={<AddCircleIcon />}
-        >
-          Add new Store
-        </Button>
-        <div>
-          <ClickAwayListener onClickAway={handleClickAway}>
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Add new Store</DialogTitle>
-              <DialogContent>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="Name"
-                  label="Name"
-                  type="email"
-                  fullWidth
-                  variant="standard"
-                  onChange={(e) => setNewGroceryStoreName(e.target.value)}
-                  value={newGroceryStoreName}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit}>Submit</Button>
-              </DialogActions>
-            </Dialog>
-          </ClickAwayListener>
-        </div>
-        <>
-          <Container
-            sx={{
-              display: "flex",
-              flexFlow: "row",
-              flexWrap: "wrap",
-              gap: 3,
-              my: 2,
-            }}
-          >
-            {groceryStores && groceryStores.length > 0 && groceryStoresToRender}
-          </Container>
+      {/* move the contianer as part of the layout that way there is continuity */}
+      {/* The loading will container just the skelton */}
+      {/* Make this container take up the full width in the layout */}
+      {/* Make the box take move the space and have it the inverse of the colors itself. */}
 
-          {/* {isLoading ? (
+      <div>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Add new Store</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="Name"
+                label="Name"
+                type="email"
+                fullWidth
+                variant="standard"
+                onChange={(e) => setNewGroceryStoreName(e.target.value)}
+                value={newGroceryStoreName}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleSubmit}>Submit</Button>
+            </DialogActions>
+          </Dialog>
+        </ClickAwayListener>
+      </div>
+      <>
+      <DashboardHeader />
+        <Container
+        maxWidth={false}
+          sx={{
+            display: "flex",
+            flexFlow: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            backgroundColor:"primary.light",
+            gap: 3,
+            py:2,
+            border:2
+          }}
+        >
+          {/* this needs it's own container */}
+          {groceryStores && groceryStores.length > 0 && groceryStoresToRender}
+        </Container>
+
+        {/* {isLoading ? (
             <p>loading</p>
           ) : groceryStores?.length > 0 ? (
             groceryStoresToRender
           ) : (
             <p>nothing to see!</p>
           )} */}
-        </>
-      </Container>
+      </>
     </>
   );
 }
