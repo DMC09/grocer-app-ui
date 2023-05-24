@@ -10,10 +10,6 @@ import { GroceryStoreItemType } from "@/types";
 import { getGroceryStoreItems } from "@/app/utils/client/getData";
 import NoItems from "@/app/components/utils/noItems";
 
-// initilize the logic, also the real time logic?
-//realtime
-// no items/
-//Make a utils function for getting the stuff and wrap it in the cache
 // https://nextjs.org/docs/app/building-your-application/data-fetching/caching#react-cache
 
 export default function Page() {
@@ -76,12 +72,14 @@ export default function Page() {
   return (
     <>
       <Container
+      maxWidth={false}
         sx={{
           display: "flex",
           flexFlow: "row",
           flexWrap: "wrap",
           gap: 3,
-          my: 2,
+          py:2,
+          backgroundColor:"primary.light"
         }}
       >
         {groceryStoreItemsToRender.length > 0 ? (
@@ -89,7 +87,7 @@ export default function Page() {
             <GroceryStoreItem key={item.id} {...item} />
           ))
         ) : (
-          <NoItems/>
+          <NoItems />
         )}
       </Container>
     </>
