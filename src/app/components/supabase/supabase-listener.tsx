@@ -17,7 +17,10 @@ export default function SupabaseListener({
   const router = useRouter();
 
   useEffect(() => {
+    // what there is no session, redirect to the login 
     supabase.auth.onAuthStateChange((event, session) => {
+      console.log(event,'generice event?')
+      console.log(session,'session!?')
       if (event == "SIGNED_IN") {
         console.log('Signed in Event in the listener');
         router.push("/dashboard");
@@ -25,7 +28,7 @@ export default function SupabaseListener({
     });
 
     supabase.auth.onAuthStateChange((event, session) => {
-      if (event == "SIGNED_OUT") {
+      if (event == "SIGNED_OUT" || !session) {
         console.log('Signed Out Event in the listener');
         router.push("/login");
       }
