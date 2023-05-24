@@ -21,14 +21,9 @@ export default async function GroceryStoreLayout({
 }) {
   const data = await getGroceryStoreData(params.grocerystoreId);
 
-
   return (
-    // get the actual data from here and pass it in the component here.
-    // pass in the id name image quanitty, a
     <>
       {data && <GroceryStoreHeader {...data} />}
-      {/* must use react context to have a provider for the grocery store??? */}
-      {/* TODO:A component to hold all of the grocery store items */}
       {children}
     </>
   );
