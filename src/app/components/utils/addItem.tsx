@@ -66,8 +66,8 @@ export default function AddItem({ storeId }: { storeId: number }) {
     <>
       <Box sx={{}}>
         <IconButton
+          sx={{ color: "background.paper" }}
           onClick={handleClickOpen}
-          color="secondary"
           aria-label="add to grocery store"
         >
           <ControlPointIcon sx={{ fontSize: 30 }} />
