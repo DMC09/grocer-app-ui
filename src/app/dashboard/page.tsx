@@ -80,7 +80,7 @@ export default function Dashboard() {
   }, [supabase]);
 
   // figure out a order for the stores
-  const groceryStoresToRender = groceryStores?.map((groceryStore: any) => {
+  const groceryStoresToRender = groceryStores?.map((groceryStore: GroceryStoreType) => {
     return (
       <>
         <Badge color="secondary" badgeContent={groceryStore.quantity}>
@@ -105,7 +105,7 @@ export default function Dashboard() {
               <CardMedia
                 component="img"
                 height={250}
-                image={groceryStore.image}
+                image={groceryStore?.image || ""}
                 alt={`Image of${groceryStore.name} `}
                 sx={{ objectFit: "fill" }}
               />
