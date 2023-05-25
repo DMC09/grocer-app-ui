@@ -21,8 +21,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSupabase } from "../supabase/supabase-provider";
+import EditItem from "../utils/editItem";
 
-export default function GroceryStoreItem(item: any) {
+export default function GroceryStoreItem(item: GroceryStoreItemType) {
   const { supabase } = useSupabase();
 
   const [groceryItem, setGroceryItem] = useState<GroceryStoreItemType>(item);
@@ -115,6 +116,7 @@ export default function GroceryStoreItem(item: any) {
           >
             <CheckCircleIcon />
           </IconButton>
+          <EditItem />
           <Button
             onClick={() => console.log("now you clicked  the button??")}
             size="small"
