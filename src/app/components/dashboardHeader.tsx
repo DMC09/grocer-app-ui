@@ -24,7 +24,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { theme } from "../utils/theme";
 
 export default function DashboardHeader() {
-    // move the add store button to it's won file.
+  // move the add store button to it's won file.
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
@@ -56,20 +56,20 @@ export default function DashboardHeader() {
         <Card
           sx={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexFlow: "row",
             backgroundColor: "primary.main",
+            justifyContent: "space-between",
           }}
         >
-          <Typography color="#EAEAEA" variant="h3">
-            Grocery Stores
+          <div></div>
+          <Typography align="center" color="#EAEAEA" variant="h3">
+            Dashboard
           </Typography>
           <Button
             variant="contained"
             onClick={handleClickOpen}
             endIcon={<AddCircleIcon />}
           >
-            Add new Store
           </Button>
         </Card>
         <Dialog open={open} onClose={handleClose}>
