@@ -16,13 +16,4 @@ export async function getGroceryStoreItems(
     return null
   }
 
-
-//   try {
-//     // const { supabase } = useSupabase();
-
-    
-//   } catch (error: any) {
-//     console.log(error.message);
-//     return null;
-//   }
 }

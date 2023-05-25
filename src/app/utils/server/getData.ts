@@ -12,12 +12,6 @@ export async function getGroceryStoreData(id: number) {
   try {
     const { data, error }: { data: GroceryStoreType | null; error: any } =
       await supabase.from("grocerystores").select("*").eq("id", id).single();
-    // const { data, error }: { data: any | null; error: any } = await supabase
-    //   .from("grocerystores")
-    //   .select("*,grocerystoreitems(*)")
-    //   .eq("id", params.grocerystoreId)
-    //   .single();
-
     if (data) {
       return data;
     } else {

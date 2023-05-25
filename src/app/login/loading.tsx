@@ -2,7 +2,6 @@
 import { Stack, Skeleton, Divider } from "@mui/material";
 
 export default function Loading() {
-  // You can add any UI inside Loading, including a Skeleton.
   return (
     <Stack sx={{ mt: 1.5 }} spacing={3}>
       <Skeleton variant="rectangular" width={210} height={50} />
