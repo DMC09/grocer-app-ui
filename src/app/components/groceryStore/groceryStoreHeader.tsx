@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { GroceryStoreType } from "@/types";
 import AddItem from "../utils/addItem";
+import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
 
 export default function GroceryStoreHeader({
   id,
@@ -35,11 +36,12 @@ export default function GroceryStoreHeader({
         >
           <ArrowBackIosNewIcon sx={{ fontSize: 30 }} />
         </IconButton>
-        <Typography color="#EAEAEA" variant="h3" >
+        <Typography color="#EAEAEA" variant="h3">
           {name}
         </Typography>
-        <Box>
+        <Box sx={{ display: "flex" }}>
           <AddItem storeId={id} />
+          <GroceryStoreHeaderMenu storeId={id} />
         </Box>
       </Card>
     </>
