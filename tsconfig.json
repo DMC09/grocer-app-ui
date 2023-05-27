@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/database.types", "lib/database.types"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*/*.tsx", ".next/types/**/*.ts", "lib/database.types", "lib/database.types"],
   "exclude": ["node_modules"]
 }

@@ -15,7 +15,6 @@ import { useSupabase } from "./supabase/supabase-provider";
 export default function HeaderMenu() {
   const { supabase, session } = useSupabase();
   
-  console.log(session, "in the header menu!?");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<unknown>(null);
   const open = Boolean(anchorEl);

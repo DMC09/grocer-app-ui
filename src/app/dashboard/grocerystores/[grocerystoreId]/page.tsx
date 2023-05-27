@@ -14,7 +14,7 @@ import NoItems from "@/app/components/utils/noItems";
 
 export default function Page() {
   const { supabase } = useSupabase();
-  const { grocerystoreId } = useParams();
+  const { grocerystore_id } = useParams();
 
   const [groceryStoreItemsToRender, setGroceryStoreItemsToRender] = useState<
     GroceryStoreItemType[] | []
@@ -25,7 +25,7 @@ export default function Page() {
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .select("*")
-      .eq("storeId", grocerystoreId);
+      .eq("store_id", grocerystore_id);
     if (data) {
       console.log(groceryStoreItemsToRender, "data before setting!");
       setGroceryStoreItemsToRender(data);
@@ -44,7 +44,7 @@ export default function Page() {
           event: "INSERT",
           schema: "public",
           table: "grocerystoreitems",
-          filter: `storeId=eq.${grocerystoreId}`,
+          filter: `store_id=eq.${grocerystore_id}`,
         },
         getGroceryStoreItems
       )
@@ -54,7 +54,7 @@ export default function Page() {
           event: "DELETE",
           schema: "public",
           table: "grocerystoreitems",
-          filter: `storeId=eq.${grocerystoreId}`,
+          filter: `store_id=eq.${grocerystore_id}`,
         },
         getGroceryStoreItems
       )

@@ -9,7 +9,7 @@ export async function getGroceryStoreItems(
     const {data} = await supabase
     .from("grocerystoreitems")
     .select("*")
-    .eq("storeId", id);
+    .eq("store_id", id);
   if (data) {
     return data;
   }else {

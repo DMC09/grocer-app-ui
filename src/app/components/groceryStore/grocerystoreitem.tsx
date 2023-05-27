@@ -54,9 +54,9 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
     };
   }, [supabase]);
 
-  const createdAtLocal = () => {
-    if (groceryItem?.createdAt) {
-      const localDate = new Date(groceryItem?.createdAt).toLocaleTimeString(
+  const created_atLocal = () => {
+    if (groceryItem?.created_at) {
+      const localDate = new Date(groceryItem?.created_at).toLocaleTimeString(
         [],
         {
           month: "short",
@@ -92,7 +92,7 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
         style={{ flexShrink: 0 }}
       >
         <CardActionArea onClick={() => alert("you logged this apparent?")}>
-          <CardHeader title={groceryItem.name} subheader={createdAtLocal()} />
+          <CardHeader title={groceryItem.name} subheader={created_atLocal()} />
 
           <CardMedia
             component="img"
@@ -105,7 +105,9 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
             <Typography gutterBottom variant="h5" component="div">
               {groceryItem.name}
             </Typography>
-            <Typography color="#EAEAEA" variant="body2">{groceryItem.notes}</Typography>
+            <Typography color="#EAEAEA" variant="body2">
+              {groceryItem.notes}
+            </Typography>
             <Typography variant="body2">{groceryItem.quantity}</Typography>
           </CardContent>
         </CardActionArea>
@@ -116,14 +118,7 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
           >
             <CheckCircleIcon />
           </IconButton>
-          <EditItem />
-          <Button
-            onClick={() => console.log("now you clicked  the button??")}
-            size="small"
-            color="primary"
-          >
-            Edit
-          </Button>
+          <EditItem {...groceryItem} />
         </CardActions>
       </Card>
     </>

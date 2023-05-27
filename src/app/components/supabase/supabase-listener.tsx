@@ -17,17 +17,18 @@ export default function SupabaseListener({
   const router = useRouter();
 
   useEffect(() => {
-    // what there is no session, redirect to the login 
+    // what there is no session, redirect to the login
     supabase.auth.onAuthStateChange((event, session) => {
+      console.log( session,'session data!');
       if (event == "SIGNED_IN") {
-        console.log('Signed in Event in the listener');
+        console.log("Signed in Event in the listener");
         router.push("/dashboard");
       }
     });
 
     supabase.auth.onAuthStateChange((event, session) => {
       if (event == "SIGNED_OUT" || !session) {
-        console.log('Signed Out Event in the listener');
+        console.log("Signed Out Event in the listener");
         router.push("/login");
       }
     });
@@ -35,7 +36,6 @@ export default function SupabaseListener({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-
       if (session?.access_token !== serverAccessToken) {
         // server and client are out of sync
         // reload the page to fetch fresh server data

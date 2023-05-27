@@ -16,9 +16,9 @@ import { useSupabase } from "../supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 
 export default function GroceryStoreHeaderMenu({
-  storeId,
+  store_id,
 }: {
-  storeId: number;
+  store_id: number;
 }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -37,7 +37,7 @@ export default function GroceryStoreHeaderMenu({
     const { data, error } = await supabase
       .from("grocerystores")
       .delete()
-      .eq("id", storeId)
+      .eq("id", store_id)
       .select();
 
     if (data && data.length > 0) {

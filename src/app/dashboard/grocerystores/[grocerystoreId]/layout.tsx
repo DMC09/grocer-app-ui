@@ -16,10 +16,10 @@ export default async function GroceryStoreLayout({
 }: {
   children: React.ReactNode;
   params: {
-    grocerystoreId: number;
+    grocerystore_id: number;
   };
 }) {
-  const data = await getGroceryStoreData(params.grocerystoreId);
+  const data = await getGroceryStoreData(params.grocerystore_id);
 
   return (
     <>

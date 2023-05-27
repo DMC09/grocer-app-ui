@@ -11,54 +11,54 @@ export interface Database {
     Tables: {
       grocerystoreitems: {
         Row: {
-          createdAt: string | null
+          created_at: string | null
           id: number
           image: string | null
-          modifiedAt: string | null
+          modified_at: string | null
           name: string | null
           notes: string | null
           quantity: number | null
-          storeId: number | null
+          store_id: number | null
         }
         Insert: {
-          createdAt?: string | null
+          created_at?: string | null
           id?: number
           image?: string | null
-          modifiedAt?: string | null
+          modified_at?: string | null
           name?: string | null
           notes?: string | null
           quantity?: number | null
-          storeId?: number | null
+          store_id?: number | null
         }
         Update: {
-          createdAt?: string | null
+          created_at?: string | null
           id?: number
           image?: string | null
-          modifiedAt?: string | null
+          modified_at?: string | null
           name?: string | null
           notes?: string | null
           quantity?: number | null
-          storeId?: number | null
+          store_id?: number | null
         }
       }
       grocerystores: {
         Row: {
           [x: string]: any
-          createdAt: string | null
+          created_at: string | null
           id: number
           image: string | null
           name: string
           quantity: number | null
         }
         Insert: {
-          createdAt?: string | null
+          created_at?: string | null
           id?: number
           image?: string | null
           name: string
           quantity?: number | null
         }
         Update: {
-          createdAt?: string | null
+          created_at?: string | null
           id?: number
           image?: string | null
           name?: string

@@ -15,7 +15,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 
-export default function AddItem({ storeId }: { storeId: number }) {
+export default function AddItem({ store_id }: { store_id: number }) {
   const [open, setOpen] = useState(false);
 
   const { supabase } = useSupabase();
@@ -44,7 +44,7 @@ export default function AddItem({ storeId }: { storeId: number }) {
       .from("grocerystoreitems")
       .insert([
         {
-          storeId,
+          store_id,
           name,
           notes,
           quantity: Number(quantity),

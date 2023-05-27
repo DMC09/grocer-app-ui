@@ -13,7 +13,7 @@ export default function GroceryStoreHeader({
   name,
   image,
   quantity,
-  createdAt,
+  created_at,
 }: GroceryStoreType) {
   // TODO:add realtime subscripon to this??
   const router = useRouter();
@@ -40,8 +40,8 @@ export default function GroceryStoreHeader({
           {name}
         </Typography>
         <Box sx={{ display: "flex" }}>
-          <AddItem storeId={id} />
-          <GroceryStoreHeaderMenu storeId={id} />
+          <AddItem store_id={id} />
+          <GroceryStoreHeaderMenu store_id={id} />
         </Box>
       </Card>
     </>
