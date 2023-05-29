@@ -13,16 +13,18 @@ import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import { GroceryStoreItemType } from "@/types";
 
-export default function EditItem(groceryStoreItem:GroceryStoreItemType) {
-
-    console.log(groceryStoreItem,'what is this!??')
+export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
+  console.log(groceryStoreItem, "from the edit component");
 
   const { supabase } = useSupabase();
   const [open, setOpen] = useState(false);
 
-  const [quantity, setQuantity] = useState("");
-  const [name, setName] = useState("");
-  const [notes, setNotes] = useState("");
+  const [name, setName] = useState<string | null>(groceryStoreItem.name);
+  const [image, setImage] = useState<string | null>(groceryStoreItem.image);
+  const [notes, setNotes] = useState<string | null>(groceryStoreItem.notes);
+  const [quantity, setQuantity] = useState<number | null>(
+    groceryStoreItem.quantity
+  );
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,30 +32,30 @@ export default function EditItem(groceryStoreItem:GroceryStoreItemType) {
 
   const handleClose = () => {
     setOpen(false);
-    setName("");
-    setNotes("");
-    setQuantity("");
+    setName(groceryStoreItem.name);
+    setNotes(groceryStoreItem.notes);
+    setQuantity(groceryStoreItem.quantity);
+    setImage(groceryStoreItem.image);
   };
 
-  async function handleSubmit() {
-    const store_id = 0;
+  // needs to be handleEdit and need change the code
+  async function handleEdit() {
     const { data, error } = await supabase
       .from("grocerystoreitems")
-      .insert([
+      .update([
         {
-          store_id,
           name,
           notes,
           quantity: Number(quantity),
+          image,
         },
       ])
+      .eq("id", groceryStoreItem.id)
       .select();
 
     if (data) {
+      console.log("data after edit submission");
       setOpen(false);
-      setName("");
-      setNotes("");
-      setQuantity("");
     } else if (error) {
       throw new Error(error.message);
     }
@@ -78,7 +80,6 @@ export default function EditItem(groceryStoreItem:GroceryStoreItemType) {
             margin="dense"
             id="Name"
             label="Name"
-            type="email"
             fullWidth
             variant="standard"
             onChange={(e) => setName(e.target.value)}
@@ -104,13 +105,13 @@ export default function EditItem(groceryStoreItem:GroceryStoreItemType) {
             id="outlined-basic"
             label="Quantity"
             variant="outlined"
-            onChange={(e) => setQuantity(e.target.value)}
+            onChange={(e) => setQuantity(Number(e.target.value))}
             value={quantity}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={handleEdit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </>
