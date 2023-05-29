@@ -17,11 +17,12 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSupabase } from "./supabase/supabase-provider";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import HomeIcon from "@mui/icons-material/Home";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { theme } from "../utils/theme";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export default function DashboardHeader() {
   // move the add store button to it's won file.
@@ -29,18 +30,31 @@ export default function DashboardHeader() {
   const [open, setOpen] = useState(false);
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
 
+  const getSelectId = useMemo(async (): Promise<number | null> => {
+    const { data, error }: { data: any; error: PostgrestError | null } =
+      await supabase.from("profiles").select("select_id").single();
+    if (data) {
+      return data?.select_id;
+    } else {
+      throw new Error(error?.message);
+      return null;
+    }
+  }, []);
+
   async function handleClickOpen() {
     setOpen(true);
   }
+
   function handleClose(event: {}): void {
     setOpen(false);
     setNewGroceryStoreName("");
   }
 
   async function handleSubmit() {
+    const select_id = await getSelectId;
     const { data, error } = await supabase
       .from("grocerystores")
-      .insert([{ name: newGroceryStoreName }]);
+      .insert([{ name: newGroceryStoreName, select_id }]);
     if (error) {
       throw new Error(error.message);
     } else {
@@ -63,14 +77,13 @@ export default function DashboardHeader() {
         >
           <div></div>
           <Typography align="center" color="#EAEAEA" variant="h3">
-            Dashboard
+            Dashboard!!
           </Typography>
           <Button
             variant="contained"
             onClick={handleClickOpen}
             endIcon={<AddCircleIcon />}
-          >
-          </Button>
+          ></Button>
         </Card>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Add new Store</DialogTitle>
