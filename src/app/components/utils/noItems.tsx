@@ -16,7 +16,6 @@ import ClickAwayListener from "@mui/base/ClickAwayListener";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import React, { useEffect, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
-import AddItem from "./addItem";
 
 export default function NoItems() {
   return (
