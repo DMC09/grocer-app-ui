@@ -15,7 +15,13 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 
-export default function AddItem({ store_id }: { store_id: number }) {
+export default function AddItem({
+  store_id,
+  select_id,
+}: {
+  store_id: number;
+  select_id: string | null;
+}) {
   const [open, setOpen] = useState(false);
 
   const { supabase } = useSupabase();
@@ -28,9 +34,9 @@ export default function AddItem({ store_id }: { store_id: number }) {
     setOpen(true);
   };
 
-  function handleClickAway(event: MouseEvent | TouchEvent): void {
-    throw new Error("Function not implemented.");
-  }
+  // function handleClickAway(event: MouseEvent | TouchEvent): void {
+  //   throw new Error("Function not implemented.");
+  // }
 
   const handleClose = () => {
     setOpen(false);
@@ -48,6 +54,7 @@ export default function AddItem({ store_id }: { store_id: number }) {
           name,
           notes,
           quantity: Number(quantity),
+          select_id,
         },
       ])
       .select();
@@ -74,51 +81,49 @@ export default function AddItem({ store_id }: { store_id: number }) {
         </IconButton>
       </Box>
 
-      <ClickAwayListener onClickAway={handleClickAway}>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Add new item</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="Name"
-              label="Name"
-              type="email"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-            />
-          </DialogContent>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="Notes"
-              label="Notes"
-              type="email"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setNotes(e.target.value)}
-              value={notes}
-            />
-          </DialogContent>
-          <DialogContent>
-            <TextField
-              type="number"
-              id="outlined-basic"
-              label="Quantity"
-              variant="outlined"
-              onChange={(e) => setQuantity(e.target.value)}
-              value={quantity}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit}>Submit</Button>
-          </DialogActions>
-        </Dialog>
-      </ClickAwayListener>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Add new item</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="Name"
+            label="Name"
+            type="email"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
+          />
+        </DialogContent>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="Notes"
+            label="Notes"
+            type="email"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setNotes(e.target.value)}
+            value={notes}
+          />
+        </DialogContent>
+        <DialogContent>
+          <TextField
+            type="number"
+            id="outlined-basic"
+            label="Quantity"
+            variant="outlined"
+            onChange={(e) => setQuantity(e.target.value)}
+            value={quantity}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
