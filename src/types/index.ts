@@ -18,7 +18,8 @@ export interface Database {
           name: string | null
           notes: string | null
           quantity: number | null
-          store_id: number | null
+          select_id: string | null
+          store_id: number
         }
         Insert: {
           created_at?: string | null
@@ -28,7 +29,8 @@ export interface Database {
           name?: string | null
           notes?: string | null
           quantity?: number | null
-          store_id?: number | null
+          select_id?: string | null
+          store_id: number
         }
         Update: {
           created_at?: string | null
@@ -38,17 +40,18 @@ export interface Database {
           name?: string | null
           notes?: string | null
           quantity?: number | null
-          store_id?: number | null
+          select_id?: string | null
+          store_id?: number
         }
       }
       grocerystores: {
         Row: {
-          [x: string]: any
           created_at: string | null
           id: number
           image: string | null
           name: string
           quantity: number | null
+          select_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -56,6 +59,7 @@ export interface Database {
           image?: string | null
           name: string
           quantity?: number | null
+          select_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -63,6 +67,39 @@ export interface Database {
           image?: string | null
           name?: string
           quantity?: number | null
+          select_id?: string | null
+        }
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          select_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          select_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          select_id?: string | null
+          updated_at?: string
         }
       }
     }
