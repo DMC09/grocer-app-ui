@@ -2,11 +2,17 @@
 
 import {
   Avatar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
+  TextField,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useState } from "react";
@@ -14,16 +20,18 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings, Logout } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useRouter } from "next/navigation";
+import { GroceryStoreType } from "@/types";
 
-export default function GroceryStoreHeaderMenu({
-  store_id,
-}: {
-  store_id: number;
-}) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const { supabase, session } = useSupabase();
   const router = useRouter();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>(
+    groceryStore.name
+  );
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,13 +39,15 @@ export default function GroceryStoreHeaderMenu({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
 
   const handleDelete = async () => {
     const { data, error } = await supabase
       .from("grocerystores")
       .delete()
-      .eq("id", store_id)
+      .eq("id", groceryStore.id)
       .select();
 
     if (data && data.length > 0) {
@@ -47,6 +57,20 @@ export default function GroceryStoreHeaderMenu({
       throw new Error(error.message);
     }
   };
+
+  async function handleSave() {
+    const { data, error } = await supabase
+      .from("grocerystores")
+      .update({ name: newGroceryStoreName })
+      .eq("id", groceryStore.id)
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      setOpenDialog(false);
+    }
+  }
 
   return (
     <>
@@ -96,27 +120,40 @@ export default function GroceryStoreHeaderMenu({
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {/* <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem> */}
-        <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => setOpenDialog(true)}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Store Settings
         </MenuItem>
+        <Divider />
         <MenuItem onClick={handleDelete}>
+          {/* need a modal to show the store settings which right now is the nmae */}
           <ListItemIcon>
             <DeleteForeverIcon fontSize="small" />
           </ListItemIcon>
           Delete Store
-          {/* need to add the signout finctionliaty to the onClick handlers  */}
         </MenuItem>
       </Menu>
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Grocery Store Settings</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="Name"
+            label="Name"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setNewGroceryStoreName(e.target.value)}
+            value={newGroceryStoreName}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
