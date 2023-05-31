@@ -20,15 +20,12 @@ export default function Page() {
     GroceryStoreItemType[] | [] | null
   >([]);
 
-  // Realtime for the deltes
   async function getGroceryStoreItems() {
-    console.log("getGroceryStoreItems firing");
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .select("*")
       .eq("store_id", store_id);
     if (data) {
-      console.log(data, "after fetching the grocerystoreitems?");
       setGroceryStoreItemsToRender(data as GroceryStoreItemType[] | []);
     } else if (error) {
       throw new Error(error.message);
@@ -36,7 +33,6 @@ export default function Page() {
   }
 
   useEffect(() => {
-    // neeed to add  the update for the grocery store items!!!
     const channel = supabase
       .channel("custom-grocerystoreitems-channel")
       .on(
@@ -86,6 +82,7 @@ export default function Page() {
         maxWidth={false}
         sx={{
           display: "flex",
+          height: "85%",
           flexFlow: "row",
           flexWrap: "wrap",
           gap: 3,
@@ -93,9 +90,8 @@ export default function Page() {
           backgroundColor: "primary.light",
         }}
       >
-        {groceryStoreItemsToRender ? (
+        {groceryStoreItemsToRender && groceryStoreItemsToRender.length > 0 ? (
           groceryStoreItemsToRender.map((item) => {
-            console.log(item, "item when trying to render the array of items!");
             return <GroceryStoreItem key={item.id} {...item} />;
           })
         ) : (

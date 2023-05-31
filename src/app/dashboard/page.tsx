@@ -38,7 +38,6 @@ export default function Dashboard() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // TODO:move the add new store to it's own component
   // TODo: implment backgrou MUI when doing stuff?
 
   const getAllGroceryStores = async () => {
@@ -84,13 +83,14 @@ export default function Dashboard() {
     };
   }, [supabase]);
 
-  // figure out a order for the stores
+  // Put all of this in a componeont
   const groceryStoresToRender = groceryStores?.map(
     (groceryStore: GroceryStoreType) => {
       return (
         <>
           <Badge color="secondary" badgeContent={groceryStore.quantity}>
             <Card
+              key={groceryStore.id}
               raised
               sx={{
                 border: 1,
@@ -131,18 +131,24 @@ export default function Dashboard() {
       <Container
         maxWidth={false}
         sx={{
+          height: "85%",
           display: "flex",
           flexFlow: "row",
           flexWrap: "wrap",
           justifyContent: "center",
-          backgroundColor: "primary.light",
-          gap: 3,
-          py: 2,
+          backgroundColor: "primary.dark",
+          overflowY:"scroll",
+          gap: 3.5,
+          py: 4,
           border: 2,
         }}
       >
         {/* this needs it's own container */}
-        {groceryStores && groceryStores.length > 0 && groceryStoresToRender}
+        {groceryStores && groceryStores.length > 0 ? (
+          groceryStoresToRender
+        ) : (
+          <p> Not store here unfortunately, please add one!</p>
+        )}
       </Container>
     </>
   );

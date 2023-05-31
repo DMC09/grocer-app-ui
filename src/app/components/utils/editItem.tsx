@@ -14,7 +14,7 @@ import { useSupabase } from "../supabase/supabase-provider";
 import { GroceryStoreItemType } from "@/types";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
-  console.log(groceryStoreItem, "from the edit component");
+
 
   const { supabase } = useSupabase();
   const [open, setOpen] = useState(false);
@@ -38,7 +38,6 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     setImage(groceryStoreItem.image);
   };
 
-  // needs to be handleEdit and need change the code
   async function handleEdit() {
     const { data, error } = await supabase
       .from("grocerystoreitems")
@@ -54,7 +53,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       .select();
 
     if (data) {
-      console.log("data after edit submission");
+
       setOpen(false);
     } else if (error) {
       throw new Error(error.message);

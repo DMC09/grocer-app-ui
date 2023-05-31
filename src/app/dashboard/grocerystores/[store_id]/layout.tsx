@@ -1,13 +1,5 @@
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { headers, cookies } from "next/headers";
-import {
-  GroceryStoreItemType,
-  GroceryStoreType,
-  GroceryStoreWithItemsType,
-} from "@/types";
 import GroceryStoreHeader from "@/app/components/groceryStore/groceryStoreHeader";
 import { getGroceryStoreData } from "@/app/utils/server/getData";
-import { PostgrestError } from "@supabase/supabase-js";
 
 export const revalidate = 0;
 

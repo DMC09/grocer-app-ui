@@ -20,7 +20,6 @@ import EditItem from "../utils/editItem";
 
 export default function GroceryStoreItem(item: GroceryStoreItemType) {
   const { supabase } = useSupabase();
-  // TODO: Fix all loading skeletons,
 
   const created_atLocal = () => {
     if (item?.created_at) {

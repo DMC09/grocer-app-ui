@@ -5,11 +5,10 @@ import { theme } from "../utils/theme";
 import DashboardHeader from "../components/dashboardHeader";
 
 export default function DashboardLayout({
-  children, // will be a page or nested layout
+  children, 
 }: {
   children: React.ReactNode;
 }) {
-  // need to grab t
   return (
     <>
       <ThemeProvider theme={theme}>

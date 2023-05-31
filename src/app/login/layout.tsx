@@ -4,11 +4,10 @@ import { Container, ThemeProvider, Typography } from "@mui/material";
 import { theme } from "../utils/theme";
 
 export default function LoginLayout({
-  children, // will be a page or nested layout
+  children, 
 }: {
   children: React.ReactNode;
 }) {
-  // need to grab t
   return (
     <>
       <ThemeProvider theme={theme}>
