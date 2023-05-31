@@ -20,14 +20,17 @@ import { useSupabase } from "./supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import HomeIcon from "@mui/icons-material/Home";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+
 import { theme } from "../utils/theme";
 import { PostgrestError } from "@supabase/supabase-js";
+import AddStore from "./utils/addStore";
 
 export default function DashboardHeader() {
-  // move the add store button to it's won file.
+  //TODO: move the add store logic to it's own file.
   const { supabase, session } = useSupabase();
-  const [open, setOpen] = useState(false);
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(false);
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
 
   const getSelectId = useMemo(async (): Promise<number | null> => {
@@ -45,12 +48,32 @@ export default function DashboardHeader() {
     setOpen(true);
   }
 
+  function handleChange(text: string): void {
+    setNewGroceryStoreName(text);
+  }
+
   function handleClose(event: {}): void {
     setOpen(false);
     setNewGroceryStoreName("");
   }
 
+  function isValidInput(text: string) {
+    // Check if the text is empty
+    if (text.trim() === "") {
+      return "The text is empty.";
+    }
+
+    // Check if the text is valid alphanumeric
+    const regExp = /^[a-zA-Z0-9]+$/;
+    if (!regExp.test(text)) {
+      return "The text is not valid alphanumeric.";
+    } else {
+      return;
+    }
+  }
+
   async function handleSubmit() {
+    // logic to stop submission if ther is not correct submisiso n
     const select_id = await getSelectId;
     const { data, error } = await supabase
       .from("grocerystores")
@@ -79,32 +102,8 @@ export default function DashboardHeader() {
           <Typography align="center" color="#EAEAEA" variant="h3">
             Dashboard!!
           </Typography>
-          <Button
-            variant="contained"
-            onClick={handleClickOpen}
-            endIcon={<AddCircleIcon />}
-          ></Button>
+          <AddStore />
         </Card>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Add new Store</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="Name"
-              label="Name"
-              type="email"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setNewGroceryStoreName(e.target.value)}
-              value={newGroceryStoreName}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit}>Submit</Button>
-          </DialogActions>
-        </Dialog>
       </ThemeProvider>
     </>
   );
