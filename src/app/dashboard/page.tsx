@@ -26,6 +26,8 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/dashboardHeader";
 import { PostgrestError } from "@supabase/supabase-js";
+import GroceryStore from "../components/groceryStore/groceryStore";
+import NoStores from "../components/utils/noStores";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -83,45 +85,10 @@ export default function Dashboard() {
     };
   }, [supabase]);
 
-  // Put all of this in a componeont
+  // TODO: Put this in to a componeont
   const groceryStoresToRender = groceryStores?.map(
     (groceryStore: GroceryStoreType) => {
-      return (
-        <>
-          <Badge color="secondary" badgeContent={groceryStore.quantity}>
-            <Card
-              key={groceryStore.id}
-              raised
-              sx={{
-                border: 1,
-                borderColor: "primary",
-                background: "primary",
-                borderRadius: 1,
-                width: 350,
-                height: 300,
-              }}
-              style={{ flexShrink: 0 }}
-            >
-              <CardActionArea
-                onClick={() => {
-                  router.push(`/dashboard/grocerystores/${groceryStore?.id}`);
-                }}
-              >
-                <CardHeader title={groceryStore.name} />
-                <CardMedia
-                  component="img"
-                  height={250}
-                  image={groceryStore?.image || ""}
-                  alt={`Image of${groceryStore.name} `}
-                  sx={{ objectFit: "fill" }}
-                />
-                {/* <CardContent></CardContent> */}
-              </CardActionArea>
-              {/* <CardActions></CardActions> */}
-            </Card>
-          </Badge>
-        </>
-      );
+      return <GroceryStore key={groceryStore.id} {...groceryStore} />;
     }
   );
 
@@ -136,8 +103,8 @@ export default function Dashboard() {
           flexFlow: "row",
           flexWrap: "wrap",
           justifyContent: "center",
-          backgroundColor: "primary.dark",
-          overflowY:"scroll",
+          backgroundColor: "primary.light",
+          overflowY: "scroll",
           gap: 3.5,
           py: 4,
           border: 2,
@@ -147,7 +114,7 @@ export default function Dashboard() {
         {groceryStores && groceryStores.length > 0 ? (
           groceryStoresToRender
         ) : (
-          <p> Not store here unfortunately, please add one!</p>
+          <NoStores />
         )}
       </Container>
     </>
