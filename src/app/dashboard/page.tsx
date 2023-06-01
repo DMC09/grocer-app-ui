@@ -1,28 +1,9 @@
 "use client";
 
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Container } from "@mui/material";
 import { useSupabase } from "../components/supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
-import ClickAwayListener from "@mui/base/ClickAwayListener";
 import { GroceryStoreWithItemsType, GroceryStoreType } from "@/types";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/dashboardHeader";
 import { PostgrestError } from "@supabase/supabase-js";
