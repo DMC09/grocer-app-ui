@@ -10,7 +10,7 @@ import {
   Card,
   CardMedia,
 } from "@mui/material";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -59,15 +59,15 @@ export default function AddStore({ select_id }: { select_id: string }) {
     setOpen(true);
   }
 
-  function handleChange(
+  async function handleChange(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void {
+  ) {
     setNewGroceryStoreName(event.target.value);
     setErrorText(null);
     setIsInvalid(null);
   }
 
-  function handleClose(event: {}): void {
+  async function handleClose(event: {}) {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
     setOpen(false);
@@ -76,7 +76,7 @@ export default function AddStore({ select_id }: { select_id: string }) {
     setIsInvalid(null);
   }
 
-  const handleImageSet = async (event: any) => {
+  async function handleImageSet(event: any) {
     if (event.target.files.length) {
       generateImagePath(select_id);
       setImage({
@@ -84,8 +84,8 @@ export default function AddStore({ select_id }: { select_id: string }) {
         raw: event.target.files[0],
       });
     }
-  };
-  const handleImageUpload = async () => {
+  }
+  async function handleImageUpload() {
     if (image.raw && imagePath) {
       console.log(imagePath, "path for image when uploading");
       const { data, error } = await supabase.storage
@@ -99,14 +99,13 @@ export default function AddStore({ select_id }: { select_id: string }) {
         console.log(data, "image uploaded successfully");
       }
     }
-  };
+  }
 
   async function handleSubmit() {
     const isValidResult = await validation();
     await handleImageUpload();
 
     if (isValidResult) {
-      console.log(imagePath, "path for image when submitting");
       const { data, error } = await supabase
         .from("grocerystores")
         .insert([{ name: newGroceryStoreName, select_id, image: imagePath }]);
@@ -116,9 +115,10 @@ export default function AddStore({ select_id }: { select_id: string }) {
         setOpen(false);
         setNewGroceryStoreName("");
         setImage({ preview: "", raw: "" });
+        setImagePath(null);
       }
     } else {
-      console.log("we coudln't take this submittions");
+      return;
     }
   }
 
