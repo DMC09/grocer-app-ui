@@ -17,7 +17,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import image from "next/image";
 
-export default function AddStore() {
+export default function AddStore({ select_id }: { select_id: string | null }) {
   const { supabase, session } = useSupabase();
 
   const [open, setOpen] = useState<boolean>(false);
@@ -26,15 +26,13 @@ export default function AddStore() {
   const [image, setImage] = useState({ preview: "", raw: "" });
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
 
-  const getSelectId = useMemo(async (): Promise<number | null> => {
-    const { data, error }: { data: any; error: PostgrestError | null } =
-      await supabase.from("profiles").select("select_id").single();
-    if (data) {
-      return data?.select_id;
-    } else {
-      throw new Error(error?.message);
-    }
-  }, []);
+  async function generateImagePath() {
+    //Formula is last 16 characters of select_id + Current DateTime in seconds/
+    const lastPartOfSelectId = select_id?.slice(-16);
+    const currentTimeStamp = new Date().getTime();
+
+    return `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`;
+  }
 
   async function validation() {
     if (newGroceryStoreName.trim() === "") {
@@ -44,7 +42,7 @@ export default function AddStore() {
     }
 
     // Check if the text is valid alphanumeric
-    const regExp = /^[a-zA-Z0-9]+$/;
+    const regExp = /^[a-zA-Z0-9 _\-!\$]+$/i;
     if (!regExp.test(newGroceryStoreName)) {
       setErrorText("Please only use letters and number");
       setIsInvalid(true);
@@ -69,6 +67,7 @@ export default function AddStore() {
   }
 
   function handleClose(event: {}): void {
+    setImage({ preview: "", raw: "" });
     setOpen(false);
     setNewGroceryStoreName("");
     setErrorText(null);
@@ -84,19 +83,24 @@ export default function AddStore() {
     }
   };
   const handleImageUpload = async () => {
+    const imagePath = await generateImagePath();
+    console.log(imagePath, "path for image");
     if (image.raw) {
       const { data, error } = await supabase.storage
         .from("grocerystore")
-        .upload("grocerystore_images/test.png", image.raw);
+        // Need a custom path thing for this.
+        // Also need to getthe public url
+        .upload(imagePath, image.raw);
       console.log(data, "data after uploading");
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);
       } else {
         const { data } = supabase.storage
           .from("grocerystore")
-          .getPublicUrl("grocerystore_images/test.png");
+          .getPublicUrl(imagePath);
 
         if (data) {
+          console.log('data public url?')
           return data.publicUrl;
         } else {
           throw new Error("error retrieving public url image");
@@ -108,9 +112,9 @@ export default function AddStore() {
   async function handleSubmit() {
     const isValidResult = await validation();
     const public_url = await handleImageUpload();
+    console.log(public_url);
 
     if (isValidResult) {
-      const select_id = await getSelectId;
       const { data, error } = await supabase
         .from("grocerystores")
         .insert([{ name: newGroceryStoreName, select_id, image: public_url }]);
@@ -119,6 +123,7 @@ export default function AddStore() {
       } else {
         setOpen(false);
         setNewGroceryStoreName("");
+        setImage({ preview: "", raw: "" });
       }
     } else {
       console.log("we coudln't take this submittions");
