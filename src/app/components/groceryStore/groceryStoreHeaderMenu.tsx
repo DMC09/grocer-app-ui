@@ -3,6 +3,8 @@
 import {
   Avatar,
   Button,
+  Card,
+  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,6 +23,7 @@ import { Settings, Logout } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 import { GroceryStoreType } from "@/types";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const { supabase, session } = useSupabase();
@@ -29,6 +32,11 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [image, setImage] = useState({
+    preview: groceryStore?.image,
+    raw: "",
+  });
+  const [imagePath, setImagePath] = useState<string | null>(null);
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>(
     groceryStore.name
   );
@@ -57,18 +65,67 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       throw new Error(error.message);
     }
   };
+  async function generateImagePath(select_id: string) {
+    //Formula is last 16 characters of select_id + Current DateTime in seconds/
+    const lastPartOfSelectId = select_id?.slice(-16);
+    const currentTimeStamp = new Date().getTime();
+
+    setImagePath(
+      `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`
+    );
+  }
+
+  async function handleImageSet(event: any) {
+    if (event.target.files.length && groceryStore?.select_id) {
+      generateImagePath(groceryStore?.select_id);
+      setImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
+    }
+  }
+  async function handleImageUpload() {
+    if (image.raw && imagePath) {
+      console.log(imagePath, "imagePath");
+      const { data, error } = await supabase.storage
+        .from("grocerystore")
+        // Need a custom path thing for this.
+        // Also need to getthe public url
+        .upload(imagePath, image.raw);
+      if (error) {
+        throw new Error(`Error uploading image ${error.message}`);
+      } else {
+        console.log(data, "image uploaded successfully");
+      }
+    }
+  }
+
+  // need to be able to upload the image an then on the save just send the image path.
 
   async function handleSave() {
-    const { data, error } = await supabase
-      .from("grocerystores")
-      .update({ name: newGroceryStoreName })
-      .eq("id", groceryStore.id)
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
+    if (image.raw) {
+      await handleImageUpload();
+      const { data, error } = await supabase
+        .from("grocerystores")
+        .update({ name: newGroceryStoreName, image: imagePath })
+        .eq("id", groceryStore.id)
+        .single();
+      if (error) {
+        throw new Error(error.message);
+      } else {
+        setOpenDialog(false);
+      }
     } else {
-      setOpenDialog(false);
+      const { data, error } = await supabase
+        .from("grocerystores")
+        .update({ name: newGroceryStoreName })
+        .eq("id", groceryStore.id)
+        .single();
+      if (error) {
+        throw new Error(error.message);
+      } else {
+        setOpenDialog(false);
+      }
     }
   }
 
@@ -148,6 +205,43 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             onChange={(e) => setNewGroceryStoreName(e.target.value)}
             value={newGroceryStoreName}
           />
+        </DialogContent>
+        <DialogContent>
+          {image.raw ? (
+            <Card
+              sx={{
+                maxWidth: 150,
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="150"
+                image={image.preview || ""}
+                alt={`Image of `}
+              />
+            </Card>
+          ) : (
+            <Card
+              sx={{
+                maxWidth: 150,
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="150"
+                image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
+                alt={`Image of `}
+              />
+            </Card>
+          )}
+          <Button
+            variant="contained"
+            component="label"
+            startIcon={<AddPhotoAlternateIcon />}
+          >
+            Upload File
+            <input type="file" onChange={handleImageSet} hidden />
+          </Button>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
