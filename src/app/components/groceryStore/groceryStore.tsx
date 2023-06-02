@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardMedia,
 } from "@mui/material";
-import router, { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function GroceryStore(groceryStore: GroceryStoreType) {
   const router = useRouter();
