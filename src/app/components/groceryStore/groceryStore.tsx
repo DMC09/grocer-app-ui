@@ -27,11 +27,13 @@ export default function GroceryStore(groceryStore:GroceryStoreType){
             >
               <CardHeader title={groceryStore.name} />
               <CardMedia
+
                 component="img"
                 height={250}
+                width={250}
                 image={groceryStore?.image || ""}
                 alt={`Image of${groceryStore.name} `}
-                sx={{ objectFit: "fill" }}
+                sx={{ objectFit: "cover" }}
               />
               {/* <CardContent></CardContent> */}
             </CardActionArea>
