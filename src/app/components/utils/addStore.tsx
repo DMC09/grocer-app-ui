@@ -10,14 +10,12 @@ import {
   Card,
   CardMedia,
 } from "@mui/material";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
-import { PostgrestError } from "@supabase/supabase-js";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import image from "next/image";
 
-export default function AddStore({ select_id }: { select_id: string | null }) {
+export default function AddStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();
 
   const [open, setOpen] = useState<boolean>(false);
@@ -25,13 +23,16 @@ export default function AddStore({ select_id }: { select_id: string | null }) {
   const [errorText, setErrorText] = useState<string | null>(null);
   const [image, setImage] = useState({ preview: "", raw: "" });
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
+  const [imagePath, setImagePath] = useState<string | null>(null);
 
-  async function generateImagePath() {
+  async function generateImagePath(select_id: string) {
     //Formula is last 16 characters of select_id + Current DateTime in seconds/
     const lastPartOfSelectId = select_id?.slice(-16);
     const currentTimeStamp = new Date().getTime();
 
-    return `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`;
+    setImagePath(
+      `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`
+    );
   }
 
   async function validation() {
@@ -68,6 +69,7 @@ export default function AddStore({ select_id }: { select_id: string | null }) {
 
   function handleClose(event: {}): void {
     setImage({ preview: "", raw: "" });
+    setImagePath(null);
     setOpen(false);
     setNewGroceryStoreName("");
     setErrorText(null);
@@ -76,6 +78,7 @@ export default function AddStore({ select_id }: { select_id: string | null }) {
 
   const handleImageSet = async (event: any) => {
     if (event.target.files.length) {
+      generateImagePath(select_id);
       setImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
@@ -83,41 +86,30 @@ export default function AddStore({ select_id }: { select_id: string | null }) {
     }
   };
   const handleImageUpload = async () => {
-    const imagePath = await generateImagePath();
-    console.log(imagePath, "path for image");
-    if (image.raw) {
+    if (image.raw && imagePath) {
+      console.log(imagePath, "path for image when uploading");
       const { data, error } = await supabase.storage
         .from("grocerystore")
         // Need a custom path thing for this.
         // Also need to getthe public url
         .upload(imagePath, image.raw);
-      console.log(data, "data after uploading");
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);
       } else {
-        const { data } = supabase.storage
-          .from("grocerystore")
-          .getPublicUrl(imagePath);
-
-        if (data) {
-          console.log('data public url?')
-          return data.publicUrl;
-        } else {
-          throw new Error("error retrieving public url image");
-        }
+        console.log(data, "image uploaded successfully");
       }
     }
   };
 
   async function handleSubmit() {
     const isValidResult = await validation();
-    const public_url = await handleImageUpload();
-    console.log(public_url);
+    await handleImageUpload();
 
     if (isValidResult) {
+      console.log(imagePath, "path for image when submitting");
       const { data, error } = await supabase
         .from("grocerystores")
-        .insert([{ name: newGroceryStoreName, select_id, image: public_url }]);
+        .insert([{ name: newGroceryStoreName, select_id, image: imagePath }]);
       if (error) {
         throw new Error(error.message);
       } else {
