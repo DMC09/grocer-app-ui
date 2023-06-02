@@ -35,7 +35,7 @@ export default function DashboardHeader() {
     <>
       <ThemeProvider theme={theme}>
         {/* make a contianeher here  */}
-        <Card
+        {selectId && <Card
           sx={{
             display: "flex",
             flexFlow: "row",
@@ -48,7 +48,7 @@ export default function DashboardHeader() {
             Dashboard
           </Typography>
           <AddStore select_id={selectId} />
-        </Card>
+        </Card>}
       </ThemeProvider>
     </>
   );
