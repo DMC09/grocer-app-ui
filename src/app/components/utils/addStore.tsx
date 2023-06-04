@@ -103,22 +103,33 @@ export default function AddStore({ select_id }: { select_id: string }) {
 
   async function handleSubmit() {
     const isValidResult = await validation();
-    await handleImageUpload();
 
     if (isValidResult) {
-      const { data, error } = await supabase
-        .from("grocerystores")
-        .insert([{ name: newGroceryStoreName, select_id, image: imagePath }]);
-      if (error) {
-        throw new Error(error.message);
+      if (image.raw) {
+        await handleImageUpload();
+        const { data, error } = await supabase
+          .from("grocerystores")
+          .insert([{ name: newGroceryStoreName, select_id, image: imagePath }]);
+        if (error) {
+          throw new Error(error.message);
+        } else {
+          setOpen(false);
+          setNewGroceryStoreName("");
+          setImage({ preview: "", raw: "" });
+          setImagePath(null);
+        }
       } else {
-        setOpen(false);
-        setNewGroceryStoreName("");
-        setImage({ preview: "", raw: "" });
-        setImagePath(null);
+        const { data, error } = await supabase
+          .from("grocerystores")
+          .insert([{ name: newGroceryStoreName, select_id }]);
+        if (error) {
+          throw new Error(error.message);
+        } else {
+          setOpen(false);
+          setNewGroceryStoreName("");
+          setImage({ preview: "", raw: "" });
+        }
       }
-    } else {
-      return;
     }
   }
 
