@@ -13,7 +13,7 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          image: string | null
+          image: string 
           modified_at: string | null
           name: string | null
           notes: string | null
@@ -24,7 +24,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           id?: number
-          image?: string | null
+          image?: string 
           modified_at?: string | null
           name?: string | null
           notes?: string | null
@@ -35,7 +35,7 @@ export interface Database {
         Update: {
           created_at?: string | null
           id?: number
-          image?: string | null
+          image?: string 
           modified_at?: string | null
           name?: string | null
           notes?: string | null
@@ -48,7 +48,7 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          image: string | null
+          image: string 
           name: string
           quantity: number | null
           select_id: string | null
@@ -56,7 +56,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           id?: number
-          image?: string | null
+          image?: string 
           name: string
           quantity?: number | null
           select_id?: string | null
@@ -64,7 +64,7 @@ export interface Database {
         Update: {
           created_at?: string | null
           id?: number
-          image?: string | null
+          image?: string 
           name?: string
           quantity?: number | null
           select_id?: string | null
