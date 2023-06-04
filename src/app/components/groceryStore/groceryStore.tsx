@@ -7,9 +7,12 @@ import {
   CardMedia,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useSupabase } from "../supabase/supabase-provider";
 
 export default function GroceryStore(groceryStore: GroceryStoreType) {
   const router = useRouter();
+  const { supabase } = useSupabase();
+
   return (
     <>
       <Badge color="secondary" badgeContent={groceryStore.quantity}>
@@ -21,8 +24,8 @@ export default function GroceryStore(groceryStore: GroceryStoreType) {
             borderColor: "primary",
             background: "primary",
             borderRadius: 1,
-            width: 350,
-            height: 300,
+            maxHeight: 300,
+            width:300
           }}
           style={{ flexShrink: 0 }}
         >
@@ -33,15 +36,12 @@ export default function GroceryStore(groceryStore: GroceryStoreType) {
           >
             <CardHeader title={groceryStore.name} />
             <CardMedia
-              component="img"
               height={250}
-              width={250}
-              image={
-                `${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStore?.image}` ||
-                ""
-              }
+              width={300}
+              component="img"
+              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStore?.image}`}
               alt={`Image of${groceryStore.name} `}
-              sx={{ objectFit: "cover" }}
+              sx={{ objectFit: "fill"}}
             />
             {/* <CardContent></CardContent> */}
           </CardActionArea>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { GroceryStoreItemType } from "@/types";
 import {
+  Badge,
   Button,
   Card,
   CardActionArea,
@@ -19,14 +20,32 @@ import { useSupabase } from "../supabase/supabase-provider";
 import EditItem from "../utils/editItem";
 
 export default function GroceryStoreItem(item: GroceryStoreItemType) {
+  console.log(item);
   const { supabase } = useSupabase();
+
+  // need to find a way to compare the current time and if this time is whtin the house then we know it's modified.
+  function updatedRecently(timestamp: string | Date | null) {
+    console.log(item, "the item");
+    if (timestamp) {
+      // Convert the timestamp to a Date object.
+      const passedDate = new Date(timestamp).getTime();
+
+      // Get the current time in milliseconds.
+      const now = Date.now();
+
+      // Return true if the passedDate is within the last 5 minutes.
+      return passedDate > now - 300000;
+    } else {
+      return false;
+    }
+  }
 
   const created_atLocal = () => {
     if (item?.created_at) {
       const localDate = new Date(item?.created_at).toLocaleTimeString([], {
-        month: "short",
+        month: "numeric",
         day: "numeric",
-        year: "numeric",
+        year: "2-digit",
         hour: "numeric",
         minute: "2-digit",
       });
@@ -47,48 +66,71 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
 
   return (
     <>
-      <Card
-        sx={{
-          border: 4,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          flexWrap: "wrap",
-          borderRadius: 5,
-          maxWidth: 350,
-        }}
-        style={{ flexShrink: 0 }}
+      <Badge
+        color="primary"
+        variant="dot"
+        invisible={!updatedRecently(item.modified_at)}
       >
-        <CardActionArea onClick={() => alert("you logged this apparent?")}>
-          <CardHeader title={item.name} subheader={created_atLocal()} />
-
-          <CardMedia
-            component="img"
-            height="150"
-            image={"https://runescape.wiki/images/Barrel_detail.png?11423"}
-            alt={`Image of${item.name} `}
+        <Card
+          raised
+          sx={{
+            border: 2,
+            borderRadius: 2,
+            borderColor: "primary.main",
+            width: 250,
+            height: 305,
+          }}
+          style={{ flexShrink: 0 }}
+        >
+          <CardHeader
+            titleTypographyProps={{ variant: "h6", color: "primary.dark" }}
+            sx={{ p: 0.5, m: 0 }}
+            title={item.name}
           />
-
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {item.name}
-            </Typography>
-            <Typography color="#EAEAEA" variant="body2">
+          <CardContent sx={{ p: 0.5, m: 0 }}>
+            <Typography color="#071236" variant="body2">
               {item.notes}
             </Typography>
-            <Typography variant="body2">{item.quantity}</Typography>
           </CardContent>
-        </CardActionArea>
-        <CardActions>
-          <IconButton
-            onClick={() => handleDelete(item.id.toString())}
-            aria-label="complete"
+          <CardActionArea
+            onClick={() => alert("you logged this apparent?")}
+            sx={{ p: 0, m: 0 }}
           >
-            <CheckCircleIcon />
-          </IconButton>
-          <EditItem {...item} />
-        </CardActions>
-      </Card>
+            <CardMedia
+              component="img"
+              height="150"
+              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
+              alt={`Image of${item.name} `}
+              sx={{ objectFit: "fill" }}
+            />
+          </CardActionArea>
+          <CardActions
+            sx={{
+              p: 0.5,
+              m: 0,
+              display: "flex",
+              flexFlow: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <IconButton
+              sx={{ p: 0.5, m: 0 }}
+              color="success"
+              onClick={() => handleDelete(item.id.toString())}
+              aria-label="complete"
+            >
+              <CheckCircleIcon />
+            </IconButton>
+            <Typography color="#071236" variant="subtitle2">
+              {item.quantity}
+            </Typography>
+            {/* <Typography color="#071236" variant="caption">
+              {created_atLocal()}
+            </Typography> */}
+            <EditItem {...item} />
+          </CardActions>
+        </Card>
+      </Badge>
     </>
   );
 }
