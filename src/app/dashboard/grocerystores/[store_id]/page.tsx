@@ -81,13 +81,16 @@ export default function Page() {
       <Container
         maxWidth={false}
         sx={{
-          display: "flex",
           height: "85%",
+          display: "flex",
           flexFlow: "row",
           flexWrap: "wrap",
-          gap: 3,
-          py: 2,
+          justifyContent: "center",
           backgroundColor: "primary.light",
+          overflowY: "scroll",
+          gap: 3.5,
+          py: 4,
+          border: 2,
         }}
       >
         {groceryStoreItemsToRender && groceryStoreItemsToRender.length > 0 ? (

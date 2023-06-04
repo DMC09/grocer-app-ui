@@ -90,6 +90,7 @@ export default function Dashboard() {
           py: 4,
           border: 2,
         }}
+        style={{flexShrink:0}}
       >
         {/* this needs it's own container */}
         {groceryStores && groceryStores.length > 0 ? (
