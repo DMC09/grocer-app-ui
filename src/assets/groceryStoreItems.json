@@ -1,0 +1,52 @@
+[
+  {
+    "created_at": "2023-05-02T09:30:00Z",
+    "id": 1,
+    "image": "https://runescape.wiki/images/Barrel_detail.png?11423",
+    "modified_at": "2023-05-03T14:45:00Z",
+    "name": "Apples",
+    "notes": "Fresh and crisp",
+    "quantity": 5,
+    "store_id": 1
+  },
+  {
+    "created_at": "2023-05-07T16:20:00Z",
+    "id": 2,
+    "image": "https://runescape.wiki/images/Barrel_detail.png?11423",
+    "modified_at": "2023-05-09T11:10:00Z",
+    "name": "Milk",
+    "notes": "Full fat, 1 liter",
+    "quantity": 3,
+    "store_id": 2
+  },
+  {
+    "created_at": "2023-05-10T11:55:00Z",
+    "id": 3,
+    "image": "https://runescape.wiki/images/Barrel_detail.png?11423",
+    "modified_at": "2023-05-12T15:30:00Z",
+    "name": "Bread",
+    "notes": "Whole wheat, sliced",
+    "quantity": 8,
+    "store_id": 3
+  },
+  {
+    "created_at": "2023-05-14T08:45:00Z",
+    "id": 4,
+    "image": "https://runescape.wiki/images/Barrel_detail.png?11423",
+    "modified_at": "2023-05-15T10:25:00Z",
+    "name": "Eggs",
+    "notes": "Free-range, dozen",
+    "quantity": 6,
+    "store_id": 4
+  },
+  {
+    "created_at": "2023-05-05T14:10:00Z",
+    "id": 5,
+    "image": "https://runescape.wiki/images/Barrel_detail.png?11423",
+    "modified_at": "2023-05-06T09:55:00Z",
+    "name": "Cereal",
+    "notes": "Whole grain, 500g",
+    "quantity": 2,
+    "store_id": 5
+  }
+]

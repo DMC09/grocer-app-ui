@@ -1,0 +1,216 @@
+"use client";
+
+import {
+  Button,
+  Card,
+  CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import { useState } from "react";
+import image from "next/image";
+import { ProfileType } from "@/types";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { preProcessFile } from "typescript";
+import { useSupabase } from "../supabase/supabase-provider";
+
+export default function EditProfileSettings(profile: ProfileType | null) {
+  const { supabase } = useSupabase();
+  const [firstName, setFirstName] = useState<string | null | undefined>(
+    profile?.first_name
+  );
+  const [lastName, setLastName] = useState<string | null | undefined>(
+    profile?.last_name
+  );
+  const [phone, setPhone] = useState<string | null | undefined>(profile?.phone);
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [image, setImage] = useState({
+    preview: profile?.avatar_url,
+    raw: "",
+  });
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  async function handleImageUpload() {
+    if (image.raw && imagePath) {
+      console.log(imagePath, "imagePath");
+      const { data, error } = await supabase.storage
+        .from("profile")
+        // Need a custom path thing for this.
+        // Also need to getthe public url
+        .upload(imagePath, image.raw);
+      if (error) {
+        throw new Error(`Error uploading image ${error.message}`);
+      } else {
+        console.log(data, "image uploaded successfully");
+      }
+    }
+  }
+
+  async function handleEdit() {
+    // do the update on this one I guess
+
+    const now = new Date().toISOString();
+    if (image.raw) {
+      await handleImageUpload();
+      const { data, error } = await supabase
+        .from("profiles")
+        .update([
+          {
+            first_name: firstName,
+            last_name: lastName,
+            updated_at: now,
+            avatar_url: imagePath,
+            phone,
+          },
+        ])
+        .eq("id", profile?.id)
+        .select();
+
+      if (data) {
+        setOpen(false);
+      } else if (error) {
+        throw new Error(error.message);
+      }
+    } else {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update([
+          {
+            first_name: firstName,
+            last_name: lastName,
+            updated_at: now,
+            phone,
+          },
+        ])
+        .eq("id", profile?.id)
+        .select();
+
+      if (data) {
+        setOpen(false);
+      } else if (error) {
+        throw new Error(error.message);
+      }
+    }
+  }
+  async function generateImagePath(select_id: string) {
+    //Formula is last 16 characters of select_id + Current DateTime in seconds/
+    const lastPartOfSelectId = select_id?.slice(-16);
+    const currentTimeStamp = new Date().getTime();
+
+    setImagePath(`profiles/${lastPartOfSelectId}/${currentTimeStamp}`);
+  }
+
+  async function handleImageSet(event: any) {
+    if (event.target.files.length && profile?.select_id) {
+      generateImagePath(profile?.select_id);
+      setImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
+    }
+  }
+
+  return (
+    <>
+      <IconButton
+        sx={{ color: "primary.main" }}
+        aria-label="add to grocery store"
+        onClick={handleClickOpen}
+      >
+        <EditIcon sx={{ fontSize: 25 }} />
+      </IconButton>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Edit Profile Settings</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="First Name"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setFirstName(e.target.value)}
+            value={firstName}
+          />
+        </DialogContent>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Last Name"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setLastName(e.target.value)}
+            value={lastName}
+          />
+        </DialogContent>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Phone"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone}
+          />
+        </DialogContent>
+        <DialogContent>
+          {image.raw ? (
+            <Card
+              sx={{
+                width: "60%",
+                maxWidth: 350,
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="150"
+                image={image.preview || ""}
+                alt={`Image of `}
+              />
+            </Card>
+          ) : (
+            <Card
+              sx={{
+                maxWidth: 150,
+              }}
+            >
+              {profile?.avatar_url && (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`}
+                  alt={`Image of `}
+                />
+              )}
+            </Card>
+          )}
+          <Button
+            variant="contained"
+            component="label"
+            startIcon={<AddPhotoAlternateIcon />}
+          >
+            Upload File
+            <input type="file" onChange={handleImageSet} hidden />
+          </Button>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleEdit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
