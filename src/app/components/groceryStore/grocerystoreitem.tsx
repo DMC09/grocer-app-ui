@@ -20,12 +20,10 @@ import { useSupabase } from "../supabase/supabase-provider";
 import EditItem from "../utils/editItem";
 
 export default function GroceryStoreItem(item: GroceryStoreItemType) {
-  console.log(item);
   const { supabase } = useSupabase();
 
   // need to find a way to compare the current time and if this time is whtin the house then we know it's modified.
   function updatedRecently(timestamp: string | Date | null) {
-    console.log(item, "the item");
     if (timestamp) {
       // Convert the timestamp to a Date object.
       const passedDate = new Date(timestamp).getTime();

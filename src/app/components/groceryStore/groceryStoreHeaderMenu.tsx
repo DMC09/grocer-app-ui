@@ -86,7 +86,6 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
   async function handleImageUpload() {
     if (image.raw && imagePath) {
-      console.log(imagePath, "imagePath");
       const { data, error } = await supabase.storage
         .from("grocerystore")
         // Need a custom path thing for this.
