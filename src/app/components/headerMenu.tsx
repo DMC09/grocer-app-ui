@@ -9,15 +9,36 @@ import {
   Divider,
   ListItemIcon,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSupabase } from "./supabase/supabase-provider";
+import { useRouter } from "next/navigation";
+import { ProfileType } from "@/types";
 
 export default function HeaderMenu() {
   const { supabase, session } = useSupabase();
-  
+  const router = useRouter();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [user, setUser] = useState<unknown>(null);
+  const [user, setUser] = useState<unknown>(session?.user);
   const open = Boolean(anchorEl);
+  const [profile, setProfile] = useState<ProfileType | null>(null);
+
+  useEffect(() => {
+    async function getProfile() {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session?.user.id)
+        .single();
+      if (error) {
+        throw new Error(error.message);
+      } else {
+        setProfile(data as ProfileType);
+      }
+    }
+
+    getProfile();
+  }, [supabase]);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,7 +60,12 @@ export default function HeaderMenu() {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
       >
-        <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+        {profile?.avatar_url && (
+          <Avatar
+            sx={{ width: 32, height: 32 }}
+            src={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`}
+          />
+        )}
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -76,19 +102,19 @@ export default function HeaderMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
+        {/* <MenuItem onClick={handleClose}>
           <Avatar /> Profile
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
+        </MenuItem> */}
+        <MenuItem onClick={() => router.push("settings")}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
         </MenuItem>
+        <Divider />
         <MenuItem onClick={handleSignOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
