@@ -22,10 +22,12 @@ import { useParams, useRouter } from "next/navigation";
 import { theme } from "../utils/theme";
 import { PersonAdd, Settings, Logout } from "@mui/icons-material";
 import HeaderMenu from "./headerMenu";
+import { ProfileType } from "@/types";
 
 export default function Header() {
   const { supabase, session } = useSupabase();
   const router = useRouter();
+
 
   return (
     <ThemeProvider theme={theme}>
