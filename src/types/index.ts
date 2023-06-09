@@ -13,7 +13,7 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
-          image: string 
+          image: string | null
           modified_at: string | null
           name: string | null
           notes: string | null
@@ -24,7 +24,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           id?: number
-          image?: string 
+          image?: string | null
           modified_at?: string | null
           name?: string | null
           notes?: string | null
@@ -35,7 +35,7 @@ export interface Database {
         Update: {
           created_at?: string | null
           id?: number
-          image?: string 
+          image?: string | null
           modified_at?: string | null
           name?: string | null
           notes?: string | null
@@ -43,12 +43,20 @@ export interface Database {
           select_id?: string | null
           store_id?: number
         }
+        Relationships: [
+          {
+            foreignKeyName: "grocerystoreitems_store_id_fkey"
+            columns: ["store_id"]
+            referencedRelation: "grocerystores"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       grocerystores: {
         Row: {
           created_at: string | null
           id: number
-          image: string 
+          image: string | null
           name: string
           quantity: number | null
           select_id: string | null
@@ -56,7 +64,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           id?: number
-          image?: string 
+          image?: string | null
           name: string
           quantity?: number | null
           select_id?: string | null
@@ -64,11 +72,70 @@ export interface Database {
         Update: {
           created_at?: string | null
           id?: number
-          image?: string 
+          image?: string | null
           name?: string
           quantity?: number | null
           select_id?: string | null
         }
+        Relationships: []
+      }
+      groups: {
+        Row: {
+          confirmation_accepted: boolean | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          group_id: string | null
+          group_image: string | null
+          group_name: string | null
+          id: number
+          is_admin: boolean | null
+          last_name: string | null
+          modified_at: string | null
+          profile_id: string | null
+          profile_image: string | null
+          share_code: string | null
+        }
+        Insert: {
+          confirmation_accepted?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          group_id?: string | null
+          group_image?: string | null
+          group_name?: string | null
+          id?: number
+          is_admin?: boolean | null
+          last_name?: string | null
+          modified_at?: string | null
+          profile_id?: string | null
+          profile_image?: string | null
+          share_code?: string | null
+        }
+        Update: {
+          confirmation_accepted?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          group_id?: string | null
+          group_image?: string | null
+          group_name?: string | null
+          id?: number
+          is_admin?: boolean | null
+          last_name?: string | null
+          modified_at?: string | null
+          profile_id?: string | null
+          profile_image?: string | null
+          share_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {
@@ -78,6 +145,7 @@ export interface Database {
           first_name: string | null
           id: string
           last_name: string | null
+          phone: string | null
           select_id: string | null
           updated_at: string
         }
@@ -88,6 +156,7 @@ export interface Database {
           first_name?: string | null
           id: string
           last_name?: string | null
+          phone?: string | null
           select_id?: string | null
           updated_at?: string
         }
@@ -98,16 +167,50 @@ export interface Database {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          phone?: string | null
           select_id?: string | null
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
-      [_ in never]: never
+      group_members_view: {
+        Row: {
+          avatar_url: string | null
+          email: string | null
+          first_name: string | null
+          group_id: string | null
+          group_image: string | null
+          group_name: string | null
+          last_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      get_groups_for_authenticated_user: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
+      join_group_via_share_code: {
+        Args: {
+          share_code: string
+          email: string
+          first_name: string
+          last_name: string
+          profile_id: string
+          profile_image: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
@@ -119,8 +222,12 @@ export interface Database {
 }
 
 
+
 export type GroceryStoreType = Database['public']['Tables']['grocerystores']['Row']  
 export type GroceryStoreItemType = Database['public']['Tables']['grocerystoreitems']['Row']
+export type ProfileType = Database['public']['Tables']['profiles']['Row']
+export type GroupType = Database['public']['Tables']["groups"]["Row"]
+export type GroupMembers = Database['public']['Views']['group_members_view']['Row']
 
 export interface GroceryStoreWithItemsType extends GroceryStoreType {
   grocerystoreitems: GroceryStoreItemType[];
