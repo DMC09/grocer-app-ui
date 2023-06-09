@@ -20,6 +20,7 @@ export default function DashboardHeader() {
       const { data, error } = await supabase
         .from("profiles")
         .select("select_id")
+        .eq("id", session?.user.id)
         .single();
       if (error) {
         throw new Error(error.message);
@@ -29,26 +30,28 @@ export default function DashboardHeader() {
     }
 
     getSelectId();
-  }, []);
+  }, [supabase]);
 
   return (
     <>
       <ThemeProvider theme={theme}>
         {/* make a contianeher here  */}
-        {selectId && <Card
-          sx={{
-            display: "flex",
-            flexFlow: "row",
-            backgroundColor: "primary.main",
-            justifyContent: "space-between",
-          }}
-        >
-          <div></div>
-          <Typography align="center" color="#EAEAEA" variant="h3">
-            Dashboard
-          </Typography>
-          <AddStore select_id={selectId} />
-        </Card>}
+        {selectId && (
+          <Card
+            sx={{
+              display: "flex",
+              flexFlow: "row",
+              backgroundColor: "primary.main",
+              justifyContent: "space-between",
+            }}
+          >
+            <div></div>
+            <Typography align="center" color="#EAEAEA" variant="h3">
+              Dashboard
+            </Typography>
+            <AddStore select_id={selectId} />
+          </Card>
+        )}
       </ThemeProvider>
     </>
   );
