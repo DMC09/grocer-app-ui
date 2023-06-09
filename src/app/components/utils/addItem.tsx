@@ -59,8 +59,6 @@ export default function AddItem({
   }
 
   async function handleImageUpload() {
-    console.log(image.raw, "path for image when uploading");
-    console.log(imagePath, "path for image when uploading");
     if (image.raw && imagePath) {
       const { data, error } = await supabase.storage
         .from("grocerystore")
