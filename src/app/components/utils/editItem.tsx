@@ -86,15 +86,13 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       await handleImageUpload();
       const { data, error } = await supabase
         .from("grocerystoreitems")
-        .update([
-          {
-            name,
-            notes,
-            quantity: Number(quantity),
-            modified_at: now,
-            image: imagePath,
-          },
-        ])
+        .update({
+          name,
+          notes,
+          quantity: Number(quantity),
+          modified_at: now,
+          image: imagePath,
+        })
         .eq("id", groceryStoreItem.id)
         .select();
 
@@ -106,15 +104,12 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     } else {
       const { data, error } = await supabase
         .from("grocerystoreitems")
-        .update([
-          {
-            name,
-            notes,
-            quantity: Number(quantity),
-            image,
-            modified_at: now,
-          },
-        ])
+        .update({
+          name,
+          notes,
+          quantity: Number(quantity),
+          modified_at: now,
+        })
         .eq("id", groceryStoreItem.id)
         .select();
 
