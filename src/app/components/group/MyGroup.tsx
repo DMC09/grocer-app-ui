@@ -1,7 +1,7 @@
 "use client";
 
 import { GroupMembers } from "@/types";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 // alos pass in my gorups stuff
 // make it so you have to put your first and last name before joing or creating a grup
 // when I update relavant fileds in profiles I should updae the groups stuff too
@@ -21,16 +21,17 @@ export default function MyGroup({
           src={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${member?.avatar_url}`}
         />
         <p>{member.first_name}</p>
+        <p>{member.last_name}</p>
       </>
     );
   });
 
   return (
-    <>
-      <Typography color="#071236" variant="body2">
+    <Box sx={{ border: 1 }}>
+      <Typography color="#071236" align="center" variant="body2">
         My group
       </Typography>
       {groupMembers && groupMembers.length > 0 && groupMembersToRender}
-    </>
+    </Box>
   );
 }

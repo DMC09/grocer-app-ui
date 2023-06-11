@@ -72,7 +72,7 @@ export default function Dashboard() {
       return <GroceryStore key={groceryStore.id} {...groceryStore} />;
     }
   );
-
+// make a view ontex thing
   return (
     <>
       <DashboardHeader />

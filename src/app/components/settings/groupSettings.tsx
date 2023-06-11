@@ -1,5 +1,13 @@
 "use client";
-import { Button, Container, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Container,
+  Divider,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,6 +20,7 @@ import CreateGroup from "../utils/createGroup";
 import { GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/leaveGroup";
 import MyGroup from "../group/MyGroup";
+import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
@@ -101,36 +110,71 @@ export default function GroupSettings(profile: ProfileType | null) {
 
   return (
     <>
-      <Container sx={{ border: 1 }}>
-        <p>Group Settings</p>
-
-        {groups ? (
-          <p>You are a part of group now!</p>
-        ) : (
-          <p>Sorry you are not a apart of group</p>
-        )}
-
-        {groups && groups.is_admin && (
-          <>
-            <Button
-              variant="contained"
-              onClick={handleShareCode}
-              endIcon={<AddCircleIcon />}
-              sx={{ fontSize: 20 }}
-            >
-              Generate Share Code
-            </Button>
-            <Typography>{`The Share Code is ${
-              shareCode ? shareCode : "not generated"
-            }`}</Typography>
-          </>
-        )}
-
-        {profile && !groups && <JoinGroup {...profile} />}
-        {profile && !groups && <CreateGroup {...profile} />}
-        {groups && <LeaveGroup />}
-        {groups && <MyGroup groupMembers={otherGroupMembers} />}
-      </Container>
+      {profile && (
+        <Container
+          disableGutters
+          maxWidth={false}
+          sx={{ border: 1, height: "100%" }}
+        >
+          <Box
+            sx={{
+              height: "15%",
+            }}
+          >
+            <Typography align="left" variant="h6">
+              Group Settings
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              border: 1,
+              borderColor: "blue",
+              height: "85%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {groups ? (
+              <Box
+              sx={{
+                border:1,
+              }}
+              >
+                <MyGroup groupMembers={otherGroupMembers} />
+                <Button
+                  variant="contained"
+                  onClick={handleShareCode}
+                  endIcon={<LibraryAddSharpIcon />}
+                >
+                  Generate Share Code
+                </Button>
+                <Typography>{`The Share Code is ${
+                  shareCode ? shareCode : "not generated"
+                }`}</Typography>
+                <LeaveGroup />
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  width: "fit-content",
+                  display: "flex",
+                  flexFlow: "column",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  border: 1,
+                }}
+              >
+                {<JoinGroup {...profile} />}
+                <Divider>
+                  <Chip label="or" />
+                </Divider>
+                {<CreateGroup {...profile} />}
+              </Box>
+            )}
+          </Box>
+        </Container>
+      )}
     </>
   );
 }

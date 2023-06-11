@@ -2,7 +2,7 @@
 
 import { Button } from "@mui/material";
 import { useSupabase } from "../supabase/supabase-provider";
-import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export default function LeaveGroup() {
   const { supabase, session } = useSupabase();
@@ -19,7 +19,7 @@ export default function LeaveGroup() {
     if (error) {
       throw new Error(error.message);
     } else {
-        console.log(data)
+      console.log(data);
       console.log("Group left!!");
     }
   }
@@ -29,10 +29,9 @@ export default function LeaveGroup() {
       <Button
         variant="contained"
         onClick={handleLeaveGroup}
-        endIcon={<CancelPresentationIcon />}
-        sx={{ fontSize: 20 }}
+        endIcon={<ExitToAppIcon />}
       >
-        Leave group!
+        Leave group
       </Button>
     </>
   );

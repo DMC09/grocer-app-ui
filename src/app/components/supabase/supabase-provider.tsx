@@ -8,7 +8,8 @@ import {
 import { useRouter } from "next/navigation";
 
 import type { SupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/lib/supabase";
+import { Database } from "@/types";
+
 
 type MaybeSession = Session | null;
 

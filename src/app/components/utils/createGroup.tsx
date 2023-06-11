@@ -24,8 +24,6 @@ export default function CreateGroup(profile: ProfileType | null) {
   const [groupId, setGroupId] = useState<string>("");
   const [image, setImage] = useState({ preview: "", raw: "" });
 
-  //  if else if there is an iamge to do
-  // Generate the group_id,profile_id,group_image,profile_iamge,name,is_admin
 
   async function handleClickOpen() {
     await generateGroupId();

@@ -25,7 +25,7 @@ export default function GroceryStore(groceryStore: GroceryStoreType) {
             background: "primary",
             borderRadius: 1,
             maxHeight: 300,
-            width:300
+            width: 300,
           }}
           style={{ flexShrink: 0 }}
         >
@@ -41,11 +41,9 @@ export default function GroceryStore(groceryStore: GroceryStoreType) {
               component="img"
               image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStore?.image}`}
               alt={`Image of${groceryStore.name} `}
-              sx={{ objectFit: "fill"}}
+              sx={{ objectFit: "fill" }}
             />
-            {/* <CardContent></CardContent> */}
           </CardActionArea>
-          {/* <CardActions></CardActions> */}
         </Card>
       </Badge>
     </>

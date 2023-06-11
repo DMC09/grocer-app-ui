@@ -204,10 +204,10 @@ export interface Database {
         Args: {
           share_code: string
           email: string
-          first_name: string
-          last_name: string
+          first_name: string  | null
+          last_name: string | null
           profile_id: string
-          profile_image: string
+          profile_image: string | null
         }
         Returns: boolean
       }
