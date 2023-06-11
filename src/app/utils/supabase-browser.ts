@@ -1,4 +1,5 @@
-import { Database } from '@/lib/supabase';
+
+import { Database } from '@/types';
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 
