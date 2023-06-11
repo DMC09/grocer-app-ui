@@ -1,4 +1,5 @@
-import { Database } from '@/lib/supabase'
+
+import { Database } from '@/types'
 import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 
