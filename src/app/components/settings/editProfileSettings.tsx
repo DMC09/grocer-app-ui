@@ -162,7 +162,14 @@ export default function EditProfileSettings(profile: ProfileType | null) {
             value={phone}
           />
         </DialogContent>
-        <DialogContent>
+        <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexFlow: "column",
+        }}
+        >
           {image.raw ? (
             <Card
               sx={{
