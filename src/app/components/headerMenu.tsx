@@ -13,33 +13,55 @@ import { useEffect, useState } from "react";
 import { useSupabase } from "./supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 import { ProfileType } from "@/types";
+import { User } from "@supabase/supabase-js";
 
 export default function HeaderMenu() {
   const { supabase, session } = useSupabase();
   const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [user, setUser] = useState<unknown>(session?.user);
+  const [user, setUser] = useState<User | undefined>(session?.user);
   const open = Boolean(anchorEl);
   const [profile, setProfile] = useState<ProfileType | null>(null);
 
   useEffect(() => {
-    async function getProfile() {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", session?.user.id)
-        .single();
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        setProfile(data as ProfileType);
-      }
-    }
-    if (user) {
-      getProfile();
-    }
+    const channel = supabase
+      .channel("custom-profiless-channel")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${user?.id}`
+        },
+        getProfileData
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
+
+  async function getProfileData() {
+    console.log("getting the profiles data");
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user?.id)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      profile && setProfile(profile as ProfileType);
+    }
+  }
+
+  useEffect(() => {
+    getProfileData();
+  }, [supabase]);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
