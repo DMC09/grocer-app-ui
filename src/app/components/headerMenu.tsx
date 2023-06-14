@@ -36,8 +36,9 @@ export default function HeaderMenu() {
         setProfile(data as ProfileType);
       }
     }
-
-    getProfile();
+    if (user) {
+      getProfile();
+    }
   }, [supabase]);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

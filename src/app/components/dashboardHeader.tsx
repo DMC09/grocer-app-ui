@@ -20,7 +20,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSupabase } from "./supabase/supabase-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import GridViewIcon from '@mui/icons-material/GridView';
+import GridViewIcon from "@mui/icons-material/GridView";
 
 import { theme } from "../utils/theme";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -63,8 +63,10 @@ export default function DashboardHeader() {
         setSelectId(data?.select_id);
       }
     }
-
-    getSelectId();
+    if (session?.user) {
+      console.log(session,'session')
+      getSelectId();
+    }
   }, [supabase]);
 
   function handleDelete() {
