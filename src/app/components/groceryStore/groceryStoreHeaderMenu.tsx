@@ -205,7 +205,14 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             value={newGroceryStoreName}
           />
         </DialogContent>
-        <DialogContent>
+        <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexFlow: "column",
+        }}
+        >
           {image.raw ? (
             <Card
               sx={{
