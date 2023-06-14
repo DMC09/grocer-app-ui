@@ -65,7 +65,6 @@ export default function DashboardHeader() {
       }
     }
     if (session?.user) {
-      console.log(session, "session");
       getSelectId();
     }
   }, [supabase]);
