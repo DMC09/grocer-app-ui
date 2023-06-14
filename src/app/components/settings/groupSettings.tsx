@@ -44,6 +44,15 @@ export default function GroupSettings(profile: ProfileType | null) {
       .on(
         "postgres_changes",
         {
+          event: "UPDATE",
+          schema: "public",
+          table: "groups",
+        },
+        getGroupsData
+      )
+      .on(
+        "postgres_changes",
+        {
           event: "DELETE",
           schema: "public",
           table: "groups",
