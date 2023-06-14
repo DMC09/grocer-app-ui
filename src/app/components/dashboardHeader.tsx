@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSupabase } from "./supabase/supabase-provider";
@@ -64,7 +65,7 @@ export default function DashboardHeader() {
       }
     }
     if (session?.user) {
-      console.log(session,'session')
+      console.log(session, "session");
       getSelectId();
     }
   }, [supabase]);
@@ -91,10 +92,16 @@ export default function DashboardHeader() {
             }}
           >
             <div></div>
-            <Typography align="center" color="#EAEAEA" variant="h3">
+            <Typography color="#EAEAEA" variant="h3">
               Dashboard
             </Typography>
-            <div>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <AddStore select_id={selectId} />
               <IconButton
                 sx={{ color: "background.paper" }}
@@ -142,22 +149,15 @@ export default function DashboardHeader() {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                {/* <MenuItem onClick={() => setOpenDialog(true)}>
-                  <ListItemIcon>
-                    <Settings fontSize="small" />
-                  </ListItemIcon>
-                  Store Settings
-                </MenuItem> */}
                 {/* <Divider /> */}
                 <MenuItem onClick={handleChangeView}>
-                  {/* need a modal to show the store settings which right now is the nmae */}
                   <ListItemIcon>
-                    <GridViewIcon fontSize="small" />
+                    <GridViewIcon />
                   </ListItemIcon>
                   Change View
                 </MenuItem>
               </Menu>
-            </div>
+            </Box>
           </Card>
         )}
       </ThemeProvider>
