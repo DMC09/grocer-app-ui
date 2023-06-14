@@ -86,7 +86,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       await handleImageUpload();
       const { data, error } = await supabase
         .from("grocerystoreitems")
-        .update([
+        .update(
           {
             name,
             notes,
@@ -94,7 +94,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
             modified_at: now,
             image: imagePath,
           },
-        ])
+        )
         .eq("id", groceryStoreItem.id)
         .select();
 
@@ -106,15 +106,14 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     } else {
       const { data, error } = await supabase
         .from("grocerystoreitems")
-        .update([
+        .update(
           {
             name,
             notes,
             quantity: Number(quantity),
-            image,
             modified_at: now,
           },
-        ])
+        )
         .eq("id", groceryStoreItem.id)
         .select();
 
@@ -173,7 +172,14 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
             value={quantity}
           />
         </DialogContent>
-        <DialogContent>
+        <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexFlow: "column",
+        }}
+        >
           {image.raw ? (
             <Card
               sx={{
