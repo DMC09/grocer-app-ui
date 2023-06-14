@@ -25,6 +25,28 @@ export default function ProfileSettings() {
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [user, setUser] = useState(session?.user);
 
+  //need realtime for this
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("custom-profiles-channel")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${user?.id}`
+        },
+        getProfileData
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+
   async function getProfileData() {
     let { data: profile, error } = await supabase
       .from("profiles")
@@ -132,7 +154,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="First name"
-                  defaultValue={profile?.first_name}
+                  value={profile?.first_name}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -141,7 +163,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Last name"
-                  defaultValue={profile?.last_name}
+                  value={profile?.last_name}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -150,7 +172,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Email"
-                  defaultValue={profile?.email}
+                  value={profile?.email}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -159,7 +181,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Phone"
-                  defaultValue={profile?.phone}
+                  value={profile?.phone}
                   InputProps={{
                     readOnly: true,
                   }}
