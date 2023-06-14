@@ -2,10 +2,6 @@
 
 import { GroupMembers } from "@/types";
 import { Avatar, Box, Typography } from "@mui/material";
-// alos pass in my gorups stuff
-// make it so you have to put your first and last name before joing or creating a grup
-// when I update relavant fileds in profiles I should updae the groups stuff too
-// If I am admin then what? who gets to be an admin?
 export default function MyGroup({
   groupMembers,
 }: {
