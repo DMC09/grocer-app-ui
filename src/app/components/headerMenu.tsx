@@ -133,7 +133,7 @@ export default function HeaderMenu() {
         <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem> */}
-        <MenuItem onClick={() => router.push("settings")}>
+        <MenuItem onClick={() => router.push("/settings")}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
