@@ -142,6 +142,8 @@ export interface Database {
           avatar_url: string | null
           created_at: string
           email: string
+          expanded_dashboard: boolean
+          expanded_groceryitem: boolean
           first_name: string | null
           id: string
           last_name: string | null
@@ -153,6 +155,8 @@ export interface Database {
           avatar_url?: string | null
           created_at?: string
           email: string
+          expanded_dashboard?: boolean
+          expanded_groceryitem?: boolean
           first_name?: string | null
           id: string
           last_name?: string | null
@@ -164,6 +168,8 @@ export interface Database {
           avatar_url?: string | null
           created_at?: string
           email?: string
+          expanded_dashboard?: boolean
+          expanded_groceryitem?: boolean
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -171,14 +177,7 @@ export interface Database {
           select_id?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
     }
     Views: {
