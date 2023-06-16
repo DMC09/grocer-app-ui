@@ -24,9 +24,11 @@ export default function HeaderMenu() {
   const open = Boolean(anchorEl);
   const [profile, setProfile] = useState<ProfileType | null>(null);
 
+
+
   useEffect(() => {
     const channel = supabase
-      .channel("custom-profiless-channel")
+      .channel("custom-profiles-channel")
       .on(
         "postgres_changes",
         {
