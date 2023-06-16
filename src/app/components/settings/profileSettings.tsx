@@ -36,7 +36,7 @@ export default function ProfileSettings() {
           event: "UPDATE",
           schema: "public",
           table: "profiles",
-          filter: `id=eq.${user?.id}`
+          filter: `id=eq.${user?.id}`,
         },
         getProfileData
       )
@@ -71,13 +71,12 @@ export default function ProfileSettings() {
         <Container
           disableGutters
           maxWidth={false}
-          sx={{ border: 1, borderColor: "green" }}
+          sx={{ borderColor: "green" }}
         >
           <Box
             sx={{
-              height: "50%",
-              borderColor: "red",
-              border: 1,
+              height: "60%",
+
               display: "flex",
               flexFlow: "column",
               justifyContent: "center",
@@ -86,7 +85,6 @@ export default function ProfileSettings() {
           >
             <Box
               sx={{
-                border: 1,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -101,8 +99,6 @@ export default function ProfileSettings() {
             </Box>
             <Box
               sx={{
-                border: 1,
-                borderColor: "green",
                 height: "85%",
                 display: "flex",
                 width: "100%",
@@ -110,8 +106,6 @@ export default function ProfileSettings() {
             >
               <Box
                 sx={{
-                  border: 1,
-                  borderColor: "orange",
                   width: "30%",
                   display: "flex",
                   flexFlow: "column",
@@ -140,19 +134,19 @@ export default function ProfileSettings() {
 
               <Box
                 sx={{
-                  border: 1,
                   borderColor: "purple",
                   width: "70%",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   flexWrap: "wrap",
-                  gap: 2,
+                  gap: 1,
                   p: 1,
                 }}
               >
                 <TextField
                   id="outlined-read-only-input"
+                  sx={{ height: "25%", maxHeight: 50 }}
                   label="First name"
                   value={profile?.first_name}
                   InputProps={{
@@ -163,6 +157,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Last name"
+                  sx={{ height: "25%", maxHeight: 50 }}
                   value={profile?.last_name}
                   InputProps={{
                     readOnly: true,
@@ -172,6 +167,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Email"
+                  sx={{ height: "25%", maxHeight: 50 }}
                   value={profile?.email}
                   InputProps={{
                     readOnly: true,
@@ -181,6 +177,7 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Phone"
+                  sx={{ height: "25%", maxHeight: 50 }}
                   value={profile?.phone}
                   InputProps={{
                     readOnly: true,
@@ -192,9 +189,7 @@ export default function ProfileSettings() {
           </Box>
           <Box
             sx={{
-              height: "50%",
-              borderColor: "red",
-              border: 1,
+              height: "40%",
             }}
           >
             <GroupSettings {...profile} />
