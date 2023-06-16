@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GroceryStoreItemType } from "@/types";
+import { GroceryStoreItemProps, GroceryStoreItemType } from "@/types";
 import {
   Badge,
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -11,16 +12,27 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Dialog,
+  DialogActions,
+  DialogTitle,
   IconButton,
   Typography,
 } from "@mui/material";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSupabase } from "../supabase/supabase-provider";
 import EditItem from "../utils/editItem";
+import { theme } from "@/app/utils/theme";
 
-export default function GroceryStoreItem(item: GroceryStoreItemType) {
-  const { supabase } = useSupabase();
+export default function GroceryStoreItem({
+  groceryStoreItem,
+  expanded,
+}: GroceryStoreItemProps) {
+  const { supabase, session } = useSupabase();
+  const [open, setOpen] = useState(false);
 
   // need to find a way to compare the current time and if this time is whtin the house then we know it's modified.
   function updatedRecently(timestamp: string | Date | null) {
@@ -37,10 +49,20 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
       return false;
     }
   }
+  const expandView = false;
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const created_atLocal = () => {
-    if (item?.created_at) {
-      const localDate = new Date(item?.created_at).toLocaleTimeString([], {
+    if (groceryStoreItem?.created_at) {
+      const localDate = new Date(
+        groceryStoreItem?.created_at
+      ).toLocaleTimeString([], {
         month: "numeric",
         day: "numeric",
         year: "2-digit",
@@ -62,73 +84,153 @@ export default function GroceryStoreItem(item: GroceryStoreItemType) {
     }
   };
 
+  function handleEdit() {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
-      <Badge
-        color="primary"
-        variant="dot"
-        invisible={!updatedRecently(item.modified_at)}
-      >
-        <Card
-          raised
-          sx={{
-            border: 2,
-            borderRadius: 2,
-            borderColor: "primary.main",
-            width: 250,
-            height: 305,
-          }}
-          style={{ flexShrink: 0 }}
+      {expanded ? (
+        <Badge
+          color="primary"
+          variant="dot"
+          invisible={!updatedRecently(groceryStoreItem.modified_at)}
         >
-          <CardHeader
-            titleTypographyProps={{ variant: "h6", color: "primary.dark" }}
-            sx={{ p: 0.5, m: 0 }}
-            title={item.name}
-          />
-          <CardContent sx={{ p: 0.5, m: 0 }}>
-            <Typography color="#071236" variant="body2">
-              {item.notes}
-            </Typography>
-          </CardContent>
-          <CardActionArea
-            onClick={() => alert("you logged this apparent?")}
-            sx={{ p: 0, m: 0 }}
-          >
-            <CardMedia
-              component="img"
-              height="150"
-              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
-              alt={`Image of${item.name} `}
-              sx={{ objectFit: "fill" }}
-            />
-          </CardActionArea>
-          <CardActions
+          <Card
+            raised
             sx={{
-              p: 0.5,
-              m: 0,
-              display: "flex",
-              flexFlow: "row",
-              justifyContent: "space-around",
+              border: 2,
+              borderRadius: 2,
+              borderColor: "primary.main",
+              width: 250,
+              height: 305,
             }}
+            style={{ flexShrink: 0 }}
           >
-            <IconButton
+            <CardHeader
+              titleTypographyProps={{ variant: "h6", color: "primary.dark" }}
               sx={{ p: 0.5, m: 0 }}
-              color="success"
-              onClick={() => handleDelete(item.id.toString())}
-              aria-label="complete"
+              title={groceryStoreItem.name}
+            />
+            <CardContent sx={{ p: 0.5, m: 0 }}>
+              <Typography color="#071236" variant="body2">
+                {groceryStoreItem.notes}
+              </Typography>
+            </CardContent>
+            <CardActionArea
+              onClick={() => alert("you logged this apparent?")}
+              sx={{ p: 0, m: 0 }}
             >
-              <CheckCircleIcon />
-            </IconButton>
-            <Typography color="#071236" variant="subtitle2">
-              {item.quantity}
-            </Typography>
-            {/* <Typography color="#071236" variant="caption">
+              <CardMedia
+                component="img"
+                height="150"
+                image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
+                alt={`Image of${groceryStoreItem.name} `}
+                sx={{ objectFit: "fill" }}
+              />
+            </CardActionArea>
+            <CardActions
+              sx={{
+                p: 0.5,
+                m: 0,
+                display: "flex",
+                flexFlow: "row",
+                justifyContent: "space-around",
+              }}
+            >
+              <IconButton
+                sx={{ p: 0.5, m: 0 }}
+                color="success"
+                onClick={() => handleDelete(groceryStoreItem.id.toString())}
+                aria-label="complete"
+              >
+                <CheckCircleIcon />
+              </IconButton>
+              <Typography color="#071236" variant="subtitle2">
+                {groceryStoreItem.quantity}
+              </Typography>
+              {/* <Typography color="#071236" variant="caption">
               {created_atLocal()}
             </Typography> */}
-            <EditItem {...item} />
-          </CardActions>
-        </Card>
-      </Badge>
+              <EditItem {...groceryStoreItem} />
+            </CardActions>
+          </Card>
+        </Badge>
+      ) : (
+        <>
+          <Badge
+            color="primary"
+            variant="dot"
+            invisible={!updatedRecently(groceryStoreItem.modified_at)}
+          >
+            <Card
+              sx={{
+                border: 2,
+                borderRadius: 2,
+                borderColor: "primary.main",
+                display: "flex",
+                height: "fit-content",
+                width: 200,
+              }}
+            >
+              <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
+                <Box>
+                  <Typography variant="h5">{groceryStoreItem?.name}</Typography>
+                </Box>
+              </CardActionArea>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton
+                  sx={{ p: 0.5, m: 0 }}
+                  color="success"
+                  onClick={() => handleDelete(groceryStoreItem.id.toString())}
+                  aria-label="complete"
+                >
+                  <CheckCircleIcon />
+                </IconButton>
+              </Box>
+            </Card>
+            <Dialog open={open} onClose={handleClose}>
+              <Box sx={{ border:1,display: "flex" }}>
+                <Box sx={{  }}>
+                  <DialogTitle>{groceryStoreItem?.name}</DialogTitle>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexFlow: "column",
+                      justifyContent: "space-around",
+                      height: "50%",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography color="#071236" variant="subtitle2">
+                      {groceryStoreItem.notes}
+                    </Typography>
+                    <Typography color="#071236" variant="subtitle2">
+                      {groceryStoreItem.quantity}
+                    </Typography>
+                  </Box>
+                </Box>
+                <CardMedia
+                  component="img"
+                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
+                  alt={`Image of${groceryStoreItem.name} `}
+                  sx={{ objectFit: "fill", width: 150, height: 150 }}
+                />
+              </Box>
+              <DialogActions>
+                <Button onClick={handleClose}>Close</Button>
+                <EditItem {...groceryStoreItem} />
+              </DialogActions>
+            </Dialog>
+          </Badge>
+        </>
+      )}
     </>
   );
 }

@@ -24,7 +24,15 @@ export default function LoginPage() {
 
   return (
     <>
-      <Box border={2} width={"33%"}>
+      <Box
+        sx={{
+          display: "flex",
+          flexFlow: "column",
+
+        }}
+        maxWidth={350}
+        width={"100%"}
+      >
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}

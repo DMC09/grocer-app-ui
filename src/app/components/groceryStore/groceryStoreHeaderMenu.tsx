@@ -17,13 +17,15 @@ import {
   TextField,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useState } from "react";
+import GridViewIcon from "@mui/icons-material/GridView";
+import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings, Logout } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useRouter } from "next/navigation";
-import { GroceryStoreType } from "@/types";
+import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { User } from "@supabase/supabase-js";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const { supabase, session } = useSupabase();
@@ -32,6 +34,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [user, SetUser] = useState<User | null | undefined>(session?.user);
+  const [profile, SetProfile] = useState<ProfileType | null>(null);
   const [image, setImage] = useState({
     preview: groceryStore?.image,
     raw: "",
@@ -50,6 +54,19 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const handleDialogClose = () => {
     setOpenDialog(false);
   };
+
+  async function getProfileData() {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user?.id)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      SetProfile(data);
+    }
+  }
 
   const handleDelete = async () => {
     const { data, error } = await supabase
@@ -84,6 +101,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       });
     }
   }
+
   async function handleImageUpload() {
     if (image.raw && imagePath) {
       const { data, error } = await supabase.storage
@@ -98,6 +116,12 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       }
     }
   }
+
+  useEffect(() => {
+    if (session?.user) {
+      getProfileData();
+    }
+  }, [supabase]);
 
   // need to be able to upload the image an then on the save just send the image path.
 
@@ -125,6 +149,20 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       } else {
         setOpenDialog(false);
       }
+    }
+  }
+
+  async function handleChangeView() {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ expanded_groceryitem: !profile?.expanded_groceryitem })
+      .eq("id", profile?.id)
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      await getProfileData();
     }
   }
 
@@ -182,6 +220,12 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           </ListItemIcon>
           Store Settings
         </MenuItem>
+        <MenuItem onClick={handleChangeView}>
+          <ListItemIcon>
+            <GridViewIcon />
+          </ListItemIcon>
+          Change View
+        </MenuItem>
         <Divider />
         <MenuItem onClick={handleDelete}>
           {/* need a modal to show the store settings which right now is the nmae */}
@@ -205,7 +249,14 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             value={newGroceryStoreName}
           />
         </DialogContent>
-        <DialogContent>
+        <DialogContent
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexFlow: "column",
+          }}
+        >
           {image.raw ? (
             <Card
               sx={{

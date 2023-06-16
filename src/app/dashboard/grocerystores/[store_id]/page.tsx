@@ -6,15 +6,49 @@ import GroceryStoreItem from "@/app/components/groceryStore/grocerystoreitem";
 import { useSupabase } from "@/app/components/supabase/supabase-provider";
 import { memo, useEffect, useState } from "react";
 import { GroceryStoreItemType } from "@/types";
-import { getGroceryStoreItems } from "@/app/utils/client/getData";
 import NoItems from "@/app/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
 
-// https://nextjs.org/docs/app/building-your-application/data-fetching/caching#react-cache
+// need to grab the pfiles boolean and render the differnt view.
 
 export default function Page() {
-  const { supabase } = useSupabase();
+  const { supabase,session } = useSupabase();
   const { store_id } = useParams();
+  const [expandedDashboard, SetExpandedDashboard] = useState<boolean | null>(
+    null
+  );
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("custom-profiles-channel")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+        },
+        (payload) => SetExpandedDashboard(payload.new.expanded_groceryitem)
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+
+  async function getDashboardView() {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("expanded_dashboard")
+      .eq("id", session?.user.id)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data.expanded_dashboard, "thing");
+      data && SetExpandedDashboard(data.expanded_dashboard);
+    }
+  }
 
   const [groceryStoreItemsToRender, setGroceryStoreItemsToRender] = useState<
     GroceryStoreItemType[] | [] | null
@@ -73,7 +107,11 @@ export default function Page() {
   }, [supabase]);
 
   useEffect(() => {
-    getGroceryStoreItems();
+    if(session?.user){
+
+      getGroceryStoreItems();
+      getDashboardView();
+    }
   }, []);
 
   return (
@@ -94,8 +132,8 @@ export default function Page() {
         }}
       >
         {groceryStoreItemsToRender && groceryStoreItemsToRender.length > 0 ? (
-          groceryStoreItemsToRender.map((item) => {
-            return <GroceryStoreItem key={item.id} {...item} />;
+          groceryStoreItemsToRender.map((item:GroceryStoreItemType) => {
+            return <GroceryStoreItem key={item.id} expanded={expandedDashboard} groceryStoreItem={item} />;
           })
         ) : (
           <NoItems />

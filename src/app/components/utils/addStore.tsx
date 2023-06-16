@@ -139,7 +139,11 @@ export default function AddStore({ select_id }: { select_id: string }) {
         variant="contained"
         onClick={handleClickOpen}
         endIcon={<AddCircleIcon />}
-        sx={{ fontSize: 80 }}
+        sx={{
+          width:"fit-content",
+          p: 0,
+          m:0
+        }}
       />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add new Store</DialogTitle>
@@ -158,7 +162,14 @@ export default function AddStore({ select_id }: { select_id: string }) {
             value={newGroceryStoreName}
           />
         </DialogContent>
-        <DialogContent>
+        <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexFlow: "column",
+        }}
+        >
           <>
             {image.preview ? (
               <Card

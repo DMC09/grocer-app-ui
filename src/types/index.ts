@@ -142,6 +142,8 @@ export interface Database {
           avatar_url: string | null
           created_at: string
           email: string
+          expanded_dashboard: boolean
+          expanded_groceryitem: boolean
           first_name: string | null
           id: string
           last_name: string | null
@@ -153,6 +155,8 @@ export interface Database {
           avatar_url?: string | null
           created_at?: string
           email: string
+          expanded_dashboard?: boolean
+          expanded_groceryitem?: boolean
           first_name?: string | null
           id: string
           last_name?: string | null
@@ -164,6 +168,8 @@ export interface Database {
           avatar_url?: string | null
           created_at?: string
           email?: string
+          expanded_dashboard?: boolean
+          expanded_groceryitem?: boolean
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -171,14 +177,7 @@ export interface Database {
           select_id?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -228,6 +227,15 @@ export type GroceryStoreItemType = Database['public']['Tables']['grocerystoreite
 export type ProfileType = Database['public']['Tables']['profiles']['Row']
 export type GroupType = Database['public']['Tables']["groups"]["Row"]
 export type GroupMembers = Database['public']['Views']['group_members_view']['Row']
+
+export type GroceryStoreProps = {
+  groceryStore: GroceryStoreType;
+  expanded: boolean |null;
+};
+export type GroceryStoreItemProps = {
+  groceryStoreItem: GroceryStoreItemType;
+  expanded: boolean |null;
+};
 
 export interface GroceryStoreWithItemsType extends GroceryStoreType {
   grocerystoreitems: GroceryStoreItemType[];
