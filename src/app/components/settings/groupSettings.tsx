@@ -123,7 +123,7 @@ export default function GroupSettings(profile: ProfileType | null) {
         <Container
           disableGutters
           maxWidth={false}
-          sx={{ border: 1, height: "100%" }}
+          sx={{  height: "100%" }}
         >
           <Box
             sx={{
@@ -136,8 +136,7 @@ export default function GroupSettings(profile: ProfileType | null) {
           </Box>
           <Box
             sx={{
-              border: 1,
-              borderColor: "blue",
+
               height: "85%",
               display: "flex",
               justifyContent: "center",
@@ -147,7 +146,6 @@ export default function GroupSettings(profile: ProfileType | null) {
             {groups ? (
               <Box
               sx={{
-                border:1,
               }}
               >
                 <MyGroup groupMembers={otherGroupMembers} />
@@ -171,7 +169,6 @@ export default function GroupSettings(profile: ProfileType | null) {
                   flexFlow: "column",
                   justifyContent: "space-around",
                   alignItems: "center",
-                  border: 1,
                 }}
               >
                 {<JoinGroup {...profile} />}
