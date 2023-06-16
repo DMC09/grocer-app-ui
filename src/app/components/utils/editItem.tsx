@@ -17,7 +17,7 @@ import { GroceryStoreItemType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
-  const { supabase } = useSupabase();
+  const { supabase,session } = useSupabase();
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState<string | null>(groceryStoreItem.name);
