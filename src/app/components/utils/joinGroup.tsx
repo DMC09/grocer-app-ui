@@ -36,25 +36,32 @@ export default function JoinGroup(profile: ProfileType) {
     // state if successfull, I should refresh the group settings stuff
     // Failture notify user. but shouldn't really happen
 
-    const { data, error } = await supabase.rpc("join_group_via_share_code", {
-      share_code: shareCode,
-      email: profile?.email,
-      first_name: profile?.first_name,
-      last_name: profile?.last_name,
-      profile_id: profile?.id,
-      profile_image: profile?.avatar_url,
-    });
+    if (
+      profile &&
+      profile.first_name &&
+      profile.last_name &&
+      profile.avatar_url
+    ) {
+      const { data, error } = await supabase.rpc("join_group_via_share_code", {
+        share_code: shareCode,
+        email: profile?.email,
+        first_name: profile?.first_name,
+        last_name: profile?.last_name,
+        profile_id: profile?.id,
+        profile_image: profile?.avatar_url,
+      });
 
-    if (error) {
-      throw new Error(error.message);
-    }
+      if (error) {
+        throw new Error(error.message);
+      }
 
-    if (data) {
-      console.log("Insert successful");
-      return true;
-    } else {
-      console.log("Insert failed");
-      return false;
+      if (data) {
+        console.log("Insert successful");
+        return true;
+      } else {
+        console.log("Insert failed");
+        return false;
+      }
     }
   }
 

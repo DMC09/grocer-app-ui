@@ -66,13 +66,15 @@ export default function EditProfileSettings(profile: ProfileType | null) {
       await handleImageUpload();
       const { data, error } = await supabase
         .from("profiles")
-        .update({
-          first_name: firstName,
-          last_name: lastName,
-          updated_at: now,
-          avatar_url: imagePath,
-          phone,
-        })
+        .update(
+          {
+            first_name: firstName,
+            last_name: lastName,
+            updated_at: now,
+            avatar_url: imagePath,
+            phone,
+          },
+        )
         .eq("id", profile?.id)
         .select();
 
@@ -84,12 +86,14 @@ export default function EditProfileSettings(profile: ProfileType | null) {
     } else {
       const { data, error } = await supabase
         .from("profiles")
-        .update({
-          first_name: firstName,
-          last_name: lastName,
-          updated_at: now,
-          phone,
-        })
+        .update(
+          {
+            first_name: firstName,
+            last_name: lastName,
+            updated_at: now,
+            phone,
+          },
+        )
         .eq("id", profile?.id)
         .select();
 
