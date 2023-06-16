@@ -178,7 +178,6 @@ export default function DashboardHeader() {
                   </ListItemIcon>
                   Change View
                 </MenuItem>
-                <p>{profile?.expanded_dashboard ? "expanded" : "normal"}</p>
               </Menu>
             </Box>
           </Card>
