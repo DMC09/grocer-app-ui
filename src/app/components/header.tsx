@@ -1,33 +1,15 @@
 "use client";
 
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  IconButton,
-  ThemeProvider,
-  Button,
-  Avatar,
-  Divider,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Box, AppBar, Toolbar, IconButton, ThemeProvider } from "@mui/material";
 import { useSupabase } from "./supabase/supabase-provider";
-import { useEffect, useState } from "react";
-import { Auth } from "@supabase/auth-ui-react";
 import HomeIcon from "@mui/icons-material/Home";
 import { useParams, useRouter } from "next/navigation";
 import { theme } from "../utils/theme";
-import { PersonAdd, Settings, Logout } from "@mui/icons-material";
 import HeaderMenu from "./headerMenu";
-import { ProfileType } from "@/types";
 
 export default function Header() {
   const { supabase, session } = useSupabase();
   const router = useRouter();
-
 
   return (
     <ThemeProvider theme={theme}>

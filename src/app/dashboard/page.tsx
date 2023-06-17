@@ -2,7 +2,7 @@
 
 import { Container } from "@mui/material";
 import { useSupabase } from "../components/supabase/supabase-provider";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { GroceryStoreWithItemsType, GroceryStoreType } from "@/types";
 import DashboardHeader from "../components/dashboardHeader";
 import { PostgrestError, User } from "@supabase/supabase-js";

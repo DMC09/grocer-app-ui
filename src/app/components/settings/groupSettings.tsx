@@ -5,14 +5,8 @@ import {
   Chip,
   Container,
   Divider,
-  IconButton,
   Typography,
 } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
 import JoinGroup from "../utils/joinGroup";
@@ -24,7 +18,6 @@ import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
-  const [open, setOpen] = useState(false);
   const [shareCode, setShareCode] = useState<string | null>(null);
   const [groups, setGroups] = useState<GroupType | null>(null);
   const [otherGroupMembers, setOtherGroupMembers] = useState<any>(null);

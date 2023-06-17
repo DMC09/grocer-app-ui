@@ -2,23 +2,18 @@
 
 import {
   Box,
-  Button,
   Card,
   CardMedia,
   Container,
-  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
-
-import CancelIcon from "@mui/icons-material/Cancel";
-import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
-import { GroupType, ProfileType } from "@/types";
+import {  ProfileType } from "@/types";
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
-import { Divider } from "@supabase/ui";
+
 
 export default function ProfileSettings() {
   const { supabase, session } = useSupabase();

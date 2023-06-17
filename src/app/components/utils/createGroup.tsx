@@ -12,7 +12,6 @@ import {
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
-import image from "next/image";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { ProfileType } from "@/types";
 

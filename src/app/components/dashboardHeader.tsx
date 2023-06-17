@@ -4,33 +4,21 @@ import {
   ThemeProvider,
   Typography,
   Card,
-  Divider,
   IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
-  Button,
-  CardMedia,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
   Box,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+
 import { useSupabase } from "./supabase/supabase-provider";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import GridViewIcon from "@mui/icons-material/GridView";
 
 import { theme } from "../utils/theme";
 import { PostgrestError, User } from "@supabase/supabase-js";
 import AddStore from "./utils/addStore";
-import { Settings } from "@mui/icons-material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import image from "next/image";
 import { ProfileType } from "@/types";
 
 export default function DashboardHeader() {
@@ -84,7 +72,6 @@ export default function DashboardHeader() {
       getProfileData();
     }
   }, [supabase]);
-  
 
   async function handleChangeView() {
     const { data, error } = await supabase

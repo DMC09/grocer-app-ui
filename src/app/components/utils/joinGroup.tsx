@@ -1,8 +1,6 @@
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import {
   Button,
-  Card,
-  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,7 +11,6 @@ import {
 import { useSupabase } from "../supabase/supabase-provider";
 import { useState } from "react";
 import { ProfileType } from "@/types";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 export default function JoinGroup(profile: ProfileType) {
   const { supabase, session } = useSupabase();

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Avatar,
   Button,
   Card,
   CardMedia,
@@ -20,7 +19,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import GridViewIcon from "@mui/icons-material/GridView";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Settings, Logout } from "@mui/icons-material";
+import { Settings } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 import { GroceryStoreType, ProfileType } from "@/types";

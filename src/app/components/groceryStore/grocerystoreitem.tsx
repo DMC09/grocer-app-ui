@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { GroceryStoreItemProps, GroceryStoreItemType } from "@/types";
 import {
   Badge,
@@ -18,14 +18,10 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
-
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSupabase } from "../supabase/supabase-provider";
 import EditItem from "../utils/editItem";
-import { theme } from "@/app/utils/theme";
+
 
 export default function GroceryStoreItem({
   groceryStoreItem,

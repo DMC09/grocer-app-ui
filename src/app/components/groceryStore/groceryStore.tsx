@@ -1,4 +1,4 @@
-import { GroceryStoreProps, GroceryStoreType } from "@/types";
+import { GroceryStoreProps } from "@/types";
 import {
   Badge,
   Card,

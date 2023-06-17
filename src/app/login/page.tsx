@@ -3,14 +3,7 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { useSupabase } from "../components/supabase/supabase-provider";
 import { ThemeMinimal, ThemeSupa } from "@supabase/auth-ui-shared";
-import {
-  Box,
-  Container,
-  Divider,
-  Skeleton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -28,7 +21,6 @@ export default function LoginPage() {
         sx={{
           display: "flex",
           flexFlow: "column",
-
         }}
         maxWidth={350}
         width={"100%"}

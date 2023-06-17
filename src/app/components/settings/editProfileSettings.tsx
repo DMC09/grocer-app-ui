@@ -13,10 +13,8 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
-import image from "next/image";
 import { ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { preProcessFile } from "typescript";
 import { useSupabase } from "../supabase/supabase-provider";
 
 export default function EditProfileSettings(profile: ProfileType | null) {

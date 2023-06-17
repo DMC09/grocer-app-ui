@@ -24,27 +24,24 @@ export default function HeaderMenu() {
   const open = Boolean(anchorEl);
   const [profile, setProfile] = useState<ProfileType | null>(null);
 
-
-
   useEffect(() => {
     const channel = supabase
       .channel("custom-profiles-channel")
       .on(
         "postgres_changes",
         {
-          event: "UPDATE",
+          event: "*",
           schema: "public",
           table: "profiles",
-          filter: `id=eq.${user?.id}`
         },
-        getProfileData
+        (payload) => console.log(payload, "update")
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [supabase, profile]);
 
   async function getProfileData() {
     console.log("getting the profiles data");
@@ -61,6 +58,7 @@ export default function HeaderMenu() {
   }
 
   useEffect(() => {
+    console.log(supabase);
     getProfileData();
   }, [supabase]);
 

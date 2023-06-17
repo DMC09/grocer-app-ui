@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Button, Card, IconButton, Typography } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { GroceryStoreType } from "@/types";
 import AddItem from "../utils/addItem";

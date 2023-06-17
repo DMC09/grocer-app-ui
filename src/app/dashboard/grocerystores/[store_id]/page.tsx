@@ -1,10 +1,10 @@
 "use client";
 
-import { Button, Container, Skeleton } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
+import {  Container, Skeleton } from "@mui/material";
+import { useParams } from "next/navigation";
 import GroceryStoreItem from "@/app/components/groceryStore/grocerystoreitem";
 import { useSupabase } from "@/app/components/supabase/supabase-provider";
-import { memo, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { GroceryStoreItemType } from "@/types";
 import NoItems from "@/app/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";

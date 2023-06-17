@@ -1,5 +1,4 @@
 import {
-  ClickAwayListener,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -7,7 +6,6 @@ import {
   DialogActions,
   Button,
   Box,
-  Container,
   IconButton,
   Card,
   CardMedia,

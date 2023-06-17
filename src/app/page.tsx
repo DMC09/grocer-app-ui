@@ -22,5 +22,8 @@ export default function HomePage() {
     sessionData?.user ? router.push("/dashboard") : router.push("/login");
   }, []);
 
+
+//if user go straight to the dashboard.
+//if no user show landing page that has a button to login.
   return <></>;
 }
