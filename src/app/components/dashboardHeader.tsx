@@ -10,7 +10,7 @@ import {
   MenuItem,
   Box,
 } from "@mui/material";
-
+import TocIcon from "@mui/icons-material/Toc";
 import { useSupabase } from "./supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
 import GridViewIcon from "@mui/icons-material/GridView";
@@ -161,7 +161,11 @@ export default function DashboardHeader() {
                 {/* <Divider /> */}
                 <MenuItem onClick={handleChangeView}>
                   <ListItemIcon>
-                    <GridViewIcon />
+                    {profile?.expanded_dashboard ? (
+                      <GridViewIcon />
+                    ) : (
+                      <TocIcon />
+                    )}
                   </ListItemIcon>
                   Change View
                 </MenuItem>

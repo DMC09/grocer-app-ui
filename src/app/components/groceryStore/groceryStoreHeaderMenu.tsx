@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import GridViewIcon from "@mui/icons-material/GridView";
+import TocIcon from "@mui/icons-material/Toc";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings } from "@mui/icons-material";
@@ -152,6 +153,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
 
   async function handleChangeView() {
+    console.log("chaning view!")
     const { data, error } = await supabase
       .from("profiles")
       .update({ expanded_groceryitem: !profile?.expanded_groceryitem })
@@ -221,7 +223,11 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </MenuItem>
         <MenuItem onClick={handleChangeView}>
           <ListItemIcon>
-            <GridViewIcon />
+          {profile?.expanded_groceryitem ? (
+                      <GridViewIcon />
+                    ) : (
+                      <TocIcon />
+                    )}
           </ListItemIcon>
           Change View
         </MenuItem>
