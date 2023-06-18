@@ -23,7 +23,6 @@ export default function Dashboard() {
     null
   );
 
-  //need to grab the profies data and see if the flags are true. then rendor a sepcfic view
   async function getDashboardView() {
     const { data, error } = await supabase
       .from("profiles")
@@ -106,25 +105,22 @@ export default function Dashboard() {
       return <GroceryStore key={groceryStore.id} expanded={expandedDashboard} groceryStore={groceryStore}  />;
     }
   );
-  // make a view ontex thing
   return (
     <>
       <DashboardHeader />
       <Container
+      disableGutters
         maxWidth={false}
         sx={{
-          height: "85%",
+          height: '100%',
           display: "flex",
-          flexFlow: "row",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          backgroundColor: "primary.light",
+          border:5,
+          gap:2,
+          flexFlow: "column",
+          alignItems: "center",
+          backgroundColor: "primary.main",
           overflowY: "scroll",
-          gap: 3.5,
-          py: 4,
-          border: 2,
         }}
-        style={{ flexShrink: 0 }}
       >
         {/* this needs it's own container */}
         {groceryStores && groceryStores.length > 0 ? (
