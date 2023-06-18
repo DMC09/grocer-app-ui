@@ -17,7 +17,7 @@ export default function SettingsHeader() {
           }}
         >
           <div></div>
-          <Typography align="center" color="#EAEAEA" variant="h3">
+          <Typography align="center" color="secondary.main" variant="h3">
             Settings
           </Typography>
         </Card>
