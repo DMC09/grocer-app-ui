@@ -101,7 +101,7 @@ export default function DashboardHeader() {
             }}
           >
             <div></div>
-            <Typography color="#EAEAEA" variant="h3">
+            <Typography color="secondary.main" variant="h3">
               Dashboard
             </Typography>
             <Box
