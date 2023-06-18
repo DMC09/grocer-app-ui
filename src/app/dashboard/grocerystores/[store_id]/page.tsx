@@ -1,13 +1,16 @@
 "use client";
 
-import {  Container, Skeleton } from "@mui/material";
+import {  Container, Skeleton,ThemeProvider } from "@mui/material";
+
+
 import { useParams } from "next/navigation";
-import GroceryStoreItem from "@/app/components/groceryStore/grocerystoreitem";
+import GroceryStoreItem from "@/app/components/groceryStore/groceryStoreItem";
 import { useSupabase } from "@/app/components/supabase/supabase-provider";
 import {  useEffect, useState } from "react";
 import { GroceryStoreItemType } from "@/types";
 import NoItems from "@/app/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
+import { theme } from "@/app/utils/theme";
 
 // need to grab the pfiles boolean and render the differnt view.
 
@@ -108,7 +111,6 @@ export default function Page() {
 
   useEffect(() => {
     if(session?.user){
-
       getGroceryStoreItems();
       getDashboardView();
     }
@@ -116,6 +118,7 @@ export default function Page() {
 
   return (
     <>
+<ThemeProvider theme={theme}>
       <Container
         maxWidth={false}
         sx={{
@@ -139,6 +142,7 @@ export default function Page() {
           <NoItems />
         )}
       </Container>
+      </ThemeProvider>
     </>
   );
 }
