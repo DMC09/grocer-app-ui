@@ -12,11 +12,13 @@ export default function DashboardLayout({
     <>
       <ThemeProvider theme={theme}>
         <Container
-
+disableGutters
 maxWidth={false}
           sx={{
   height:"100vh",
-  backgroundColor:"primary.main"
+  backgroundColor:"primary.dark",
+  
+
           }}
         >
           {children}
