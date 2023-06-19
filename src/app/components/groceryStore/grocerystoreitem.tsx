@@ -1,6 +1,6 @@
 "use client";
 
-import {  useState } from "react";
+import { useState } from "react";
 import { GroceryStoreItemProps, GroceryStoreItemType } from "@/types";
 import {
   Badge,
@@ -21,7 +21,6 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSupabase } from "../supabase/supabase-provider";
 import EditItem from "../utils/editItem";
-
 
 export default function GroceryStoreItem({
   groceryStoreItem,
@@ -170,8 +169,32 @@ export default function GroceryStoreItem({
               }}
             >
               <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
-                <Box>
-                  <Typography variant="h5">{groceryStoreItem?.name}</Typography>
+                <Box sx={{ display: "flex", alignItems: "center",justifyContent:"space-around" }}>
+                  <Box
+                    sx={{
+                      backgroundColor: "primary.main",
+                      height: 5,
+                      width: 5,
+                      p: 1.25,
+                      m: 1,
+                      borderRadius: 30,
+                      border: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        lineHeight: "normal",
+                        color: "secondary.main",
+                      }}
+                      variant="h6"
+                    >
+                      {groceryStoreItem?.quantity}
+                    </Typography>
+                  </Box>
+                  <Typography align="center" sx={{width:"70%"}} variant="h5">{groceryStoreItem?.name}</Typography>
                 </Box>
               </CardActionArea>
               <Box
@@ -192,8 +215,8 @@ export default function GroceryStoreItem({
               </Box>
             </Card>
             <Dialog open={open} onClose={handleClose}>
-              <Box sx={{ border:1,display: "flex" }}>
-                <Box sx={{  }}>
+              <Box sx={{ border: 1, display: "flex" }}>
+                <Box sx={{}}>
                   <DialogTitle>{groceryStoreItem?.name}</DialogTitle>
                   <Box
                     sx={{
