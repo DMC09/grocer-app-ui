@@ -5,17 +5,21 @@ import {
   TextField,
   DialogActions,
   Button,
-  Box,
-  IconButton,
   Card,
   CardMedia,
+  MenuItem,
+  ListItemIcon,
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
+import {
+  generateGroceryStoreItemImagePath,
+  handleGroceryStoreImageUpload,
+} from "@/app/utils/client/image";
+import { addNewGroceryStoreItem } from "@/app/utils/client/groceryStore";
 
-// Create upload image capability
 export default function AddItem({
   store_id,
   select_id,
@@ -37,18 +41,12 @@ export default function AddItem({
     setOpen(true);
   };
 
-  async function generateImagePath(select_id: string) {
-    //Formula is last 16 characters of select_id + Current DateTime in seconds/
-    const lastPartOfSelectId = select_id?.slice(-16);
-    const currentTimeStamp = new Date().getTime();
-
-    setImagePath(
-      `grocerystoreitem_images/${lastPartOfSelectId}/${currentTimeStamp}`
-    );
-  }
   async function handleImageSet(event: any) {
     if (event.target.files.length && select_id) {
-      generateImagePath(select_id);
+      const generatedImagePath = await generateGroceryStoreItemImagePath(
+        select_id
+      );
+      setImagePath(generatedImagePath);
       setImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
@@ -56,18 +54,34 @@ export default function AddItem({
     }
   }
 
-  async function handleImageUpload() {
-    if (image.raw && imagePath) {
-      const { data, error } = await supabase.storage
-        .from("grocerystore")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
-        .upload(imagePath, image.raw);
-      if (error) {
-        throw new Error(`Error uploading image ${error.message}`);
+  async function handleSubmitNewItem() {
+    if (select_id) {
+      if (image.raw && imagePath) {
+        await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
+        await addNewGroceryStoreItem(
+          supabase,
+          store_id,
+          name,
+          notes,
+          Number(quantity),
+          select_id,
+          imagePath
+        );
       } else {
-        console.log(data, "image uploaded successfully");
+        await addNewGroceryStoreItem(
+          supabase,
+          store_id,
+          name,
+          notes,
+          Number(quantity),
+          select_id
+        );
       }
+      setOpen(false);
+      setName("");
+      setNotes("");
+      setQuantity("");
+      setImage({ preview: "", raw: "" });
     }
   }
 
@@ -85,68 +99,15 @@ export default function AddItem({
     setQuantity("");
   };
 
-  async function handleSubmit() {
-    if (image.raw) {
-      await handleImageUpload();
-      const { data, error } = await supabase
-        .from("grocerystoreitems")
-        .insert([
-          {
-            store_id,
-            name,
-            notes,
-            quantity: Number(quantity),
-            select_id,
-            image: imagePath,
-          },
-        ])
-        .select();
-      if (data) {
-        setOpen(false);
-        setName("");
-        setNotes("");
-        setQuantity("");
-        setImage({ preview: "", raw: "" });
-      } else if (error) {
-        throw new Error(error.message);
-      }
-    } else {
-      const { data, error } = await supabase
-        .from("grocerystoreitems")
-        .insert([
-          {
-            store_id,
-            name,
-            notes,
-            quantity: Number(quantity),
-            select_id,
-          },
-        ])
-        .select();
-      if (data) {
-        setOpen(false);
-        setName("");
-        setNotes("");
-        setQuantity("");
-      } else if (error) {
-        throw new Error(error.message);
-      }
-    }
-  }
-
   return (
     <>
-      <Box sx={{}}>
-        <IconButton
-          sx={{ color: "background.paper" }}
-          onClick={handleClickOpen}
-          aria-label="add to grocery store"
-        >
-          <ControlPointIcon sx={{ fontSize: 30 }} />
-        </IconButton>
-      </Box>
-
-      <Dialog open={open} onClose={handleClose}>
+      <MenuItem sx={{ color: "green" }} onClick={handleClickOpen}>
+        <ListItemIcon aria-label="add to grocery store">
+          <ControlPointIcon sx={{ color: "green" }} fontSize="small" />
+        </ListItemIcon>
+        Add Item
+      </MenuItem>
+      <Dialog open={open}>
         <DialogTitle>Add new item</DialogTitle>
         <DialogContent>
           <TextField
@@ -232,7 +193,7 @@ export default function AddItem({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={handleSubmitNewItem}>Submit</Button>
         </DialogActions>
       </Dialog>
     </>
