@@ -1,25 +1,11 @@
 "use client";
 
-import {
-  ThemeProvider,
-  Typography,
-  Card,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Box,
-} from "@mui/material";
-import TocIcon from "@mui/icons-material/Toc";
+import { ThemeProvider, Typography, Card, Box } from "@mui/material";
 import { useSupabase } from "./supabase/supabase-provider";
-import { useEffect, useMemo, useState } from "react";
-import GridViewIcon from "@mui/icons-material/GridView";
-
+import { useEffect, useState } from "react";
 import { theme } from "../utils/theme";
-import { PostgrestError, User } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import AddStore from "./utils/addStore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ProfileType } from "@/types";
 import { getSelectId } from "../utils/client/profile";
 
 export default function DashboardHeader() {
