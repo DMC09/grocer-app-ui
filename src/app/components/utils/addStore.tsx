@@ -9,14 +9,23 @@ import {
   Button,
   Card,
   CardMedia,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import {
+  generateGroceryStoreImagePath,
+  handleGroceryStoreImageUpload,
+} from "@/app/utils/client/image";
+import { addNewGroceryStore } from "@/app/utils/client/groceryStore";
 
 export default function AddStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [open, setOpen] = useState<boolean>(false);
   const [isInvalid, setIsInvalid] = useState<boolean | null>(null);
@@ -24,16 +33,6 @@ export default function AddStore({ select_id }: { select_id: string }) {
   const [image, setImage] = useState({ preview: "", raw: "" });
   const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
   const [imagePath, setImagePath] = useState<string | null>(null);
-
-  async function generateImagePath(select_id: string) {
-    //Formula is last 16 characters of select_id + Current DateTime in seconds/
-    const lastPartOfSelectId = select_id?.slice(-16);
-    const currentTimeStamp = new Date().getTime();
-
-    setImagePath(
-      `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`
-    );
-  }
 
   async function validation() {
     if (newGroceryStoreName.trim() === "") {
@@ -76,28 +75,15 @@ export default function AddStore({ select_id }: { select_id: string }) {
     setIsInvalid(null);
   }
 
-  async function handleImageSet(event: any) {
+  async function handleSetImage(event: any) {
+    const generatedImagePath = await generateGroceryStoreImagePath(select_id);
+
     if (event.target.files.length) {
-      generateImagePath(select_id);
+      setImagePath(generatedImagePath);
       setImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
       });
-    }
-  }
-  async function handleImageUpload() {
-    if (image.raw && imagePath) {
-      console.log(imagePath, "path for image when uploading");
-      const { data, error } = await supabase.storage
-        .from("grocerystore")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
-        .upload(imagePath, image.raw);
-      if (error) {
-        throw new Error(`Error uploading image ${error.message}`);
-      } else {
-        console.log(data, "image uploaded successfully");
-      }
     }
   }
 
@@ -105,31 +91,21 @@ export default function AddStore({ select_id }: { select_id: string }) {
     const isValidResult = await validation();
 
     if (isValidResult) {
-      if (image.raw) {
-        await handleImageUpload();
-        const { data, error } = await supabase
-          .from("grocerystores")
-          .insert([{ name: newGroceryStoreName, select_id, image: imagePath }]);
-        if (error) {
-          throw new Error(error.message);
-        } else {
-          setOpen(false);
-          setNewGroceryStoreName("");
-          setImage({ preview: "", raw: "" });
-          setImagePath(null);
-        }
+      if (image.raw && imagePath) {
+        await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
+        await addNewGroceryStore(
+          supabase,
+          newGroceryStoreName,
+          select_id,
+          imagePath
+        );
       } else {
-        const { data, error } = await supabase
-          .from("grocerystores")
-          .insert([{ name: newGroceryStoreName, select_id }]);
-        if (error) {
-          throw new Error(error.message);
-        } else {
-          setOpen(false);
-          setNewGroceryStoreName("");
-          setImage({ preview: "", raw: "" });
-        }
+        await addNewGroceryStore(supabase, newGroceryStoreName, select_id);
       }
+      setOpen(false);
+      setNewGroceryStoreName("");
+      setImage({ preview: "", raw: "" });
+      setImagePath(null);
     }
   }
 
@@ -140,12 +116,12 @@ export default function AddStore({ select_id }: { select_id: string }) {
         onClick={handleClickOpen}
         endIcon={<AddCircleIcon />}
         sx={{
-          width:"fit-content",
+          width: "fit-content",
           p: 0,
-          m:0
+          m: 0,
         }}
       />
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
         <DialogTitle>Add new Store</DialogTitle>
         <DialogContent>
           <TextField
@@ -163,43 +139,33 @@ export default function AddStore({ select_id }: { select_id: string }) {
           />
         </DialogContent>
         <DialogContent
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexFlow: "column",
-        }}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexFlow: "column",
+          }}
         >
           <>
-            {image.preview ? (
-              <Card
-                sx={{
-                  maxWidth: 150,
-                }}
-              >
+            <Card sx={{ mb: 2.5 }}>
+              {image.preview ? (
                 <CardMedia
                   component="img"
-                  height="150"
+                  height="200"
                   image={image.preview}
                   alt={`Image of `}
                 />
-              </Card>
-            ) : (
-              <Card
-                sx={{
-                  maxWidth: 150,
-                }}
-              >
+              ) : (
                 <CardMedia
                   component="img"
-                  height="150"
+                  height="200"
                   image={
                     "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                   }
                   alt={`Image of `}
                 />
-              </Card>
-            )}
+              )}
+            </Card>
 
             <Button
               variant="contained"
@@ -207,7 +173,7 @@ export default function AddStore({ select_id }: { select_id: string }) {
               startIcon={<AddPhotoAlternateIcon />}
             >
               Upload File
-              <input type="file" onChange={handleImageSet} hidden />
+              <input type="file" onChange={handleSetImage} hidden />
             </Button>
           </>
         </DialogContent>
