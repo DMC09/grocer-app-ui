@@ -5,11 +5,9 @@ import {
   Card,
   CardActionArea,
   CardHeader,
-  CardMedia,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useSupabase } from "../supabase/supabase-provider";
-import { useState } from "react";
 
 export default function GroceryStore({
   groceryStore,
