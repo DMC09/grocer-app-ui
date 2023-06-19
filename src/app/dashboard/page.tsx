@@ -32,7 +32,6 @@ export default function Dashboard() {
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data.expanded_dashboard, "thing");
       data && SetExpandedDashboard(data.expanded_dashboard);
     }
   }
@@ -102,7 +101,7 @@ export default function Dashboard() {
   // TODO: Put this in to a componeont
   const groceryStoresToRender = groceryStores?.map(
     (groceryStore: GroceryStoreType) => {
-      return <GroceryStore key={groceryStore.id} expanded={expandedDashboard} groceryStore={groceryStore}  />;
+      return <GroceryStore key={groceryStore.id} groceryStore={groceryStore}  />;
     }
   );
   return (

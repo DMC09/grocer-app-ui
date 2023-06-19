@@ -13,7 +13,6 @@ import { useState } from "react";
 
 export default function GroceryStore({
   groceryStore,
-  expanded,
 }: GroceryStoreProps) {
   const router = useRouter();
   const { supabase, session } = useSupabase();
