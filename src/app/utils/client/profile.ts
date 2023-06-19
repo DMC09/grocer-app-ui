@@ -1,7 +1,7 @@
 import { Database } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export async function getProfileData(supabase: SupabaseClient<Database>,userId:string) {
+export async function getProfileData(supabase: SupabaseClient<Database>,userId?:string) {
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
