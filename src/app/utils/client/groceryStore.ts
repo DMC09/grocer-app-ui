@@ -26,14 +26,17 @@ export async function addNewGroceryStore(
   supabase: SupabaseClient<Database>,
   newGroceryStoreName: string,
   selectId: string,
-  imagePath: string| null = null
+  imagePath: string | null = null
 ) {
-
-  console.log(supabase,newGroceryStoreName,selectId,imagePath)
+  console.log(supabase, newGroceryStoreName, selectId, imagePath);
   if (imagePath) {
     const { data, error } = await supabase
       .from("grocerystores")
-      .insert([{ name: newGroceryStoreName, select_id:selectId, image: imagePath }]);
+      .insert([
+        { name: newGroceryStoreName, select_id: selectId, image: imagePath },
+      ])
+      .select()
+      .single();
 
     if (error) {
       throw new Error(error.message);
@@ -43,12 +46,63 @@ export async function addNewGroceryStore(
   } else {
     const { data, error } = await supabase
       .from("grocerystores")
-      .insert([{ name: newGroceryStoreName, select_id:selectId }]);
+      .insert([{ name: newGroceryStoreName, select_id: selectId }])
+      .select()
+      .single();
 
     if (error) {
       throw new Error(error.message);
     } else {
       console.log(data, "Grocery Store added");
     }
+  }
+}
+
+export async function addNewGroceryStoreItem(
+  supabase: SupabaseClient<Database>,
+  storeId: number,
+  name: string,
+  notes: string,
+  quantity: number,
+  selectId: string,
+  imagePath: string | null = null
+) {
+  if (imagePath) {
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .insert([
+        {
+          store_id: storeId,
+          name,
+          notes,
+          quantity: Number(quantity),
+          select_id: selectId,
+          image: imagePath,
+        },
+      ])
+      .select();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data,"added new item with images and")
+    }
+  } else {
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .insert([
+        {
+          store_id: storeId,
+          name,
+          notes,
+          quantity: Number(quantity),
+          select_id: selectId,
+        },
+      ])
+      .select();
+      if (error) {
+        throw new Error(error.message);
+      } else {
+        console.log(data,"added new item without images and")
+      }
   }
 }
