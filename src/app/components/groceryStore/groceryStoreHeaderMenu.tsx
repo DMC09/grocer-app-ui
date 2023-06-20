@@ -1,5 +1,5 @@
 "use client";
-
+// Imports
 import {
   Button,
   Card,
@@ -16,6 +16,7 @@ import {
   TextField,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import GridViewIcon from "@mui/icons-material/GridView";
 import TocIcon from "@mui/icons-material/Toc";
 import { useEffect, useState } from "react";
@@ -26,14 +27,27 @@ import { useRouter } from "next/navigation";
 import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { User } from "@supabase/supabase-js";
+import {
+  getProfileData,
+  handleChangeGroceryStoreItemView,
+} from "@/app/utils/client/profile";
+import {
+  deleteGroceryStore,
+  updateGroceryStore,
+} from "@/app/utils/client/groceryStore";
+import {
+  generateGroceryStoreItemImagePath,
+  handleGroceryStoreImageUpload,
+} from "@/app/utils/client/image";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
+  // Hooks
   const { supabase, session } = useSupabase();
   const router = useRouter();
-
+  // State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openSettingsDialog, setOpenSettingsDialog] = useState<boolean>(false);
   const [user, SetUser] = useState<User | null | undefined>(session?.user);
   const [profile, SetProfile] = useState<ProfileType | null>(null);
   const [image, setImage] = useState({
@@ -45,56 +59,34 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     groceryStore.name
   );
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  // Need to seperate dialogs for this,including seperate the state
+  async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
+  }
+  async function handleCloseMenu() {
     setAnchorEl(null);
-  };
-  const handleDialogClose = () => {
-    setOpenDialog(false);
-  };
+  }
+  async function handleDialogClose() {
+    setOpenSettingsDialog(false);
+  }
 
-  async function getProfileData() {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user?.id)
-      .single();
-    if (error) {
-      throw new Error(error.message);
-    } else {
+  async function getData() {
+    const data = await getProfileData(supabase, user?.id);
+    if (data) {
       SetProfile(data);
     }
   }
 
-  const handleDelete = async () => {
-    const { data, error } = await supabase
-      .from("grocerystores")
-      .delete()
-      .eq("id", groceryStore.id)
-      .select();
-
-    if (data && data.length > 0) {
-      router.push("/dashboard");
-    }
-    if (error) {
-      throw new Error(error.message);
-    }
-  };
-  async function generateImagePath(select_id: string) {
-    //Formula is last 16 characters of select_id + Current DateTime in seconds/
-    const lastPartOfSelectId = select_id?.slice(-16);
-    const currentTimeStamp = new Date().getTime();
-
-    setImagePath(
-      `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`
-    );
+  async function handleDelete() {
+    await deleteGroceryStore(supabase, groceryStore.id, router);
   }
 
   async function handleImageSet(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
-      generateImagePath(groceryStore?.select_id);
+      const generatedImagePath = await generateGroceryStoreItemImagePath(
+        groceryStore?.select_id
+      );
+      setImagePath(generatedImagePath);
       setImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
@@ -102,70 +94,38 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     }
   }
 
-  async function handleImageUpload() {
+  async function handleUpdateSettings() {
     if (image.raw && imagePath) {
-      const { data, error } = await supabase.storage
-        .from("grocerystore")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
-        .upload(imagePath, image.raw);
-      if (error) {
-        throw new Error(`Error uploading image ${error.message}`);
-      } else {
-        console.log(data, "image uploaded successfully");
-      }
+      await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
+      await updateGroceryStore(
+        supabase,
+        groceryStore.id,
+        newGroceryStoreName,
+        imagePath
+      );
+      setOpenSettingsDialog(false);
+    } else {
+      await updateGroceryStore(supabase, groceryStore.id, newGroceryStoreName);
+      setOpenSettingsDialog(false);
+    }
+  }
+
+  async function handleChangeView() {
+    if (profile?.expanded_groceryitem !== undefined) {
+      await handleChangeGroceryStoreItemView(
+        supabase,
+        profile?.expanded_groceryitem,
+        profile?.id
+      );
+      await getData();
     }
   }
 
   useEffect(() => {
     if (session?.user) {
-      getProfileData();
+      getData();
     }
   }, [supabase]);
-
-  // need to be able to upload the image an then on the save just send the image path.
-
-  async function handleSave() {
-    if (image.raw) {
-      await handleImageUpload();
-      const { data, error } = await supabase
-        .from("grocerystores")
-        .update({ name: newGroceryStoreName, image: imagePath })
-        .eq("id", groceryStore.id)
-        .single();
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        setOpenDialog(false);
-      }
-    } else {
-      const { data, error } = await supabase
-        .from("grocerystores")
-        .update({ name: newGroceryStoreName })
-        .eq("id", groceryStore.id)
-        .single();
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        setOpenDialog(false);
-      }
-    }
-  }
-
-  async function handleChangeView() {
-    console.log("chaning view!")
-    const { data, error } = await supabase
-      .from("profiles")
-      .update({ expanded_groceryitem: !profile?.expanded_groceryitem })
-      .eq("id", profile?.id)
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      await getProfileData();
-    }
-  }
 
   return (
     <>
@@ -176,7 +136,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         aria-controls={open ? "long-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={handleOpenMenu}
       >
         <MoreVertIcon />
       </IconButton>
@@ -184,8 +144,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
-        onClose={handleClose}
-        onClick={handleClose}
+        onClose={handleCloseMenu}
+        onClick={handleCloseMenu}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -215,7 +175,13 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={() => setOpenDialog(true)}>
+        {/* <MenuItem onClick={() => setOpenSettingsDialog(true)}>
+          <ListItemIcon>
+            <ControlPointIcon fontSize="small" />
+          </ListItemIcon>
+          Add Item
+        </MenuItem> */}
+        <MenuItem onClick={() => setOpenSettingsDialog(true)}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
@@ -223,11 +189,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </MenuItem>
         <MenuItem onClick={handleChangeView}>
           <ListItemIcon>
-          {profile?.expanded_groceryitem ? (
-                      <GridViewIcon />
-                    ) : (
-                      <TocIcon />
-                    )}
+            {profile?.expanded_groceryitem ? <GridViewIcon /> : <TocIcon />}
           </ListItemIcon>
           Change View
         </MenuItem>
@@ -240,7 +202,11 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           Delete Store
         </MenuItem>
       </Menu>
-      <Dialog open={openDialog} onClose={handleDialogClose}>
+      <Dialog
+        id="grocery-store-settings-dialog"
+        open={openSettingsDialog}
+        onClose={handleDialogClose}
+      >
         <DialogTitle>Grocery Store Settings</DialogTitle>
         <DialogContent>
           <TextField
@@ -300,7 +266,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button onClick={handleUpdateSettings}>Save</Button>
         </DialogActions>
       </Dialog>
     </>
