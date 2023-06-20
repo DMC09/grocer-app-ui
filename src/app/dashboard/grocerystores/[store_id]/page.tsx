@@ -48,7 +48,6 @@ export default function Page() {
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data.expanded_dashboard, "thing");
       data && SetExpandedDashboard(data.expanded_dashboard);
     }
   }

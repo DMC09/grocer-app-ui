@@ -3,25 +3,6 @@ import { Database } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 
-export async function deleteGroceryStore(
-  supabase: SupabaseClient<Database>,
-  groceryStoreId: number,
-  router: AppRouterInstance
-) {
-  const { data, error } = await supabase
-    .from("grocerystores")
-    .delete()
-    .eq("id", groceryStoreId)
-    .select();
-
-  if (data && data.length > 0) {
-    router.push("/dashboard");
-  }
-  if (error) {
-    throw new Error(error.message);
-  }
-}
-
 export async function addNewGroceryStore(
   supabase: SupabaseClient<Database>,
   newGroceryStoreName: string,
@@ -58,6 +39,58 @@ export async function addNewGroceryStore(
   }
 }
 
+export async function updateGroceryStore(
+  supabase: SupabaseClient<Database>,
+  groceryStoreId: number,
+  newGroceryStoreName: string,
+  imagePath: string | null = null
+) {
+  if (imagePath) {
+    const { data, error } = await supabase
+      .from("grocerystores")
+      .update({ name: newGroceryStoreName, image: imagePath })
+      .eq("id", groceryStoreId)
+      .select()
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "updated settings");
+    }
+  } else {
+    const { data, error } = await supabase
+      .from("grocerystores")
+      .update({ name: newGroceryStoreName })
+      .eq("id", groceryStoreId)
+      .select()
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "updated settings");
+    }
+  }
+}
+
+export async function deleteGroceryStore(
+  supabase: SupabaseClient<Database>,
+  groceryStoreId: number,
+  router: AppRouterInstance
+) {
+  const { data, error } = await supabase
+    .from("grocerystores")
+    .delete()
+    .eq("id", groceryStoreId)
+    .select();
+
+  if (data && data.length > 0) {
+    router.push("/dashboard");
+  }
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function addNewGroceryStoreItem(
   supabase: SupabaseClient<Database>,
   storeId: number,
@@ -80,11 +113,12 @@ export async function addNewGroceryStoreItem(
           image: imagePath,
         },
       ])
-      .select();
+      .select()
+      .single();
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data,"added new item with images and")
+      console.log(data, "added new item with images and");
     }
   } else {
     const { data, error } = await supabase
@@ -98,11 +132,12 @@ export async function addNewGroceryStoreItem(
           select_id: selectId,
         },
       ])
-      .select();
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        console.log(data,"added new item without images and")
-      }
+      .select()
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "added new item without images and");
+    }
   }
 }
