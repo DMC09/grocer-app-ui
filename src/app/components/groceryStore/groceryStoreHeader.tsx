@@ -4,7 +4,6 @@ import { Box, Button, Card, IconButton, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { GroceryStoreType } from "@/types";
-import AddItem from "../utils/addItem";
 import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
 import { theme } from "@/app/utils/theme";
 import { ThemeProvider } from "@emotion/react";
@@ -62,10 +61,6 @@ export default function GroceryStoreHeader(groceryStore: GroceryStoreType) {
             {groceryStoreToRender.name}
           </Typography>
           <Box sx={{ display: "flex" }}>
-            <AddItem
-              store_id={groceryStore?.id}
-              select_id={groceryStore?.select_id}
-            />
             <GroceryStoreHeaderMenu {...groceryStore} />
           </Box>
         </Card>
