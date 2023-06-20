@@ -13,7 +13,7 @@ export default function NoStores() {
           border: 1,
         }}
       >
-        <Typography variant="h4" color="text.secondary">
+        <Typography variant="h4" color="secondary.main">
           No Stores yet, please add one!
         </Typography>
       </Container>
