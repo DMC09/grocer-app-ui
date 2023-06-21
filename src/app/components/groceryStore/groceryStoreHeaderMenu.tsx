@@ -14,6 +14,7 @@ import {
   Menu,
   MenuItem,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
@@ -40,6 +41,7 @@ import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
 } from "@/app/utils/client/image";
+import { theme } from "@/app/utils/theme";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   // Hooks
@@ -50,7 +52,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const [profile, SetProfile] = useState<ProfileType | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [quantity, setQuantity] = useState("");
   const [notes, setNotes] = useState("");
   const [openSettingsDialog, setOpenSettingsDialog] = useState<boolean>(false);
@@ -267,7 +269,100 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </MenuItem>
       </Menu>
       <>
+        {/* Create Dialog */}
         <Dialog
+          fullScreen={fullScreen}
+          open={openCreateDialog}
+          onClose={handleCreateDialogClose}
+        >
+          <DialogTitle>Add new item</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              type="email"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNewGroceryStoreName(e.target.value)}
+              value={newGroceryStoreName}
+            />
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Notes"
+              label="Notes"
+              type="email"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNotes(e.target.value)}
+              value={notes}
+            />
+          </DialogContent>
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
+            }}
+          >
+            <TextField
+             fullWidth
+              type="number"
+              id="outlined-basic"
+              label="Quantity"
+              variant="outlined"
+              onChange={(e) => setQuantity(e.target.value)}
+              value={quantity}
+            />
+            <Card
+              sx={{
+                maxWidth: 150,
+                mt:4
+              }}
+            >
+              {newImage.preview ? (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={newImage.preview}
+                  alt={`Image of `}
+                />
+              ) : (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={
+                    "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+                  }
+                  alt={`Image of `}
+                />
+              )}
+            </Card>
+
+            <Button
+              variant="contained"
+              component="label"
+              startIcon={<AddPhotoAlternateIcon />}
+            >
+              Upload File
+              <input type="file" onChange={handleSetNewImage} hidden />
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCreateDialogClose}>Cancel</Button>
+            <Button onClick={handleSubmitNewItem}>Submit</Button>
+          </DialogActions>
+        </Dialog>
+      </>
+      <>
+        {/* Settings Dialog */}
+        <Dialog
+        fullScreen={fullScreen}
           id="grocery-store-settings-dialog"
           open={openSettingsDialog}
           onClose={handleSettingsDialogClose}
@@ -327,92 +422,6 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           <DialogActions>
             <Button onClick={handleSettingsDialogClose}>Cancel</Button>
             <Button onClick={handleUpdateGroceryStoreSettings}>Save</Button>
-          </DialogActions>
-        </Dialog>
-      </>
-      <>
-        <Dialog open={openCreateDialog} onClose={handleCreateDialogClose}>
-          <DialogTitle>Add new item</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="Name"
-              label="Name"
-              type="email"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setNewGroceryStoreName(e.target.value)}
-              value={newGroceryStoreName}
-            />
-          </DialogContent>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="Notes"
-              label="Notes"
-              type="email"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setNotes(e.target.value)}
-              value={notes}
-            />
-          </DialogContent>
-          <DialogContent>
-            <TextField
-              type="number"
-              id="outlined-basic"
-              label="Quantity"
-              variant="outlined"
-              onChange={(e) => setQuantity(e.target.value)}
-              value={quantity}
-            />
-          </DialogContent>
-          <DialogContent
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexFlow: "column",
-            }}
-          >
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              {newImage.preview ? (
-                <CardMedia
-                  component="img"
-                  height="150"
-                  image={newImage.preview}
-                  alt={`Image of `}
-                />
-              ) : (
-                <CardMedia
-                  component="img"
-                  height="150"
-                  image={
-                    "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
-                  }
-                  alt={`Image of `}
-                />
-              )}
-            </Card>
-
-            <Button
-              variant="contained"
-              component="label"
-              startIcon={<AddPhotoAlternateIcon />}
-            >
-              Upload File
-              <input type="file" onChange={handleSetNewImage} hidden />
-            </Button>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCreateDialogClose}>Cancel</Button>
-            <Button onClick={handleSubmitNewItem}>Submit</Button>
           </DialogActions>
         </Dialog>
       </>
