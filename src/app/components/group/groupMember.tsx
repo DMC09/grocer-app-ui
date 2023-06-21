@@ -1,13 +1,17 @@
 "use client";
 
-import { Typography } from "@mui/material";
+import { GroupMemberType } from "@/types";
+import { Avatar, Typography } from "@mui/material";
 
-export default function GroupMember() {
+export default function GroupMember(member: GroupMemberType) {
   return (
     <>
-      <Typography color="#071236" variant="body2">
-        group member!
-      </Typography>
+      <Avatar
+        sx={{ width: 32, height: 32 }}
+        src={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${member?.avatar_url}`}
+      />
+      <p>{member.first_name}</p>
+      <p>{member.last_name}</p>
     </>
   );
 }

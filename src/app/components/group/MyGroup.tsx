@@ -1,23 +1,19 @@
 "use client";
 
-import { GroupMembers } from "@/types";
+import { GroupMemberType } from "@/types";
 import { Avatar, Box, Typography } from "@mui/material";
+import GroupMember from "./groupMember";
 export default function MyGroup({
   groupMembers,
 }: {
-  groupMembers: GroupMembers[] | [];
+  groupMembers: GroupMemberType[] | [];
 }) {
   console.log("GroupMembers", groupMembers);
 
-  const groupMembersToRender = groupMembers?.map((member: GroupMembers) => {
+  const groupMembersToRender = groupMembers?.map((member: GroupMemberType) => {
     return (
       <>
-        <Avatar
-          sx={{ width: 32, height: 32 }}
-          src={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${member?.avatar_url}`}
-        />
-        <p>{member.first_name}</p>
-        <p>{member.last_name}</p>
+        <GroupMember {...member} />
       </>
     );
   });
