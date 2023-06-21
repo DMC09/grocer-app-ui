@@ -48,7 +48,7 @@ export default function CreateGroup(profile: ProfileType | null) {
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);
       } else {
-        console.log(data, "image uploaded successfully");
+
       }
     }
   }
