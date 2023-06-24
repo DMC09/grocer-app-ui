@@ -1,4 +1,4 @@
-import { ProfileType } from "@/types";
+import { GroceryStoreWithItemsType, ProfileType } from "@/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { mountStoreDevtool } from "simple-zustand-devtools";
@@ -6,19 +6,15 @@ import { devtools, persist } from "zustand/middleware";
 
 interface ProfileState {
   data: ProfileType;
-  editFirstname: (name: string, state: ProfileState) => void;
-}
-interface UseProfileState {
-  data: ProfileType;
 }
 
 type ProfileActions = {
   editLastname: (name: string) => void;
+  resetStore: () => void;
+  setProfileState: (fetchedData: ProfileType) => void;
 };
 
-//should make an empty set for this.
-
-export const useProfileStore = create<ProfileState>()((set) => ({
+const initialProfileState: ProfileState = {
   data: {
     avatar_url: null,
     created_at: "",
@@ -32,44 +28,63 @@ export const useProfileStore = create<ProfileState>()((set) => ({
     select_id: null,
     updated_at: "",
   },
+};
 
-  editFirstname: (firstName, state) =>
-    set({
-      data: { ...state.data, first_name: firstName },
+const profileStore = immer<ProfileState & ProfileActions>((set, get) => ({
+  data: initialProfileState.data,
+  resetStore: () => {
+    set(initialProfileState);
+  },
+  setProfileState: (fetchedData: ProfileType) => {
+    set((state) => {
+      state.data = fetchedData;
+    });
+  },
+  editLastname: (lastName: string) =>
+    set((state) => {
+      state.data.last_name = lastName;
     }),
 }));
 
-export const ProfileStore = create(
-  devtools(
-    persist(
-      immer<UseProfileState & ProfileActions>((set) => ({
-        data: {
-          avatar_url: null,
-          created_at: "",
-          email: "",
-          expanded_dashboard: false,
-          expanded_groceryitem: false,
-          first_name: null,
-          id: "",
-          last_name: null,
-          phone: null,
-          select_id: null,
-          updated_at: "",
-        },
-        editLastname: (lastName: string) =>
-          set((state) => {
-            state.data.last_name = lastName;
-          }),
-      })),
-      {
-        name: "profile store",
-      }
-    )
-  )
+export const useProfileStore = create(
+  devtools(persist(profileStore, { name: "Profile store" }))
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("useProfileStore", useProfileStore);
-
-  mountStoreDevtool("ProfileStore", ProfileStore);
+  mountStoreDevtool("Profile store", useProfileStore);
 }
+
+interface GroceryStoreState {
+  data: GroceryStoreWithItemsType;
+}
+
+type GroceryStoreActions = {
+  resetStore: () => void;
+  setGroceryState: (fetchedData: GroceryStoreWithItemsType) => void;
+};
+
+const initialGroceryStoreState: GroceryStoreState = {
+  data: {
+    created_at: "",
+    id: 0,
+    image: "",
+    name: "",
+    quantity: null,
+    select_id: null,
+    grocerystoreitems: [],
+  },
+};
+
+const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
+  (set, get) => ({
+    data: initialGroceryStoreState.data,
+    resetStore: () => {
+      set(initialGroceryStoreState);
+    },
+    setGroceryState: (fetchedData: GroceryStoreWithItemsType) => {
+      set((state) => {
+        state.data = fetchedData;
+      });
+    },
+  })
+);
