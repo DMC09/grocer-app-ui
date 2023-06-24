@@ -9,51 +9,19 @@ import {
   Divider,
   ListItemIcon,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSupabase } from "./supabase/supabase-provider";
 import { useRouter } from "next/navigation";
-import { ProfileType } from "@/types";
-import { User } from "@supabase/supabase-js";
-import { getProfileData } from "../utils/client/profile";
+import useStore from "../hooks/useStore";
+import { useProfileStore } from "@/state/store";
 
 export default function HeaderMenu() {
   const { supabase, session } = useSupabase();
   const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [user, setUser] = useState<User | undefined>(session?.user);
   const open = Boolean(anchorEl);
-  const [profile, setProfile] = useState<ProfileType | null>(null);
-
-  async function getData() {
-    const data = await getProfileData(supabase, user?.id);
-    data && setProfile(data as ProfileType);
-  }
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("custom-profiles-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "profiles",
-        },
-        (payload) => console.log(payload, "update")
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
-
-  useEffect(() => {
-    if (user?.id) {
-      getData();
-    }
-  }, [supabase]);
+  const profileData = useStore(useProfileStore, (state) => state.data);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -76,11 +44,11 @@ export default function HeaderMenu() {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
       >
-        {profile?.avatar_url && (
+        {profileData?.avatar_url && (
           <Avatar
             sx={{ width: 32, height: 32 }}
             src={
-              `${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}` ||
+              `${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profileData?.avatar_url}` ||
               ""
             }
           />
