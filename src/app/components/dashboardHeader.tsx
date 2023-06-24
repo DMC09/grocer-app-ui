@@ -1,37 +1,24 @@
 "use client";
 
 import { ThemeProvider, Typography, Card, Box } from "@mui/material";
-import { useSupabase } from "./supabase/supabase-provider";
-import { useEffect, useState } from "react";
 import { theme } from "../utils/theme";
-import { User } from "@supabase/supabase-js";
 import AddStore from "./utils/addStore";
-import { getSelectId } from "../utils/client/profile";
+import useStore from "../hooks/useStore";
+import { useProfileStore } from "@/state/store";
 
 export default function DashboardHeader() {
-  const { supabase, session } = useSupabase();
-  const [selectId, setSelectId] = useState<string | null>(null);
-  const [user, SetUser] = useState<User | null | undefined>(session?.user);
+  const newSelectId = useStore(
+    useProfileStore,
+    (state) => state.data.select_id
+  );
 
-  //import utils function
-
-  async function getData() {
-    if (user?.id) {
-      const data = await getSelectId(supabase, user?.id);
-      data && setSelectId(data);
-    }
-  }
-  useEffect(() => {
-    if (session?.user && session?.user.id) {
-      getData();
-    }
-  }, [supabase]);
+  console.log(newSelectId, "select_id from zustand");
 
   return (
     <>
       <ThemeProvider theme={theme}>
         {/* make a contianeher here  */}
-        {selectId && (
+        {newSelectId && (
           <Card
             sx={{
               display: "flex",
@@ -51,7 +38,7 @@ export default function DashboardHeader() {
                 alignItems: "center",
               }}
             >
-              <AddStore select_id={selectId} />
+              <AddStore select_id={newSelectId} />
             </Box>
           </Card>
         )}
