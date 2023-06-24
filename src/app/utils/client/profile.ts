@@ -22,7 +22,6 @@ export async function handleChangeGroceryStoreItemView(
   expanded: boolean,
   profileId: string
 ) {
-  console.log(supabase, expanded, profileId);
   const { data, error } = await supabase
     .from("profiles")
     .update({ expanded_groceryitem: !expanded })
@@ -33,7 +32,7 @@ export async function handleChangeGroceryStoreItemView(
   if (error) {
     throw new Error(error.message);
   } else {
-    console.log(data, "afte chaning view");
+    console.log(data, "after changing view");
   }
 }
 
