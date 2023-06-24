@@ -8,60 +8,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useSupabase } from "../supabase/supabase-provider";
-import {  ProfileType } from "@/types";
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
-
+import useStore from "@/app/hooks/useStore";
+import { useProfileStore } from "@/state/store";
 
 export default function ProfileSettings() {
-  const { supabase, session } = useSupabase();
-  const [profile, setProfile] = useState<ProfileType | null>(null);
-  const [user, setUser] = useState(session?.user);
-
-  //need realtime for this
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("custom-profiles-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "profiles",
-          filter: `id=eq.${user?.id}`,
-        },
-        getProfileData
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
-
-  async function getProfileData() {
-    let { data: profile, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user?.id)
-      .single();
-
-    profile && setProfile(profile as ProfileType);
-  }
-
-  useEffect(() => {
-    getProfileData();
-  }, [supabase]);
-
-  //need to also grab the group Data
-
-  // need to get the stuff from profile
+  const profileData = useStore(useProfileStore, (state) => state.data);
 
   return (
-    profile && (
+    profileData && (
       <>
         <Container
           disableGutters
@@ -90,7 +46,7 @@ export default function ProfileSettings() {
               <Typography align="center" variant="h6">
                 Profile Settings
               </Typography>
-              <EditProfileSettings {...profile} />
+              <EditProfileSettings {...profileData} />
             </Box>
             <Box
               sx={{
@@ -115,12 +71,12 @@ export default function ProfileSettings() {
                     borderRadius: 15,
                   }}
                 >
-                  {profile?.avatar_url && (
+                  {profileData?.avatar_url && (
                     <CardMedia
                       component="img"
                       height={150}
                       width={150}
-                      image={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`}
+                      image={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profileData?.avatar_url}`}
                       alt={`Image of `}
                     />
                   )}
@@ -143,7 +99,7 @@ export default function ProfileSettings() {
                   id="outlined-read-only-input"
                   sx={{ height: "25%", maxHeight: 50 }}
                   label="First name"
-                  value={profile?.first_name}
+                  value={profileData?.first_name}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -153,7 +109,7 @@ export default function ProfileSettings() {
                   id="outlined-read-only-input"
                   label="Last name"
                   sx={{ height: "25%", maxHeight: 50 }}
-                  value={profile?.last_name}
+                  value={profileData?.last_name}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -163,7 +119,7 @@ export default function ProfileSettings() {
                   id="outlined-read-only-input"
                   label="Email"
                   sx={{ height: "25%", maxHeight: 50 }}
-                  value={profile?.email}
+                  value={profileData?.email}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -173,7 +129,7 @@ export default function ProfileSettings() {
                   id="outlined-read-only-input"
                   label="Phone"
                   sx={{ height: "25%", maxHeight: 50 }}
-                  value={profile?.phone}
+                  value={profileData?.phone}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -187,7 +143,7 @@ export default function ProfileSettings() {
               height: "40%",
             }}
           >
-            <GroupSettings {...profile} />
+            <GroupSettings {...profileData} />
           </Box>
         </Container>
       </>
