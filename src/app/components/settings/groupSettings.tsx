@@ -113,11 +113,7 @@ export default function GroupSettings(profile: ProfileType | null) {
   return (
     <>
       {profile && (
-        <Container
-          disableGutters
-          maxWidth={false}
-          sx={{  height: "100%" }}
-        >
+        <Container disableGutters maxWidth={false} sx={{ height: "100%" }}>
           <Box
             sx={{
               height: "15%",
@@ -129,7 +125,6 @@ export default function GroupSettings(profile: ProfileType | null) {
           </Box>
           <Box
             sx={{
-
               height: "85%",
               display: "flex",
               justifyContent: "center",
@@ -137,10 +132,7 @@ export default function GroupSettings(profile: ProfileType | null) {
             }}
           >
             {groups ? (
-              <Box
-              sx={{
-              }}
-              >
+              <Box sx={{}}>
                 <MyGroup groupMembers={otherGroupMembers} />
                 <Button
                   variant="contained"
