@@ -2,8 +2,6 @@
 
 import {
   Session,
-  User,
-  createServerComponentSupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
 import { useSupabase } from "./components/supabase/supabase-provider";
 import { useRouter } from "next/navigation";
