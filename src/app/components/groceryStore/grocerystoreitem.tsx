@@ -29,7 +29,6 @@ export default function GroceryStoreItem({
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
 
-  // need to find a way to compare the current time and if this time is whtin the house then we know it's modified.
   function updatedRecently(timestamp: string | Date | null) {
     if (timestamp) {
       // Convert the timestamp to a Date object.
