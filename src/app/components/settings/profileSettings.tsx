@@ -14,7 +14,7 @@ import useStore from "@/app/hooks/useStore";
 import { useProfileStore } from "@/state/store";
 
 export default function ProfileSettings() {
-  const profileData = useStore(useProfileStore, (state) => state.data);
+  const profileData = useStore(useProfileStore, (state) => state?.data);
 
   return (
     profileData && (
