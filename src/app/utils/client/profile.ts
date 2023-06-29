@@ -1,3 +1,4 @@
+import { useProfileStore } from "@/state/store";
 import { Database } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
@@ -5,7 +6,7 @@ export async function getProfileData(
   supabase: SupabaseClient<Database>,
   userId?: string
 ) {
-  const { data, error } = await supabase
+  const { data: profileData, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", userId)
@@ -13,7 +14,8 @@ export async function getProfileData(
   if (error) {
     throw new Error(error.message);
   } else {
-    return data;
+    useProfileStore.setState({ data: profileData });
+    return profileData;
   }
 }
 
