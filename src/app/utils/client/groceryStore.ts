@@ -1,6 +1,13 @@
 import groceryStore from "@/app/components/groceryStore/groceryStore";
-import { Database } from "@/types";
-import { SupabaseClient } from "@supabase/supabase-js";
+import { useGroceryStoreStore } from "@/state/store";
+import {
+  Database,
+  GroceryStoreItemType,
+  GroceryStoreType,
+  GroceryStoreWithItemsType,
+} from "@/types";
+import { supabase } from "@supabase/auth-ui-shared";
+import { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 
 export async function addNewGroceryStore(
@@ -9,7 +16,6 @@ export async function addNewGroceryStore(
   selectId: string,
   imagePath: string | null = null
 ) {
-  console.log(supabase, newGroceryStoreName, selectId, imagePath);
   if (imagePath) {
     const { data, error } = await supabase
       .from("grocerystores")
@@ -139,5 +145,39 @@ export async function addNewGroceryStoreItem(
     } else {
       console.log(data, "added new item without images and");
     }
+  }
+}
+
+export async function getAllGroceryStoresalt(supabase: SupabaseClient<Database>) {
+
+
+  // console.log(supabase,'supabase?')
+  const { data, error } = await supabase
+    .from("grocerystores")
+    .select("*,grocerystoreitems(*)"); //filter this
+  if (error) {
+    throw new Error(error.message);
+  } else {
+    useGroceryStoreStore.setState({ data: data });
+  }
+}
+
+export function isGroceryStoreDataEmpty(
+  groceryStoreData: GroceryStoreWithItemsType[] | undefined
+): boolean {
+  if (groceryStoreData) {
+    for (const groceryStore of groceryStoreData) {
+      if (
+        groceryStore.created_at === "" ||
+        groceryStore.id === 0 ||
+        groceryStore.select_id === null
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  } else {
+    return true;
   }
 }
