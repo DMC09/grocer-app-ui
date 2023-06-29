@@ -8,9 +8,16 @@ import DashboardHeader from "../components/dashboardHeader";
 import { PostgrestError, User } from "@supabase/supabase-js";
 import GroceryStore from "../components/groceryStore/groceryStore";
 import NoStores from "../components/utils/noStores";
-
+import useStore from "../hooks/useStore";
+import { useGroceryStoreStore } from "@/state/store";
+import {
+  getAllGroceryStoresalt,
+  isGroceryStoreDataEmpty,
+} from "../utils/client/groceryStore";
+import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 
 export default function Dashboard() {
+  // move all listeners to the main supabase listners
   const { supabase, session } = useSupabase();
   const [user, SetUser] = useState<User | null | undefined>(session?.user);
 
@@ -21,6 +28,11 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [expandedDashboard, SetExpandedDashboard] = useState<boolean | null>(
     null
+  );
+
+  const GroceryStoreData = useStore(
+    useGroceryStoreStore,
+    (state) => state?.data
   );
 
   async function getDashboardView() {
@@ -53,7 +65,7 @@ export default function Dashboard() {
   useEffect(() => {
     getAllGroceryStores();
     getDashboardView();
-  }, [supabase,expandedDashboard]);
+  }, [supabase, expandedDashboard]);
 
   useEffect(() => {
     const channel = supabase
@@ -80,53 +92,62 @@ export default function Dashboard() {
     };
   }, [supabase]);
 
+  async function getData() {
+    console.log("getting data!");
+    await getAllGroceryStoresalt(supabase);
+  }
   useEffect(() => {
-    const channel = supabase
-      .channel("custom-profiles-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "profiles",
-        },
-        (payload) => SetExpandedDashboard(payload.new.expanded_dashboard)
-      )
-      .subscribe();
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
+    if (GroceryStoreData) {
+      if (isGroceryStoreDataEmpty(GroceryStoreData)) {
+        console.log("no data cached or in state!");
+        getData();
+      } else {
+        console.log("we have cached data!");
+      }
+    }
+    // getData();
+  }, [GroceryStoreData]);
 
   // TODO: Put this in to a componeont
   const groceryStoresToRender = groceryStores?.map(
     (groceryStore: GroceryStoreType) => {
-      return <GroceryStore key={groceryStore.id} groceryStore={groceryStore}  />;
+      return <GroceryStore key={groceryStore.id} groceryStore={groceryStore} />;
     }
   );
+
+  async function handleRefresh() {
+    console.log("Pull to refresh Choida!");
+    await getData();
+  }
+
   return (
     <>
       <DashboardHeader />
       <Container
-      disableGutters
+        disableGutters
         maxWidth={false}
         sx={{
-          height: '100%',
+          height: "100%",
           display: "flex",
-          border:5,
-          gap:2,
+          border: 5,
+          gap: 2,
           flexFlow: "column",
           alignItems: "center",
           backgroundColor: "primary.main",
           overflowY: "scroll",
         }}
       >
-        {/* this needs it's own container */}
-        {groceryStores && groceryStores.length > 0 ? (
-          groceryStoresToRender
-        ) : (
-          <NoStores />
-        )}
+        <ReactPullToRefresh
+          onRefresh={handleRefresh}
+          style={{ textAlign: "center" }}
+        >
+          {/* this needs it's own container */}
+          {groceryStores && groceryStores.length > 0 ? (
+            groceryStoresToRender
+          ) : (
+            <NoStores />
+          )}
+        </ReactPullToRefresh>
       </Container>
     </>
   );
