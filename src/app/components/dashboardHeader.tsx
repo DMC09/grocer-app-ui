@@ -7,18 +7,17 @@ import useStore from "../hooks/useStore";
 import { useProfileStore } from "@/state/store";
 
 export default function DashboardHeader() {
-  const newSelectId = useStore(
+  const selectId = useStore(
     useProfileStore,
-    (state) => state.data.select_id
+    (state) => state?.data?.select_id
   );
 
-  console.log(newSelectId, "select_id from zustand");
 
   return (
     <>
       <ThemeProvider theme={theme}>
         {/* make a contianeher here  */}
-        {newSelectId && (
+        {selectId && (
           <Card
             sx={{
               display: "flex",
@@ -38,7 +37,7 @@ export default function DashboardHeader() {
                 alignItems: "center",
               }}
             >
-              <AddStore select_id={newSelectId} />
+              <AddStore select_id={selectId} />
             </Box>
           </Card>
         )}
