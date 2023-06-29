@@ -21,7 +21,7 @@ export default function HeaderMenu() {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const profileData = useStore(useProfileStore, (state) => state.data);
+  const profileData = useStore(useProfileStore, (state) => state?.data);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
