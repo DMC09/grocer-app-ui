@@ -29,6 +29,7 @@ interface ProfileState {
       phone: null,
       select_id: null,
       updated_at: "",
+      in_group:false
     },
   };
   
