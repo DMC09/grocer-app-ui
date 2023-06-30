@@ -11,7 +11,8 @@ import {
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
 import useStore from "@/app/hooks/useStore";
-import { useProfileStore } from "@/state/store";
+import { useProfileStore } from "@/state/ProfileStore";
+
 
 export default function ProfileSettings() {
   const profileData = useStore(useProfileStore, (state) => state?.data);

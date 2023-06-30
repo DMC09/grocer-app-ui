@@ -13,7 +13,8 @@ import { useState } from "react";
 import { useSupabase } from "./supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 import useStore from "../hooks/useStore";
-import { useProfileStore } from "@/state/store";
+import { useProfileStore } from "@/state/ProfileStore";
+
 
 export default function HeaderMenu() {
   const { supabase, session } = useSupabase();

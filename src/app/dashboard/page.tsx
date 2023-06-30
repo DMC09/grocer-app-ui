@@ -9,7 +9,7 @@ import { PostgrestError, User } from "@supabase/supabase-js";
 import GroceryStore from "../components/groceryStore/groceryStore";
 import NoStores from "../components/utils/noStores";
 import useStore from "../hooks/useStore";
-import { useGroceryStoreStore } from "@/state/store";
+import { useGroceryStoreStore } from "@/state/GrocerStore";
 import {
   getAllGroceryStoresalt,
   isGroceryStoreDataEmpty,

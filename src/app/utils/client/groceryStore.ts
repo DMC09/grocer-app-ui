@@ -1,5 +1,5 @@
 import groceryStore from "@/app/components/groceryStore/groceryStore";
-import { useGroceryStoreStore } from "@/state/store";
+import { useGroceryStoreStore } from "@/state/GrocerStore";
 import {
   Database,
   GroceryStoreItemType,
