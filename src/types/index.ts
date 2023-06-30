@@ -1,9 +1,11 @@
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
+
 export type Json =
   | string
   | number
   | boolean
   | null
-  | { [key: string]: Json }
+  | { [key: string]: Json | undefined }
   | Json[]
 
 export interface Database {
@@ -146,6 +148,7 @@ export interface Database {
           expanded_groceryitem: boolean
           first_name: string | null
           id: string
+          in_group: boolean | null
           last_name: string | null
           phone: string | null
           select_id: string | null
@@ -159,6 +162,7 @@ export interface Database {
           expanded_groceryitem?: boolean
           first_name?: string | null
           id: string
+          in_group?: boolean | null
           last_name?: string | null
           phone?: string | null
           select_id?: string | null
@@ -172,6 +176,7 @@ export interface Database {
           expanded_groceryitem?: boolean
           first_name?: string | null
           id?: string
+          in_group?: boolean | null
           last_name?: string | null
           phone?: string | null
           select_id?: string | null
@@ -222,15 +227,16 @@ export interface Database {
 
 
 
+
 export type GroceryStoreType = Database['public']['Tables']['grocerystores']['Row']  
 export type GroceryStoreItemType = Database['public']['Tables']['grocerystoreitems']['Row']
 export type ProfileType = Database['public']['Tables']['profiles']['Row']
 export type GroupType = Database['public']['Tables']["groups"]["Row"]
-export type GroupMembers = Database['public']['Views']['group_members_view']['Row']
+export type GroupMemberType = Database['public']['Views']['group_members_view']['Row']
 
 export type GroceryStoreProps = {
   groceryStore: GroceryStoreType;
-  expanded: boolean |null;
+  expanded?: boolean |null;
 };
 export type GroceryStoreItemProps = {
   groceryStoreItem: GroceryStoreItemType;
@@ -239,4 +245,15 @@ export type GroceryStoreItemProps = {
 
 export interface GroceryStoreWithItemsType extends GroceryStoreType {
   grocerystoreitems: GroceryStoreItemType[];
+}
+
+export interface ExpandedGroceryStoreProps {
+  groceryStore: GroceryStoreType;
+  router: AppRouterInstance;
+}
+
+
+export interface MinimalGroceryStoreProps {
+  groceryStore: GroceryStoreType;
+  router: AppRouterInstance;
 }
