@@ -10,49 +10,6 @@ import { mountStoreDevtool } from "simple-zustand-devtools";
 import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 
-// Profiles
-interface ProfileState {
-  data: ProfileType;
-}
-
-type ProfileActions = {
-  editLastname: (name: string) => void;
-  resetStore: () => void;
-  setProfileState: (fetchedData: ProfileType) => void;
-};
-
-const initialProfileState: ProfileState = {
-  data: {
-    avatar_url: null,
-    created_at: "",
-    email: "",
-    expanded_dashboard: false,
-    expanded_groceryitem: false,
-    first_name: null,
-    id: "",
-    last_name: null,
-    phone: null,
-    select_id: null,
-    updated_at: "",
-  },
-};
-
-const profileStore = immer<ProfileState & ProfileActions>((set, get) => ({
-  data: initialProfileState.data,
-  resetStore: () => {
-    set(initialProfileState);
-  },
-  setProfileState: (fetchedData: ProfileType) => {
-    set((state) => {
-      state.data = fetchedData;
-    });
-  },
-  editLastname: (lastName: string) =>
-    set((state) => {
-      state.data.last_name = lastName;
-    }),
-}));
-
 // grocery store
 interface GroceryStoreState {
   data: GroceryStoreWithItemsType[];
@@ -168,16 +125,12 @@ const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
             itemId,
             storeIndex
           );
-
           draft.data[storeIndex].grocerystoreitems.splice(itemIndex, 1);
-          // need the store id too.
-          // const storeIndex = draft.data.findIndex(
-          //   (s) => s.id === item.store_id
-          // );
-
-          // console.log(`adding new item to ${draft.data[storeIndex].name}`);
-
-          // draft.data[storeIndex].grocerystoreitems.push(item);
+          console.log(
+            draft.data[storeIndex].grocerystoreitems,
+            "items for the things?"
+          );
+          console.log(draft.data[storeIndex].name, "name for the items?");
         }, initialGroceryStoreState)
       );
     },
@@ -193,14 +146,6 @@ const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
           );
 
           draft.data[storeIndex].grocerystoreitems[itemIndex] = updatedItemData;
-          // need the store id too.
-          // const storeIndex = draft.data.findIndex(
-          //   (s) => s.id === item.store_id
-          // );
-
-          // console.log(`adding new item to ${draft.data[storeIndex].name}`);
-
-          // draft.data[storeIndex].grocerystoreitems.push(item);
         }, initialGroceryStoreState)
       );
     },
@@ -210,16 +155,9 @@ const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
 export const useGroceryStoreStore = create(
   devtools(persist(GroceryStoreStore, { name: "Grocery Store store" }))
 );
-export const useProfileStore = create(
-  devtools(persist(profileStore, { name: "Profile store" }))
-);
 
 if (process.env.NODE_ENV === "development") {
   mountStoreDevtool("Grocery Store store", useGroceryStoreStore);
-}
-
-if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Profile store", useProfileStore);
 }
 
 export function findGrocerystoreIndex(
