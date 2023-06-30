@@ -3,20 +3,23 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
-import { useGroceryStoreStore, useProfileStore } from "@/state/store";
-import { GroceryStoreItemType, GroceryStoreWithItemsType, ProfileType } from "@/types";
+import { useGroceryStoreStore } from "@/state/GrocerStore";
+import {
+  GroceryStoreItemType,
+  GroceryStoreWithItemsType,
+  ProfileType,
+} from "@/types";
 import { getProfileData } from "@/app/utils/client/profile";
 import useStore from "@/app/hooks/useStore";
 import {
   deleteGroceryStore,
   getAllGroceryStoresalt,
 } from "@/app/utils/client/groceryStore";
+import { useProfileStore } from "@/state/ProfileStore";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
 // in order to re-render when the user's session changes
-
-// one channle per tings so just move them here.
 // #elegant!
 export default function SupabaseListener({
   serverAccessToken,
@@ -26,8 +29,12 @@ export default function SupabaseListener({
   const { supabase, session } = useSupabase();
   const router = useRouter();
 
+  //Profile
   const setProfileState = useProfileStore((state) => state.setProfileState);
-  const resetStore = useProfileStore((state) => state.resetStore);
+  const resetProfileState = useProfileStore((state) => state.resetStore);
+
+  // Grocery store
+  const resetGroceryState = useGroceryStoreStore((state) => state.resetStore);
 
   const addNewGroceryStore = useGroceryStoreStore(
     (state) => state.addNewGroceryStore
@@ -39,7 +46,12 @@ export default function SupabaseListener({
     (state) => state.updateGroceryStore
   );
 
+  // Grocery items
+
   const addNewitem = useGroceryStoreStore((state) => state.insertGroceryItem);
+  const deleteItem = useGroceryStoreStore((state) => state.deleteGroceryItem);
+  const updateItem = useGroceryStoreStore((state) => state.updateGroceryItem);
+
   const selectId = useStore(useProfileStore, (state) => state?.data?.select_id);
   const MINUTE_MS = 60000 * 15; // every  5  minute
 
@@ -48,7 +60,7 @@ export default function SupabaseListener({
   }
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Fetching the data every minte?");
+      console.log("Refetching data now!");
       getGroceryData();
     }, MINUTE_MS);
 
@@ -76,7 +88,7 @@ export default function SupabaseListener({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [session?.user?.id, setProfileState, supabase]);
 
   useEffect(() => {
     const channel = supabase
@@ -146,20 +158,24 @@ export default function SupabaseListener({
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "grocerystoreitems" },
         (payload) => {
-          console.log(payload, "After an insert")
-          addNewitem(payload.new as GroceryStoreItemType)
+          console.log(payload, "After an insert");
+          addNewitem(payload.new as GroceryStoreItemType);
         }
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "grocerystoreitems" },
-        (payload) => console.log(payload, "After an update")
+        (payload) => {
+          console.log(payload, "After an update");
+          updateItem(payload.new as GroceryStoreItemType);
+        }
       )
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "grocerystoreitems" },
         (payload) => {
           console.log(payload, "After a delete an item!");
+          deleteItem(payload.old.id);
         }
       )
       .subscribe();
@@ -167,7 +183,7 @@ export default function SupabaseListener({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [addNewitem, supabase]);
+  }, [addNewitem, deleteItem, supabase, updateItem]);
 
   useEffect(() => {
     // what there is no session, redirect to the login
@@ -183,7 +199,8 @@ export default function SupabaseListener({
       if (event == "SIGNED_OUT" || !session) {
         router.push("/login");
         console.log("Signed Out Event in the listener or no session detected ");
-        resetStore();
+        resetGroceryState();
+        resetProfileState();
       }
     });
 
@@ -201,7 +218,7 @@ export default function SupabaseListener({
     return () => {
       subscription.unsubscribe();
     };
-  }, [serverAccessToken, router, supabase]);
+  }, [serverAccessToken, router, supabase, resetProfileState, resetGroceryState]);
 
   return null;
 }
