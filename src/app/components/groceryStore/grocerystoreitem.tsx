@@ -29,7 +29,7 @@ export default function GroceryStoreItem({
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
 
-  function updatedRecently(timestamp: string | Date | null) {
+  async function updatedRecently(timestamp: string | Date | null) {
     if (timestamp) {
       // Convert the timestamp to a Date object.
       const passedDate = new Date(timestamp).getTime();
