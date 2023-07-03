@@ -16,89 +16,22 @@ import {
 } from "../utils/client/groceryStore";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 
+
 export default function Dashboard() {
-  // move all listeners to the main supabase listners
-  const { supabase, session } = useSupabase();
-  const [user, SetUser] = useState<User | null | undefined>(session?.user);
-
-  const [groceryStores, setGroceryStores] = useState<
-    GroceryStoreType[] | [] | null
-  >(null);
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [expandedDashboard, SetExpandedDashboard] = useState<boolean | null>(
-    null
-  );
-
-  const GroceryStoreData = useStore(
+  const groceryStoreData = useStore(
     useGroceryStoreStore,
     (state) => state?.data
   );
+  const { supabase, session } = useSupabase();
 
-  async function getDashboardView() {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("expanded_dashboard")
-      .eq("id", session?.user.id)
-      .single();
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      data && SetExpandedDashboard(data.expanded_dashboard);
-    }
-  }
-
-  const getAllGroceryStores = async () => {
-    const {
-      data,
-      error,
-    }: { data: GroceryStoreType[] | [] | null; error: PostgrestError | null } =
-      await supabase.from("grocerystores").select("*");
-    if (data) {
-      setIsLoading(false);
-      setGroceryStores(data);
-    } else if (error) {
-      throw new Error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    getAllGroceryStores();
-    getDashboardView();
-  }, [supabase, expandedDashboard]);
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("custom-grocerystore-channel")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "grocerystores" },
-        getAllGroceryStores
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "grocerystores" },
-        getAllGroceryStores
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "grocerystores" },
-        getAllGroceryStores
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
 
   async function getData() {
     console.log("getting data!");
     await getAllGroceryStoresalt(supabase);
   }
   useEffect(() => {
-    if (GroceryStoreData) {
-      if (isGroceryStoreDataEmpty(GroceryStoreData)) {
+    if (groceryStoreData) {
+      if (isGroceryStoreDataEmpty(groceryStoreData)) {
         console.log("no data cached or in state!");
         getData();
       } else {
@@ -106,10 +39,10 @@ export default function Dashboard() {
       }
     }
     // getData();
-  }, [GroceryStoreData]);
+  }, [groceryStoreData]);
 
   // TODO: Put this in to a componeont
-  const groceryStoresToRender = groceryStores?.map(
+  const groceryStoresToRender = groceryStoreData?.map(
     (groceryStore: GroceryStoreType) => {
       return <GroceryStore key={groceryStore.id} groceryStore={groceryStore} />;
     }
@@ -142,7 +75,7 @@ export default function Dashboard() {
           style={{ textAlign: "center" }}
         >
           {/* this needs it's own container */}
-          {groceryStores && groceryStores.length > 0 ? (
+          {groceryStoreData && groceryStoreData.length > 0 ? (
             groceryStoresToRender
           ) : (
             <NoStores />
