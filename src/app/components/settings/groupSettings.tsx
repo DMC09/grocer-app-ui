@@ -11,85 +11,27 @@ import { useSupabase } from "../supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
 import JoinGroup from "../utils/joinGroup";
 import CreateGroup from "../utils/createGroup";
-import { GroupType, ProfileType } from "@/types";
+import { GroupMemberType, GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/leaveGroup";
 import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
+import { useProfileStore } from "@/state/ProfileStore";
+import { getGroupData } from "@/app/utils/client/group";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
   const [shareCode, setShareCode] = useState<string | null>(null);
-  const [groups, setGroups] = useState<GroupType | null>(null);
-  const [otherGroupMembers, setOtherGroupMembers] = useState<any>(null);
+  const resetGroup = useProfileStore((state) => state.resetGroupState);
+  const groupMembers = useProfileStore((state) => state.groupData);
 
   useEffect(() => {
-    const channel = supabase
-      .channel("custom-groups-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "groups",
-        },
-        getGroupsData
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "groups",
-        },
-        getGroupsData
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "groups",
-        },
-        getGroupsData
-      )
-
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    if (profile?.in_group) {
+      getData();
+    }
   }, [supabase]);
 
-  async function getGroupsData() {
-    let { data: groups, error } = await supabase
-      .from("groups")
-      .select("*")
-      .eq("profile_id", profile?.id)
-      .single();
-    console.log(groups);
-
-    if (groups) {
-      setGroups(groups as GroupType | null);
-      await getGroupsView();
-    } else if (groups === null) {
-      setGroups(null);
-    }
-  }
-  useEffect(() => {
-    getGroupsData();
-  }, [supabase]);
-
-  async function getGroupsView() {
-    const { data, error } = await supabase
-      .from("group_members_view")
-      .select("*");
-
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      setOtherGroupMembers(data);
-      console.log(data, "view data");
-    }
+  async function getData() {
+    await getGroupData(supabase);
   }
 
   async function handleShareCode() {
@@ -131,9 +73,9 @@ export default function GroupSettings(profile: ProfileType | null) {
               alignItems: "center",
             }}
           >
-            {groups ? (
+            {profile.in_group ? (
               <Box sx={{}}>
-                <MyGroup groupMembers={otherGroupMembers} />
+                <MyGroup groupMembers={groupMembers} />
                 <Button
                   variant="contained"
                   onClick={handleShareCode}
