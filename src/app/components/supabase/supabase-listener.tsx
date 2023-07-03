@@ -16,6 +16,7 @@ import {
   getAllGroceryStoresalt,
 } from "@/app/utils/client/groceryStore";
 import { useProfileStore } from "@/state/ProfileStore";
+import { getGroupData } from "@/app/utils/client/group";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -58,6 +59,25 @@ export default function SupabaseListener({
   async function getGroceryData() {
     await getAllGroceryStoresalt(supabase);
   }
+
+  useEffect(() => {
+    const selectIdWatcher = useProfileStore.subscribe(
+      (state) => state.data.select_id,
+      (value, oldValue) => {
+        resetGroceryState();
+        if (session?.user && session?.user && session?.user?.id) {
+          getProfileData(supabase, session?.user?.id);
+          //grab the ne wdata
+        }
+        console.log(value, oldValue, "Select Id changed!");
+      }
+    );
+
+    return () => {
+      selectIdWatcher();
+    };
+  }, [supabase]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       console.log("Refetching data now!");
@@ -103,6 +123,7 @@ export default function SupabaseListener({
         },
         (payload) => {
           console.log(payload, "We just inserted a grocery store!");
+
           if (payload && payload?.new && payload?.new?.id)
             addNewGroceryStore(payload.new as GroceryStoreWithItemsType);
         }
@@ -262,7 +283,13 @@ export default function SupabaseListener({
     return () => {
       subscription.unsubscribe();
     };
-  }, [serverAccessToken, router, supabase, resetProfileState, resetGroceryState]);
+  }, [
+    serverAccessToken,
+    router,
+    supabase,
+    resetProfileState,
+    resetGroceryState,
+  ]);
 
   return null;
 }
