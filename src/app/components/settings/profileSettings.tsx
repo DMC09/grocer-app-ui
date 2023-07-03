@@ -12,23 +12,32 @@ import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
 import useStore from "@/app/hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
-
+import { useSupabase } from "../supabase/supabase-provider";
+import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
+import { getProfileData } from "@/app/utils/client/profile";
+import { getGroupData } from "@/app/utils/client/group";
 
 export default function ProfileSettings() {
   const profileData = useStore(useProfileStore, (state) => state?.data);
+  const { supabase, session } = useSupabase();
+
+  async function handleRefresh(): Promise<void> {
+    // throw new Error("Function not implemented.");
+    console.log("refreshing data");
+    await getProfileData(supabase, session?.user?.id);
+    await getGroupData(supabase);
+  }
 
   return (
-    profileData && (
-      <>
-        <Container
-          disableGutters
-          maxWidth={false}
-          sx={{ borderColor: "green" }}
-        >
+    <>
+      <ReactPullToRefresh
+        onRefresh={handleRefresh}
+        style={{ textAlign: "center" }}
+      >
+        <Container disableGutters sx={{}}>
           <Box
             sx={{
               height: "60%",
-
               display: "flex",
               flexFlow: "column",
               justifyContent: "center",
@@ -47,12 +56,15 @@ export default function ProfileSettings() {
               <Typography align="center" variant="h6">
                 Profile Settings
               </Typography>
-              <EditProfileSettings {...profileData} />
+              {profileData && <EditProfileSettings {...profileData} />}
             </Box>
             <Box
               sx={{
                 height: "85%",
                 display: "flex",
+                flexFlow: "column",
+                justifyContent: "center",
+                alignItems: "center",
                 width: "100%",
               }}
             >
@@ -60,6 +72,7 @@ export default function ProfileSettings() {
                 sx={{
                   width: "30%",
                   display: "flex",
+                  p: 2,
                   flexFlow: "column",
                   justifyContent: "center",
                   alignItems: "center",
@@ -92,13 +105,18 @@ export default function ProfileSettings() {
                   justifyContent: "center",
                   alignItems: "center",
                   flexWrap: "wrap",
-                  gap: 1,
+                  gap: 4,
                   p: 1,
                 }}
               >
                 <TextField
                   id="outlined-read-only-input"
-                  sx={{ height: "25%", maxHeight: 50 }}
+                  sx={{
+                    height: "25%",
+                    maxHeight: 50,
+                    width: "75%",
+                    maxWidth: 250,
+                  }}
                   label="First name"
                   value={profileData?.first_name}
                   InputProps={{
@@ -109,7 +127,12 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Last name"
-                  sx={{ height: "25%", maxHeight: 50 }}
+                  sx={{
+                    height: "25%",
+                    maxHeight: 50,
+                    width: "75%",
+                    maxWidth: 250,
+                  }}
                   value={profileData?.last_name}
                   InputProps={{
                     readOnly: true,
@@ -119,7 +142,12 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Email"
-                  sx={{ height: "25%", maxHeight: 50 }}
+                  sx={{
+                    height: "25%",
+                    maxHeight: 50,
+                    width: "75%",
+                    maxWidth: 250,
+                  }}
                   value={profileData?.email}
                   InputProps={{
                     readOnly: true,
@@ -129,7 +157,12 @@ export default function ProfileSettings() {
                 <TextField
                   id="outlined-read-only-input"
                   label="Phone"
-                  sx={{ height: "25%", maxHeight: 50 }}
+                  sx={{
+                    height: "25%",
+                    maxHeight: 50,
+                    width: "75%",
+                    maxWidth: 250,
+                  }}
                   value={profileData?.phone}
                   InputProps={{
                     readOnly: true,
@@ -144,10 +177,10 @@ export default function ProfileSettings() {
               height: "40%",
             }}
           >
-            <GroupSettings {...profileData} />
+            {profileData && <GroupSettings {...profileData} />}
           </Box>
         </Container>
-      </>
-    )
+      </ReactPullToRefresh>
+    </>
   );
 }
