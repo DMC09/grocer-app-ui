@@ -186,6 +186,50 @@ export default function SupabaseListener({
   }, [addNewitem, deleteItem, supabase, updateItem]);
 
   useEffect(() => {
+    const channel = supabase
+      .channel("custom-grouping-channel")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "groups",
+        },
+        () => {
+          getGroupData(supabase);
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "groups",
+        },
+        () => {
+          getGroupData(supabase);
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "groups",
+        },
+        () => {
+          getGroupData(supabase);
+        }
+      )
+
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+
+  useEffect(() => {
     // what there is no session, redirect to the login
     //because of this code block I am constantly getting the profile data and setting if I make a change...
     supabase.auth.onAuthStateChange(async (event, session) => {
