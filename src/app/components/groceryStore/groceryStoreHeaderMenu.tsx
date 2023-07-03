@@ -29,10 +29,6 @@ import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { User } from "@supabase/supabase-js";
 import {
-  getProfileData,
-  handleChangeGroceryStoreItemView,
-} from "@/app/utils/client/profile";
-import {
   addNewGroceryStoreItem,
   deleteGroceryStore,
   updateGroceryStore,
@@ -42,14 +38,19 @@ import {
   handleGroceryStoreImageUpload,
 } from "@/app/utils/client/image";
 import { theme } from "@/app/utils/theme";
+import useStore from "@/app/hooks/useStore";
+import { useProfileStore } from "@/state/ProfileStore";
+import { handleChangeGroceryStoreItemView } from "@/app/utils/client/profile";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
+  const profileData = useStore(useProfileStore, (state) => state?.data);
+
+  // bring in the zustand stuff.
   // Hooks
   const { supabase, session } = useSupabase();
   const router = useRouter();
   // State
   const [user, SetUser] = useState<User | null | undefined>(session?.user);
-  const [profile, SetProfile] = useState<ProfileType | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -82,13 +83,6 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
   async function handleCreateDialogClose() {
     setOpenCreateDialog(false);
-  }
-
-  async function getData() {
-    const data = await getProfileData(supabase, user?.id);
-    if (data) {
-      SetProfile(data);
-    }
   }
 
   async function handleDelete() {
@@ -146,13 +140,12 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
 
   async function handleChangeView() {
-    if (profile?.expanded_groceryitem !== undefined) {
+    if (profileData?.expanded_groceryitem !== undefined) {
       await handleChangeGroceryStoreItemView(
         supabase,
-        profile?.expanded_groceryitem,
-        profile?.id
+        profileData?.expanded_groceryitem,
+        profileData?.id
       );
-      await getData();
     }
   }
 
@@ -186,12 +179,6 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       setNewImage({ preview: "", raw: "" });
     }
   }
-
-  useEffect(() => {
-    if (session?.user) {
-      getData();
-    }
-  }, [supabase]);
 
   return (
     <>
@@ -255,7 +242,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </MenuItem>
         <MenuItem onClick={handleChangeView}>
           <ListItemIcon>
-            {profile?.expanded_groceryitem ? <GridViewIcon /> : <TocIcon />}
+            {profileData?.expanded_groceryitem ? <GridViewIcon /> : <TocIcon />}
           </ListItemIcon>
           Change View
         </MenuItem>
@@ -311,7 +298,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             }}
           >
             <TextField
-             fullWidth
+              fullWidth
               type="number"
               id="outlined-basic"
               label="Quantity"
@@ -322,7 +309,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             <Card
               sx={{
                 maxWidth: 150,
-                mt:4
+                mt: 4,
               }}
             >
               {newImage.preview ? (
@@ -362,7 +349,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       <>
         {/* Settings Dialog */}
         <Dialog
-        fullScreen={fullScreen}
+          fullScreen={fullScreen}
           id="grocery-store-settings-dialog"
           open={openSettingsDialog}
           onClose={handleSettingsDialogClose}
