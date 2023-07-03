@@ -24,6 +24,7 @@ export default function LeaveGroup() {
   return (
     <>
       <Button
+        sx={{ height: "fit-content",fontSize:"small" }}
         variant="contained"
         onClick={handleLeaveGroup}
         endIcon={<ExitToAppIcon />}
