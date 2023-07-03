@@ -16,28 +16,18 @@ import LeaveGroup from "../utils/leaveGroup";
 import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { useProfileStore } from "@/state/ProfileStore";
-import { getGroupData } from "@/app/utils/client/group";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
   const [shareCode, setShareCode] = useState<string | null>(null);
-  const resetGroup = useProfileStore((state) => state.resetGroupState);
   const groupMembers = useProfileStore((state) => state.groupData);
-
-  useEffect(() => {
-    if (profile?.in_group) {
-      getData();
-    }
-  }, [supabase]);
-
-  async function getData() {
-    await getGroupData(supabase);
-  }
 
   async function handleShareCode() {
     const uuid = crypto.randomUUID();
     const uuidWithoutHyphens = uuid.replace(/-/g, "");
-    const firstFourCharacters = uuidWithoutHyphens.substring(0, 4);
+    const firstFourCharacters = uuidWithoutHyphens
+      .substring(0, 4)
+      .toLocaleUpperCase();
 
     const { data, error } = await supabase
       .from("groups")
@@ -69,24 +59,33 @@ export default function GroupSettings(profile: ProfileType | null) {
             sx={{
               height: "85%",
               display: "flex",
+              py:4,
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             {profile.in_group ? (
-              <Box sx={{}}>
+              <Box sx={{ width:"80%"}}>
                 <MyGroup groupMembers={groupMembers} />
-                <Button
-                  variant="contained"
-                  onClick={handleShareCode}
-                  endIcon={<LibraryAddSharpIcon />}
+                <Box
+                  sx={{
+                    display: "flex",
+                    p: 1,
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                  }}
                 >
-                  Generate Share Code
-                </Button>
-                <Typography>{`The Share Code is ${
-                  shareCode ? shareCode : "not generated"
-                }`}</Typography>
-                <LeaveGroup />
+                  <Button
+                    sx={{ height: "fit-content",fontSize:"small" }}
+                    variant="contained"
+                    onClick={handleShareCode}
+                    endIcon={<LibraryAddSharpIcon />}
+                  >
+                    Share Code
+                  </Button>
+                  <Typography>{shareCode}</Typography>
+                  <LeaveGroup />
+                </Box>
               </Box>
             ) : (
               <Box
