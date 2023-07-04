@@ -36,6 +36,7 @@ const initialProfileState: ProfileState = {
   },
   groupData: [
     {
+      id:null,
       avatar_url: null,
       email: null,
       first_name: null,
