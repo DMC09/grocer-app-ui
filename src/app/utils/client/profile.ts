@@ -1,6 +1,6 @@
 
 import { useProfileStore } from "@/state/ProfileStore";
-import { Database } from "@/types";
+import { Database, ProfileType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getProfileData(
@@ -15,7 +15,7 @@ export async function getProfileData(
   if (error) {
     throw new Error(error.message);
   } else {
-    useProfileStore.setState({ data: profileData });
+    useProfileStore.setState({ data: profileData as ProfileType });
     return profileData;
   }
 }
