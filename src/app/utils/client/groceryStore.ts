@@ -148,9 +148,9 @@ export async function addNewGroceryStoreItem(
   }
 }
 
-export async function getAllGroceryStoresalt(supabase: SupabaseClient<Database>) {
-
-
+export async function getAllGroceryStoresalt(
+  supabase: SupabaseClient<Database>
+) {
   // console.log(supabase,'supabase?')
   const { data, error } = await supabase
     .from("grocerystores")
@@ -158,7 +158,9 @@ export async function getAllGroceryStoresalt(supabase: SupabaseClient<Database>)
   if (error) {
     throw new Error(error.message);
   } else {
-    useGroceryStoreStore.setState({ data: data });
+    useGroceryStoreStore.setState({
+      data: data as GroceryStoreWithItemsType[],
+    }); 
   }
 }
 
