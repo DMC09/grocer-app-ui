@@ -1,8 +1,7 @@
 "use client";
-import Header from "../components/header";
 import { Container, ThemeProvider } from "@mui/material";
 import { theme } from "../utils/theme";
-import DashboardHeader from "../components/dashboardHeader";
+
 
 export default function DashboardLayout({
   children, 
@@ -13,11 +12,13 @@ export default function DashboardLayout({
     <>
       <ThemeProvider theme={theme}>
         <Container
-
+disableGutters
 maxWidth={false}
           sx={{
   height:"100vh",
-  backgroundColor:"primary.main"
+  backgroundColor:"primary.dark",
+  
+
           }}
         >
           {children}

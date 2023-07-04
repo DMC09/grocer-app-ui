@@ -8,9 +8,6 @@ export default function LeaveGroup() {
   const { supabase, session } = useSupabase();
 
   async function handleLeaveGroup() {
-    // need to delete myself from the group;
-    // need a useEffect to see if there is a filter using my profile id.
-
     const { data, error } = await supabase
       .from("groups")
       .delete()
@@ -27,6 +24,7 @@ export default function LeaveGroup() {
   return (
     <>
       <Button
+        sx={{ height: "fit-content",fontSize:"small" }}
         variant="contained"
         onClick={handleLeaveGroup}
         endIcon={<ExitToAppIcon />}

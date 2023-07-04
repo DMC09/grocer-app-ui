@@ -10,17 +10,18 @@ import {
   DialogTitle,
   IconButton,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
-import image from "next/image";
 import { ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { preProcessFile } from "typescript";
 import { useSupabase } from "../supabase/supabase-provider";
+import { theme } from "@/app/utils/theme";
 
 export default function EditProfileSettings(profile: ProfileType | null) {
   const { supabase } = useSupabase();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [firstName, setFirstName] = useState<string | null | undefined>(
     profile?.first_name
   );
@@ -66,15 +67,13 @@ export default function EditProfileSettings(profile: ProfileType | null) {
       await handleImageUpload();
       const { data, error } = await supabase
         .from("profiles")
-        .update(
-          {
-            first_name: firstName,
-            last_name: lastName,
-            updated_at: now,
-            avatar_url: imagePath,
-            phone,
-          },
-        )
+        .update({
+          first_name: firstName,
+          last_name: lastName,
+          updated_at: now,
+          avatar_url: imagePath,
+          phone,
+        })
         .eq("id", profile?.id)
         .select();
 
@@ -86,14 +85,12 @@ export default function EditProfileSettings(profile: ProfileType | null) {
     } else {
       const { data, error } = await supabase
         .from("profiles")
-        .update(
-          {
-            first_name: firstName,
-            last_name: lastName,
-            updated_at: now,
-            phone,
-          },
-        )
+        .update({
+          first_name: firstName,
+          last_name: lastName,
+          updated_at: now,
+          phone,
+        })
         .eq("id", profile?.id)
         .select();
 
@@ -131,7 +128,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
       >
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
         <DialogTitle>Edit Profile Settings</DialogTitle>
         <DialogContent>
           <TextField
@@ -167,12 +164,12 @@ export default function EditProfileSettings(profile: ProfileType | null) {
           />
         </DialogContent>
         <DialogContent
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexFlow: "column",
-        }}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexFlow: "column",
+          }}
         >
           {image.raw ? (
             <Card

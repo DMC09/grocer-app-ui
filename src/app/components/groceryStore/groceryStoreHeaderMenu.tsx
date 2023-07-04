@@ -1,7 +1,6 @@
 "use client";
-
+// Imports
 import {
-  Avatar,
   Button,
   Card,
   CardMedia,
@@ -15,154 +14,169 @@ import {
   Menu,
   MenuItem,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import GridViewIcon from "@mui/icons-material/GridView";
+import TocIcon from "@mui/icons-material/Toc";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Settings, Logout } from "@mui/icons-material";
+import { Settings } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useRouter } from "next/navigation";
 import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { User } from "@supabase/supabase-js";
+import {
+  addNewGroceryStoreItem,
+  deleteGroceryStore,
+  updateGroceryStore,
+} from "@/app/utils/client/groceryStore";
+import {
+  generateGroceryStoreItemImagePath,
+  handleGroceryStoreImageUpload,
+} from "@/app/utils/client/image";
+import { theme } from "@/app/utils/theme";
+import useStore from "@/app/hooks/useStore";
+import { useProfileStore } from "@/state/ProfileStore";
+import { handleChangeGroceryStoreItemView } from "@/app/utils/client/profile";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
+  const profileData = useStore(useProfileStore, (state) => state?.data);
+
+  // bring in the zustand stuff.
+  // Hooks
   const { supabase, session } = useSupabase();
   const router = useRouter();
-
+  // State
+  const [user, SetUser] = useState<User | null | undefined>(session?.user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [user, SetUser] = useState<User | null | undefined>(session?.user);
-  const [profile, SetProfile] = useState<ProfileType | null>(null);
-  const [image, setImage] = useState({
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [quantity, setQuantity] = useState("");
+  const [notes, setNotes] = useState("");
+  const [openSettingsDialog, setOpenSettingsDialog] = useState<boolean>(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [updatedGroceryStoreName, setUpdatedGroceryStoreName] =
+    useState<string>(groceryStore.name);
+  const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>();
+  const [updatedImage, setUpdatedImage] = useState({
     preview: groceryStore?.image,
     raw: "",
   });
-  const [imagePath, setImagePath] = useState<string | null>(null);
-  const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>(
-    groceryStore.name
-  );
+  const [newImage, setNewImage] = useState({
+    preview: "",
+    raw: "",
+  });
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  // Need to seperate dialogs for this,including seperate the state
+  async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
+  }
+  async function handleCloseMenu() {
     setAnchorEl(null);
-  };
-  const handleDialogClose = () => {
-    setOpenDialog(false);
-  };
-
-  async function getProfileData() {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user?.id)
-      .single();
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      SetProfile(data);
-    }
+  }
+  async function handleSettingsDialogClose() {
+    setOpenSettingsDialog(false);
+  }
+  async function handleCreateDialogClose() {
+    setOpenCreateDialog(false);
   }
 
-  const handleDelete = async () => {
-    const { data, error } = await supabase
-      .from("grocerystores")
-      .delete()
-      .eq("id", groceryStore.id)
-      .select();
-
-    if (data && data.length > 0) {
-      router.push("/dashboard");
-    }
-    if (error) {
-      throw new Error(error.message);
-    }
-  };
-  async function generateImagePath(select_id: string) {
-    //Formula is last 16 characters of select_id + Current DateTime in seconds/
-    const lastPartOfSelectId = select_id?.slice(-16);
-    const currentTimeStamp = new Date().getTime();
-
-    setImagePath(
-      `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`
-    );
+  async function handleDelete() {
+    await deleteGroceryStore(supabase, groceryStore.id, router);
   }
 
-  async function handleImageSet(event: any) {
+  async function handleSetUpdatedImage(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
-      generateImagePath(groceryStore?.select_id);
-      setImage({
+      const generatedImagePath = await generateGroceryStoreItemImagePath(
+        groceryStore?.select_id
+      );
+      setImagePath(generatedImagePath);
+      setUpdatedImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
       });
     }
   }
 
-  async function handleImageUpload() {
-    if (image.raw && imagePath) {
-      const { data, error } = await supabase.storage
-        .from("grocerystore")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
-        .upload(imagePath, image.raw);
-      if (error) {
-        throw new Error(`Error uploading image ${error.message}`);
-      } else {
-        console.log(data, "image uploaded successfully");
-      }
+  async function handleSetNewImage(event: any) {
+    if (event.target.files.length && groceryStore?.select_id) {
+      const generatedImagePath = await generateGroceryStoreItemImagePath(
+        groceryStore?.select_id
+      );
+      setImagePath(generatedImagePath);
+      setNewImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
     }
   }
 
-  useEffect(() => {
-    if (session?.user) {
-      getProfileData();
-    }
-  }, [supabase]);
-
-  // need to be able to upload the image an then on the save just send the image path.
-
-  async function handleSave() {
-    if (image.raw) {
-      await handleImageUpload();
-      const { data, error } = await supabase
-        .from("grocerystores")
-        .update({ name: newGroceryStoreName, image: imagePath })
-        .eq("id", groceryStore.id)
-        .single();
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        setOpenDialog(false);
-      }
+  async function handleUpdateGroceryStoreSettings() {
+    if (updatedImage.raw && imagePath) {
+      await handleGroceryStoreImageUpload(
+        supabase,
+        imagePath,
+        updatedImage?.raw
+      );
+      await updateGroceryStore(
+        supabase,
+        groceryStore.id,
+        updatedGroceryStoreName,
+        imagePath
+      );
+      setOpenSettingsDialog(false);
     } else {
-      const { data, error } = await supabase
-        .from("grocerystores")
-        .update({ name: newGroceryStoreName })
-        .eq("id", groceryStore.id)
-        .single();
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        setOpenDialog(false);
-      }
+      await updateGroceryStore(
+        supabase,
+        groceryStore.id,
+        updatedGroceryStoreName
+      );
+      setOpenSettingsDialog(false);
     }
   }
 
   async function handleChangeView() {
-    const { data, error } = await supabase
-      .from("profiles")
-      .update({ expanded_groceryitem: !profile?.expanded_groceryitem })
-      .eq("id", profile?.id)
-      .single();
+    if (profileData?.expanded_groceryitem !== undefined) {
+      await handleChangeGroceryStoreItemView(
+        supabase,
+        profileData?.expanded_groceryitem,
+        profileData?.id
+      );
+    }
+  }
 
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      await getProfileData();
+  async function handleSubmitNewItem() {
+    if (groceryStore.select_id && newGroceryStoreName) {
+      if (newImage.raw && imagePath) {
+        await handleGroceryStoreImageUpload(supabase, imagePath, newImage?.raw);
+        await addNewGroceryStoreItem(
+          supabase,
+          groceryStore.id,
+          newGroceryStoreName,
+          notes,
+          Number(quantity),
+          groceryStore.select_id,
+          imagePath
+        );
+      } else {
+        await addNewGroceryStoreItem(
+          supabase,
+          groceryStore.id,
+          newGroceryStoreName,
+          notes,
+          Number(quantity),
+          groceryStore.select_id
+        );
+      }
+      setOpenCreateDialog(false);
+      setNewGroceryStoreName("");
+      setNotes("");
+      setQuantity("");
+      setNewImage({ preview: "", raw: "" });
     }
   }
 
@@ -175,7 +189,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         aria-controls={open ? "long-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={handleOpenMenu}
       >
         <MoreVertIcon />
       </IconButton>
@@ -183,8 +197,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
-        onClose={handleClose}
-        onClick={handleClose}
+        onClose={handleCloseMenu}
+        onClick={handleCloseMenu}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -214,7 +228,13 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={() => setOpenDialog(true)}>
+        <MenuItem onClick={() => setOpenCreateDialog(true)}>
+          <ListItemIcon>
+            <ControlPointIcon fontSize="small" />
+          </ListItemIcon>
+          Add Item
+        </MenuItem>
+        <MenuItem onClick={() => setOpenSettingsDialog(true)}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
@@ -222,7 +242,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </MenuItem>
         <MenuItem onClick={handleChangeView}>
           <ListItemIcon>
-            <GridViewIcon />
+            {profileData?.expanded_groceryitem ? <GridViewIcon /> : <TocIcon />}
           </ListItemIcon>
           Change View
         </MenuItem>
@@ -235,69 +255,163 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           Delete Store
         </MenuItem>
       </Menu>
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Grocery Store Settings</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Name"
-            label="Name"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setNewGroceryStoreName(e.target.value)}
-            value={newGroceryStoreName}
-          />
-        </DialogContent>
-        <DialogContent
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexFlow: "column",
-          }}
+      <>
+        {/* Create Dialog */}
+        <Dialog
+          fullScreen={fullScreen}
+          open={openCreateDialog}
+          onClose={handleCreateDialogClose}
         >
-          {image.raw ? (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={image.preview || ""}
-                alt={`Image of `}
-              />
-            </Card>
-          ) : (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
-                alt={`Image of `}
-              />
-            </Card>
-          )}
-          <Button
-            variant="contained"
-            component="label"
-            startIcon={<AddPhotoAlternateIcon />}
+          <DialogTitle>Add new item</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              type="email"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNewGroceryStoreName(e.target.value)}
+              value={newGroceryStoreName}
+            />
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Notes"
+              label="Notes"
+              type="email"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNotes(e.target.value)}
+              value={notes}
+            />
+          </DialogContent>
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
+            }}
           >
-            Upload File
-            <input type="file" onChange={handleImageSet} hidden />
-          </Button>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
-        </DialogActions>
-      </Dialog>
+            <TextField
+              fullWidth
+              type="number"
+              id="outlined-basic"
+              label="Quantity"
+              variant="outlined"
+              onChange={(e) => setQuantity(e.target.value)}
+              value={quantity}
+            />
+            <Card
+              sx={{
+                maxWidth: 150,
+                mt: 4,
+              }}
+            >
+              {newImage.preview ? (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={newImage.preview}
+                  alt={`Image of `}
+                />
+              ) : (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={
+                    "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+                  }
+                  alt={`Image of `}
+                />
+              )}
+            </Card>
+
+            <Button
+              variant="contained"
+              component="label"
+              startIcon={<AddPhotoAlternateIcon />}
+            >
+              Upload File
+              <input type="file" onChange={handleSetNewImage} hidden />
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCreateDialogClose}>Cancel</Button>
+            <Button onClick={handleSubmitNewItem}>Submit</Button>
+          </DialogActions>
+        </Dialog>
+      </>
+      <>
+        {/* Settings Dialog */}
+        <Dialog
+          fullScreen={fullScreen}
+          id="grocery-store-settings-dialog"
+          open={openSettingsDialog}
+          onClose={handleSettingsDialogClose}
+        >
+          <DialogTitle>Grocery Store Settings</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setUpdatedGroceryStoreName(e.target.value)}
+              value={updatedGroceryStoreName}
+            />
+          </DialogContent>
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
+            }}
+          >
+            <Card
+              sx={{
+                maxWidth: 150,
+              }}
+            >
+              {updatedImage.raw ? (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={updatedImage.preview || ""}
+                  alt={`Image of `}
+                />
+              ) : (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`} //maybe this should be normal image??
+                  alt={`Image of `}
+                />
+              )}{" "}
+            </Card>
+
+            <Button
+              variant="contained"
+              component="label"
+              startIcon={<AddPhotoAlternateIcon />}
+            >
+              Upload File
+              <input type="file" onChange={handleSetUpdatedImage} hidden />
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleSettingsDialogClose}>Cancel</Button>
+            <Button onClick={handleUpdateGroceryStoreSettings}>Save</Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </>
   );
 }

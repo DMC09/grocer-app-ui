@@ -1,79 +1,73 @@
-import { GroceryStoreProps, GroceryStoreType } from "@/types";
+import { GroceryStoreProps } from "@/types";
 import {
   Badge,
+  Box,
   Card,
   CardActionArea,
   CardHeader,
-  CardMedia,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useSupabase } from "../supabase/supabase-provider";
-import { useState } from "react";
 
-
-
-
-export default function GroceryStore({ groceryStore, expanded }: GroceryStoreProps) {
+export default function GroceryStore({
+  groceryStore,
+}: GroceryStoreProps) {
   const router = useRouter();
   const { supabase, session } = useSupabase();
 
   return (
     <>
-      { expanded ? (
-        <Badge color="secondary" badgeContent={groceryStore.quantity}>
+      <Box
+        sx={{
+          p: 1.5,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "90%",
+            maxWidth: "900px",
+            p: 1.5,
+          }}
+        >
           <Card
             key={groceryStore.id}
             raised
             sx={{
-              border: 1,
-              borderColor: "primary",
-              background: "primary",
+              border: 3,
+              display: "flex",
+              justifyContent: "center",
               borderRadius: 1,
-              maxHeight: 300,
-              width: 300,
+              p: 1.5,
+              width: "90%",
+              maxWidth: "900px",
             }}
-            style={{ flexShrink: 0 }}
           >
             <CardActionArea
               onClick={() => {
                 router.push(`/dashboard/grocerystores/${groceryStore?.id}`);
               }}
             >
-              <CardHeader title={groceryStore.name} />
-              <CardMedia
-                height={250}
-                width={300}
-                component="img"
-                image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStore?.image}`}
-                alt={`Image of${groceryStore.name} `}
-                sx={{ objectFit: "fill" }}
+              <CardHeader
+                titleTypographyProps={{ variant: "h4" }}
+                style={{ textAlign: "center" }}
+                title={groceryStore.name}
               />
             </CardActionArea>
+            <Badge
+              sx={{
+                "& .MuiBadge-badge": {
+                  color: "background.paper",
+                  backgroundColor: "primary.main",
+                },
+              }}
+              badgeContent={groceryStore.quantity}
+            />
           </Card>
-        </Badge>
-      ):  <Badge color="secondary" badgeContent={groceryStore.quantity}>
-      <Card
-        key={groceryStore.id}
-        raised
-        sx={{
-          border: 1,
-          borderColor: "primary",
-          background: "primary",
-          borderRadius: 1,
-          height: "fit-content",
-          width: 200,
-        }}
-        style={{ flexShrink: 0 }}
-      >
-        <CardActionArea
-          onClick={() => {
-            router.push(`/dashboard/grocerystores/${groceryStore?.id}`);
-          }}
-        >
-          <CardHeader style={{ textAlign: 'center' }} title={groceryStore.name} />
-        </CardActionArea>
-      </Card>
-    </Badge>}
+        </Box>
+      </Box>
     </>
   );
 }

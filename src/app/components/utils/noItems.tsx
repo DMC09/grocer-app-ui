@@ -1,21 +1,5 @@
 "use client";
-import {
-  Box,
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
-import ClickAwayListener from "@mui/base/ClickAwayListener";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import React, { useEffect, useState } from "react";
-import { useSupabase } from "../supabase/supabase-provider";
+import { Container, Typography } from "@mui/material";
 
 export default function NoItems() {
   return (

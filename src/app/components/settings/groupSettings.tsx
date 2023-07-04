@@ -5,104 +5,29 @@ import {
   Chip,
   Container,
   Divider,
-  IconButton,
   Typography,
 } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
 import JoinGroup from "../utils/joinGroup";
 import CreateGroup from "../utils/createGroup";
-import { GroupType, ProfileType } from "@/types";
+import { GroupMemberType, GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/leaveGroup";
 import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
+import { useProfileStore } from "@/state/ProfileStore";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
-  const [open, setOpen] = useState(false);
   const [shareCode, setShareCode] = useState<string | null>(null);
-  const [groups, setGroups] = useState<GroupType | null>(null);
-  const [otherGroupMembers, setOtherGroupMembers] = useState<any>(null);
-
-  useEffect(() => {
-    const channel = supabase
-      .channel("custom-groups-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "groups",
-        },
-        getGroupsData
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "groups",
-        },
-        getGroupsData
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "groups",
-        },
-        getGroupsData
-      )
-
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
-
-  async function getGroupsData() {
-    let { data: groups, error } = await supabase
-      .from("groups")
-      .select("*")
-      .eq("profile_id", profile?.id)
-      .single();
-    console.log(groups);
-
-    if (groups) {
-      setGroups(groups as GroupType | null);
-      await getGroupsView();
-    } else if (groups === null) {
-      setGroups(null);
-    }
-  }
-  useEffect(() => {
-    getGroupsData();
-  }, [supabase]);
-
-  async function getGroupsView() {
-    const { data, error } = await supabase
-      .from("group_members_view")
-      .select("*");
-
-    if (error) {
-      throw new Error(error.message);
-    } else {
-      setOtherGroupMembers(data);
-      console.log(data, "view data");
-    }
-  }
+  const groupMembers = useProfileStore((state) => state.groupData);
 
   async function handleShareCode() {
     const uuid = crypto.randomUUID();
     const uuidWithoutHyphens = uuid.replace(/-/g, "");
-    const firstFourCharacters = uuidWithoutHyphens.substring(0, 4);
+    const firstFourCharacters = uuidWithoutHyphens
+      .substring(0, 4)
+      .toLocaleUpperCase();
 
     const { data, error } = await supabase
       .from("groups")
@@ -120,11 +45,7 @@ export default function GroupSettings(profile: ProfileType | null) {
   return (
     <>
       {profile && (
-        <Container
-          disableGutters
-          maxWidth={false}
-          sx={{  height: "100%" }}
-        >
+        <Container disableGutters maxWidth={false} sx={{ height: "100%" }}>
           <Box
             sx={{
               height: "15%",
@@ -136,30 +57,35 @@ export default function GroupSettings(profile: ProfileType | null) {
           </Box>
           <Box
             sx={{
-
               height: "85%",
               display: "flex",
+              py:4,
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            {groups ? (
-              <Box
-              sx={{
-              }}
-              >
-                <MyGroup groupMembers={otherGroupMembers} />
-                <Button
-                  variant="contained"
-                  onClick={handleShareCode}
-                  endIcon={<LibraryAddSharpIcon />}
+            {profile.in_group ? (
+              <Box sx={{ width:"80%"}}>
+                <MyGroup groupMembers={groupMembers} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    p: 1,
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                  }}
                 >
-                  Generate Share Code
-                </Button>
-                <Typography>{`The Share Code is ${
-                  shareCode ? shareCode : "not generated"
-                }`}</Typography>
-                <LeaveGroup />
+                  <Button
+                    sx={{ height: "fit-content",fontSize:"small" }}
+                    variant="contained"
+                    onClick={handleShareCode}
+                    endIcon={<LibraryAddSharpIcon />}
+                  >
+                    Share Code
+                  </Button>
+                  <Typography>{shareCode}</Typography>
+                  <LeaveGroup />
+                </Box>
               </Box>
             ) : (
               <Box

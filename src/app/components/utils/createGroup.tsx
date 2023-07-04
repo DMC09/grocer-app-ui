@@ -12,7 +12,6 @@ import {
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
-import image from "next/image";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { ProfileType } from "@/types";
 
@@ -49,7 +48,7 @@ export default function CreateGroup(profile: ProfileType | null) {
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);
       } else {
-        console.log(data, "image uploaded successfully");
+
       }
     }
   }
