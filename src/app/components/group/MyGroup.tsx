@@ -13,13 +13,13 @@ export default function MyGroup({
   const groupMembersToRender = groupMembers?.map((member: GroupMemberType) => {
     return (
       <>
-        <GroupMember {...member} />
+        <GroupMember key={member.id} {...member} />
       </>
     );
   });
 
   return (
-    <Box sx={{ p:1 }}>
+    <Box sx={{ p: 1 }}>
       <Typography color="#071236" align="center" variant="h5">
         My group
       </Typography>
