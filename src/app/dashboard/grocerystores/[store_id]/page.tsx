@@ -31,16 +31,15 @@ export default function Page() {
       <ThemeProvider theme={theme}>
         <Container
           maxWidth={false}
+          disableGutters
           sx={{
             height: "85%",
             display: "flex",
-            flexFlow: "row",
-            flexWrap: "wrap",
-            justifyContent: "center",
+            flexFlow: "column",
+            alignItems: "center",
             backgroundColor: "primary.light",
-            overflowY: "scroll",
-            gap: 3.5,
-            py: 4,
+            gap: 3,
+            p: 2,
             border: 2,
           }}
         >
