@@ -2,10 +2,9 @@
 
 import { Container } from "@mui/material";
 import { useSupabase } from "../components/supabase/supabase-provider";
-import { useEffect, useState } from "react";
-import { GroceryStoreWithItemsType, GroceryStoreType } from "@/types";
+import { useEffect,  } from "react";
+import {  GroceryStoreType } from "@/types";
 import DashboardHeader from "../components/dashboardHeader";
-import { PostgrestError, User } from "@supabase/supabase-js";
 import GroceryStore from "../components/groceryStore/groceryStore";
 import NoStores from "../components/utils/noStores";
 import useStore from "../hooks/useStore";
@@ -16,14 +15,12 @@ import {
 } from "../utils/client/groceryStore";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 
-
 export default function Dashboard() {
   const groceryStoreData = useStore(
     useGroceryStoreStore,
     (state) => state?.data
   );
   const { supabase, session } = useSupabase();
-
 
   async function getData() {
     console.log("getting data!");
@@ -65,7 +62,6 @@ export default function Dashboard() {
           border: 5,
           gap: 2,
           flexFlow: "column",
-          alignItems: "center",
           backgroundColor: "primary.main",
           overflowY: "scroll",
         }}
@@ -74,12 +70,19 @@ export default function Dashboard() {
           onRefresh={handleRefresh}
           style={{ textAlign: "center" }}
         >
-          {/* this needs it's own container */}
-          {groceryStoreData && groceryStoreData.length > 0 ? (
-            groceryStoresToRender
-          ) : (
-            <NoStores />
-          )}
+          <Container
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {groceryStoreData && groceryStoreData.length > 0 ? (
+              groceryStoresToRender
+            ) : (
+              <NoStores />
+            )}
+          </Container>
         </ReactPullToRefresh>
       </Container>
     </>
