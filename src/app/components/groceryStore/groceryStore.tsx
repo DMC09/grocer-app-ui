@@ -19,7 +19,7 @@ export default function GroceryStore({
     <>
       <Box
         sx={{
-          p: 1.5,
+          p: 1,
           width: "100%",
           display: "flex",
           justifyContent: "center",
@@ -27,9 +27,11 @@ export default function GroceryStore({
       >
         <Box
           sx={{
-            width: "90%",
-            maxWidth: "900px",
-            p: 1.5,
+            width: "100%",
+            maxWidth:750,
+            display:"flex",
+            justifyContent: "center",
+          borderColor:"blue"
           }}
         >
           <Card
@@ -41,8 +43,7 @@ export default function GroceryStore({
               justifyContent: "center",
               borderRadius: 1,
               p: 1.5,
-              width: "90%",
-              maxWidth: "900px",
+              width: "100%",
             }}
           >
             <CardActionArea
