@@ -29,7 +29,7 @@ export default function GroceryStoreItem({
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
 
-  async function updatedRecently(timestamp: string | Date | null) {
+  function updatedRecently(timestamp: string | Date | null) {
     if (timestamp) {
       // Convert the timestamp to a Date object.
       const passedDate = new Date(timestamp).getTime();
@@ -152,23 +152,25 @@ export default function GroceryStoreItem({
         </Badge>
       ) : (
         <>
-          <Badge
-            color="primary"
-            variant="dot"
-            invisible={!updatedRecently(groceryStoreItem.modified_at)}
-          >
+
             <Card
               sx={{
+                p:1,
                 border: 2,
-                borderRadius: 2,
                 borderColor: "primary.main",
                 display: "flex",
-                height: "fit-content",
-                width: 200,
+width: "100%",
+maxWidth:750
               }}
             >
               <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
-                <Box sx={{ display: "flex", alignItems: "center",justifyContent:"space-around" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                  }}
+                >
                   <Box
                     sx={{
                       backgroundColor: "primary.main",
@@ -193,7 +195,9 @@ export default function GroceryStoreItem({
                       {groceryStoreItem?.quantity}
                     </Typography>
                   </Box>
-                  <Typography align="center" sx={{width:"70%"}} variant="h5">{groceryStoreItem?.name}</Typography>
+                  <Typography align="center" sx={{ width: "70%" }} variant="h5">
+                    {groceryStoreItem?.name}
+                  </Typography>
                 </Box>
               </CardActionArea>
               <Box
@@ -246,7 +250,6 @@ export default function GroceryStoreItem({
                 <EditItem {...groceryStoreItem} />
               </DialogActions>
             </Dialog>
-          </Badge>
         </>
       )}
     </>
