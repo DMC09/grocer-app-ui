@@ -5,6 +5,8 @@ import {
   Card,
   CardMedia,
   Container,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -16,6 +18,8 @@ import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 import { getProfileData } from "@/app/utils/client/profile";
 import { getGroupData } from "@/app/utils/client/group";
+import { SetStateAction, useState } from "react";
+import { BorderColor } from "@mui/icons-material";
 
 export default function ProfileSettings() {
   const profileData = useStore(useProfileStore, (state) => state?.data);
@@ -28,157 +32,152 @@ export default function ProfileSettings() {
     await getGroupData(supabase);
   }
 
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
+
+  const handleTabChange = (e: any, tabIndex: SetStateAction<number>) => {
+    console.log(tabIndex);
+    setCurrentTabIndex(tabIndex);
+  };
+
   return (
     <>
       <ReactPullToRefresh
         onRefresh={handleRefresh}
         style={{ textAlign: "center" }}
       >
-        <Container disableGutters sx={{}}>
-          <Box
-            sx={{
-              height: "60%",
-              display: "flex",
-              flexFlow: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+        <Container sx={{ borderColor: "purple" }}>
+          {currentTabIndex === 0 && (
             <Box
+              id="edit-button-container"
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                width: "100%",
-                height: "15%",
-              }}
-            >
-              <Typography align="center" variant="h6">
-                Profile Settings
-              </Typography>
-              {profileData && <EditProfileSettings {...profileData} />}
-            </Box>
-            <Box
-              sx={{
-                height: "85%",
                 display: "flex",
                 flexFlow: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
               }}
             >
               <Box
                 sx={{
-                  width: "30%",
                   display: "flex",
-                  p: 2,
-                  flexFlow: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  width: "100%",
                 }}
               >
-                <Card
+                {profileData && <EditProfileSettings {...profileData} />}
+              </Box>
+              <Box
+                id="settings-container"
+                sx={{
+                  display: "flex",
+                  flexFlow: "column",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Box
+                  id="avatar-container"
                   sx={{
-                    height: 125,
-                    width: 125,
-                    borderRadius: 15,
+                    width: "30%",
+                    display: "flex",
+                    p: 2,
+                    flexFlow: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  {profileData?.avatar_url && (
-                    <CardMedia
-                      component="img"
-                      height={150}
-                      width={150}
-                      image={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profileData?.avatar_url}`}
-                      alt={`Image of `}
-                    />
-                  )}
-                </Card>
-              </Box>
+                  <Card
+                    sx={{
+                      height: 125,
+                      width: 125,
+                      borderRadius: 15,
+                    }}
+                  >
+                    {profileData?.avatar_url && (
+                      <CardMedia
+                        component="img"
+                        height={150}
+                        width={150}
+                        image={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profileData?.avatar_url}`}
+                        alt={`Image of `}
+                      />
+                    )}
+                  </Card>
+                </Box>
 
-              <Box
-                sx={{
-                  borderColor: "purple",
-                  width: "70%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: 4,
-                  p: 1,
-                }}
-              >
-                <TextField
-                  id="outlined-read-only-input"
+                <Box
+                  id="setting-fields"
                   sx={{
-                    height: "25%",
-                    maxHeight: 50,
-                    width: "75%",
-                    maxWidth: 250,
+                    width: "70%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 4,
+                    p: 1,
                   }}
-                  label="First name"
-                  value={profileData?.first_name}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                  id="outlined-read-only-input"
-                  label="Last name"
-                  sx={{
-                    height: "25%",
-                    maxHeight: 50,
-                    width: "75%",
-                    maxWidth: 250,
-                  }}
-                  value={profileData?.last_name}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                  id="outlined-read-only-input"
-                  label="Email"
-                  sx={{
-                    height: "25%",
-                    maxHeight: 50,
-                    width: "75%",
-                    maxWidth: 250,
-                  }}
-                  value={profileData?.email}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                  id="outlined-read-only-input"
-                  label="Phone"
-                  sx={{
-                    height: "25%",
-                    maxHeight: 50,
-                    width: "75%",
-                    maxWidth: 250,
-                  }}
-                  value={profileData?.phone}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
+                >
+                  <TextField
+                    id="outlined-read-only-input"
+                    sx={{
+                      height: "25%",
+                      maxHeight: 50,
+                      width: "75%",
+                      maxWidth: 250,
+                    }}
+                    label="First name"
+                    value={profileData?.first_name}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <TextField
+                    id="outlined-read-only-input"
+                    label="Last name"
+                    sx={{
+                      height: "25%",
+                      maxHeight: 50,
+                      width: "75%",
+                      maxWidth: 250,
+                    }}
+                    value={profileData?.last_name}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <TextField
+                    id="outlined-read-only-input"
+                    label="Email"
+                    sx={{
+                      height: "25%",
+                      maxHeight: 50,
+                      width: "75%",
+                      maxWidth: 250,
+                    }}
+                    value={profileData?.email}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <TextField
+                    id="outlined-read-only-input"
+                    label="Phone"
+                    sx={{
+                      height: "25%",
+                      maxHeight: 50,
+                      width: "75%",
+                      maxWidth: 250,
+                    }}
+                    value={profileData?.phone}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Box>
               </Box>
             </Box>
-          </Box>
-          <Box
-            sx={{
-              height: "40%",
-            }}
-          >
-            {profileData && <GroupSettings {...profileData} />}
-          </Box>
+          )}
         </Container>
       </ReactPullToRefresh>
     </>

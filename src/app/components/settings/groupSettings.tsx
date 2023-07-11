@@ -48,24 +48,14 @@ export default function GroupSettings(profile: ProfileType | null) {
         <Container disableGutters maxWidth={false} sx={{ height: "100%" }}>
           <Box
             sx={{
-              height: "15%",
-            }}
-          >
-            <Typography align="left" variant="h6">
-              Group Settings
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              height: "85%",
               display: "flex",
-              py:4,
+              py: 4,
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             {profile.in_group ? (
-              <Box sx={{ width:"80%"}}>
+              <Box >
                 <MyGroup groupMembers={groupMembers} />
                 <Box
                   sx={{
@@ -76,7 +66,7 @@ export default function GroupSettings(profile: ProfileType | null) {
                   }}
                 >
                   <Button
-                    sx={{ height: "fit-content",fontSize:"small" }}
+                    sx={{ height: "fit-content", fontSize: "small" }}
                     variant="contained"
                     onClick={handleShareCode}
                     endIcon={<LibraryAddSharpIcon />}
