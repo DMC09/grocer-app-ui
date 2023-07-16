@@ -6,13 +6,8 @@ import AddStore from "./utils/addStore";
 import useStore from "../hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
 
-
 export default function DashboardHeader() {
-  const selectId = useStore(
-    useProfileStore,
-    (state) => state?.data?.select_id
-  );
-
+  const selectId = useStore(useProfileStore, (state) => state?.data?.select_id);
 
   return (
     <>
@@ -20,26 +15,20 @@ export default function DashboardHeader() {
         {/* make a contianeher here  */}
         {selectId && (
           <Card
+          raised
             sx={{
+              boxShadow: 0 ,
+              mt:1,
               display: "flex",
               flexFlow: "row",
-              backgroundColor: "primary.main",
-              justifyContent: "space-between",
+              backgroundColor: "white",
             }}
           >
-            <div></div>
-            <Typography color="secondary.main" variant="h3">
+            <Typography sx={{marginLeft:3}} color="primary.main" variant="h2">
               Dashboard
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+        
               <AddStore select_id={selectId} />
-            </Box>
           </Card>
         )}
       </ThemeProvider>
