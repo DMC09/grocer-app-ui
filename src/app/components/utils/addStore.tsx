@@ -112,13 +112,11 @@ export default function AddStore({ select_id }: { select_id: string }) {
   return (
     <>
       <Button
-        variant="contained"
         onClick={handleClickOpen}
         endIcon={<AddCircleIcon />}
+        size="large"
         sx={{
-          width: "fit-content",
-          p: 0,
-          m: 0,
+          marginLeft:"auto"
         }}
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
