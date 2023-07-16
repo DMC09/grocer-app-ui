@@ -26,25 +26,25 @@ export default function GroceryStoreHeader() {
         {groceryStoreData && (
           <Card
             sx={{
-              border: 1,
+              mt:1,
+              boxShadow: 0 ,
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              backgroundColor: "primary.main",
+              backgroundColor: "white",
             }}
           >
             <IconButton
               onClick={() => router.back()}
               aria-label="add to grocery store"
-              color="secondary"
+              color="primary"
               size="large"
             >
               <ArrowBackIosNewIcon sx={{ fontSize: 30 }} />
             </IconButton>
-            <Typography color="secondary.main" variant="h3">
+            <Typography color="primary.main" variant="h3">
               {groceryStoreData?.name}
             </Typography>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", marginLeft: "auto" }}>
               <GroceryStoreHeaderMenu {...groceryStoreData} />
             </Box>
           </Card>
