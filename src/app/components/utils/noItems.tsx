@@ -9,9 +9,9 @@ export default function NoItems() {
           display: "flex",
           flexFlow: "column",
           justifyContent: "center",
+          alignItems:"center",
           textAlign: "center",
           p: 1,
-          border: 1,
         }}
       >
         <Typography variant="h4" color="text.secondary">

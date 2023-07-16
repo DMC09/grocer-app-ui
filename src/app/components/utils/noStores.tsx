@@ -9,12 +9,13 @@ export default function NoStores() {
           flexFlow: "column",
           justifyContent: "center",
           textAlign: "center",
+          backgroundColor: "white",
+          height: "100%",
           p: 1,
-          border: 1,
         }}
       >
         <Typography variant="h4" color="secondary.main">
-          No Stores yet, please add one!
+          No stores found, please add one!
         </Typography>
       </Container>
     </>
