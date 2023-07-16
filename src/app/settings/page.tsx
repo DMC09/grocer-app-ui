@@ -1,5 +1,5 @@
 "use client";
-import { Box, Container, Tab, Tabs } from "@mui/material";
+import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import SettingsHeader from "../components/settings/settingsHeader";
 import ProfileSettings from "../components/settings/profileSettings";
 import { useState, SetStateAction } from "react";
@@ -18,27 +18,26 @@ export default function Settings() {
 
   return (
     <>
-      <SettingsHeader />
+
       <Container
         sx={{
-          height: "85%",
+          height: "100%",
           display: "flex",
-          flexFlow: "row",
-          flexWrap: "wrap",
-          justifyContent: "center",
+          flexFlow: "column",
+          justifyContent: "flex-start",
+          alignItems: "center",
           backgroundColor: "primary.light",
           overflowY: "scroll",
-          gap: 3.5,
-          py: 4,
         }}
         style={{ flexShrink: 0 }}
       >
-        {/* put the pull to refresh here.? */}
+        <Box sx={{ height: "fit-content",my:2 }}>
+          <Typography align="center" color="primary.main" variant="h3">
+            Settings
+          </Typography>
+        </Box>
 
-        <Box
-          sx={{
-          }}
-        >
+        <Box sx={{}}>
           <Tabs value={currentTabIndex} onChange={handleTabChange}>
             <Tab label="Profile" />
             <Tab label="Group" />
