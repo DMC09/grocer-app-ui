@@ -1,9 +1,9 @@
 "use client";
 
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useSupabase } from "../components/supabase/supabase-provider";
-import { useEffect,  } from "react";
-import {  GroceryStoreType } from "@/types";
+import { useEffect } from "react";
+import { GroceryStoreType } from "@/types";
 import DashboardHeader from "../components/dashboardHeader";
 import GroceryStore from "../components/groceryStore/groceryStore";
 import NoStores from "../components/utils/noStores";
@@ -53,37 +53,42 @@ export default function Dashboard() {
   return (
     <>
       <DashboardHeader />
+
       <Container
         disableGutters
-        maxWidth={false}
         sx={{
           height: "100%",
           display: "flex",
-          border: 5,
-          gap: 2,
           flexFlow: "column",
-          backgroundColor: "primary.main",
+          backgroundColor: "white",
           overflowY: "scroll",
         }}
       >
-        <ReactPullToRefresh
-          onRefresh={handleRefresh}
-          style={{ textAlign: "center" }}
+        <Container
+          disableGutters
+          sx={{ height: "100%", width: "98%", overflowY: "scroll" }}
         >
-          <Container
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            {groceryStoreData && groceryStoreData.length > 0 ? (
-              groceryStoresToRender
-            ) : (
-              <NoStores />
-            )}
-          </Container>
-        </ReactPullToRefresh>
+          {groceryStoreData && groceryStoreData.length > 0 ? (
+            <Container
+              disableGutters
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexFlow: "column",
+                justifyContent: "flex-start",
+                backgroundColor: "white",
+                overflowY: "scroll",
+              }}
+            >
+              <ReactPullToRefresh onRefresh={handleRefresh}>
+                {groceryStoresToRender}
+              </ReactPullToRefresh>
+            </Container>
+          ) : (
+            <NoStores />
+          )}
+        </Container>
       </Container>
     </>
   );

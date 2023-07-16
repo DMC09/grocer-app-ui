@@ -2,9 +2,8 @@
 import { Container, ThemeProvider } from "@mui/material";
 import { theme } from "../utils/theme";
 
-
 export default function DashboardLayout({
-  children, 
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -12,13 +11,12 @@ export default function DashboardLayout({
     <>
       <ThemeProvider theme={theme}>
         <Container
-disableGutters
-maxWidth={false}
+        disableGutters
           sx={{
-  height:"100vh",
-  backgroundColor:"primary.dark",
-  
 
+            height: "100vh",
+            width:"100%",
+            backgroundColor: "white",
           }}
         >
           {children}
