@@ -45,7 +45,7 @@ export default function GroupSettings(profile: ProfileType | null) {
   return (
     <>
       {profile && (
-        <Container disableGutters maxWidth={false} sx={{ height: "100%" }}>
+        <Container  sx={{ height: "100%" }}>
           <Box
             sx={{
               display: "flex",
