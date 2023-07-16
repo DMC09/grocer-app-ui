@@ -241,7 +241,6 @@ export type GroceryStoreProps = {
 };
 export type GroceryStoreItemProps = {
   groceryStoreItem: GroceryStoreItemType;
-  expanded: boolean | null;
 };
 
 export interface GroceryStoreWithItemsType extends GroceryStoreType {
