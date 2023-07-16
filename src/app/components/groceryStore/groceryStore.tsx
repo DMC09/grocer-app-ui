@@ -19,26 +19,26 @@ export default function GroceryStore({
     <>
       <Box
         sx={{
-          p: 1,
-          width: "100%",
+          py:1.5,
           display: "flex",
           justifyContent: "center",
         }}
       >
         <Box
           sx={{
+
             width: "100%",
             maxWidth:750,
             display:"flex",
             justifyContent: "center",
-          borderColor:"blue"
+
           }}
         >
           <Card
             key={groceryStore.id}
             raised
             sx={{
-              border: 3,
+              border: 1,
               display: "flex",
               justifyContent: "center",
               borderRadius: 1,
@@ -52,7 +52,7 @@ export default function GroceryStore({
               }}
             >
               <CardHeader
-                titleTypographyProps={{ variant: "h4" }}
+                titleTypographyProps={{ variant: "h3" }}
                 style={{ textAlign: "center" }}
                 title={groceryStore.name}
               />
