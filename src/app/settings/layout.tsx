@@ -3,9 +3,8 @@
 import { Container, ThemeProvider } from "@mui/material";
 import { theme } from "../utils/theme";
 
-
 export default function SettingsLayout({
-  children, 
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -13,17 +12,15 @@ export default function SettingsLayout({
     <>
       <ThemeProvider theme={theme}>
         <Container
-
-maxWidth={false}
+          disableGutters
           sx={{
-  height:"100vh",
-  backgroundColor:"primary.main"
+            height: "100vh",
+            backgroundColor: "primary.main",
+            border: 3,
           }}
         >
           {children}
         </Container>
-
-        {/* This shoudl be changed  */}
       </ThemeProvider>
     </>
   );
