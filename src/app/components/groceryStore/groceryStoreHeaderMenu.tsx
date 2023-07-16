@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  Fade,
   IconButton,
   ListItemIcon,
   Menu,
@@ -24,6 +25,7 @@ import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -41,6 +43,7 @@ import { theme } from "@/app/utils/theme";
 import useStore from "@/app/hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
 import { handleChangeGroceryStoreItemView } from "@/app/utils/client/profile";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useStore(useProfileStore, (state) => state?.data);
@@ -183,7 +186,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   return (
     <>
       <IconButton
-        sx={{ color: "background.paper" }}
+        sx={{ color: "primary.main" }}
         aria-label="more"
         id="long-button"
         aria-controls={open ? "long-menu" : undefined}
@@ -191,7 +194,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         aria-haspopup="true"
         onClick={handleOpenMenu}
       >
-        <MoreVertIcon />
+        {!open ? <MenuIcon /> : <CloseIcon />}
       </IconButton>
       <Menu
         anchorEl={anchorEl}
