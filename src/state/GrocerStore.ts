@@ -179,7 +179,7 @@ export function findGrocerystoreitemIndexInStore(
   storeIndex: number
 ) {
   const grocerystore = state.data[storeIndex];
-  const grocerystoreitemIndex = grocerystore.grocerystoreitems.findIndex(
+  const grocerystoreitemIndex = grocerystore?.grocerystoreitems?.findIndex(
     (grocerystoreitem) => {
       return grocerystoreitem.id === grocerystoreitemId;
     }
