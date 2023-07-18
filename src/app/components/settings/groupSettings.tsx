@@ -60,6 +60,8 @@ export default function GroupSettings(profile: ProfileType | null) {
                 <Box
                   sx={{
                     display: "flex",
+                    flexFlow:"column",
+                    gap:1,
                     p: 1,
                     alignItems: "center",
                     justifyContent: "space-around",
