@@ -15,7 +15,7 @@ export default function SettingsLayout({
           disableGutters
           sx={{
             height: "100vh",
-            backgroundColor: "primary.main",
+            backgroundColor: "background.paper",
             border: 3,
           }}
         >
