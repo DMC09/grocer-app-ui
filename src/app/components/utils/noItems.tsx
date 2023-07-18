@@ -11,6 +11,7 @@ export default function NoItems() {
           justifyContent: "center",
           alignItems:"center",
           textAlign: "center",
+          height: "80%",
           p: 1,
         }}
       >
