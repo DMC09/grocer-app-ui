@@ -26,7 +26,7 @@ export default function Settings() {
           flexFlow: "column",
           justifyContent: "flex-start",
           alignItems: "center",
-          backgroundColor: "primary.light",
+          backgroundColor: "background.paper",
           overflowY: "scroll",
         }}
         style={{ flexShrink: 0 }}
