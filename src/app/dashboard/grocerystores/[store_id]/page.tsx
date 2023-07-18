@@ -10,7 +10,8 @@ import { theme } from "@/app/utils/theme";
 import useStore from "@/app/hooks/useStore";
 import { useGroceryStoreStore } from "@/state/GrocerStore";
 import { useProfileStore } from "@/state/ProfileStore";
-import GroceryStoreItem from "@/app/components/groceryStore/grocerystoreitem";
+import GroceryStoreItem from "@/app/components/groceryStore/groceryStoreItem/grocerystoreitem";
+import ExpandedGroceryStoreItem from "@/app/components/groceryStore/groceryStoreItem/expandedItem";
 
 // need to grab the pfiles boolean and render the differnt view.
 
@@ -26,39 +27,39 @@ export default function Page() {
   )?.filter((grocerystore) => Number(grocerystore.id) === Number(store_id))?.[0]
     .grocerystoreitems;
 
+  const groceryStoreItemsToRender = grocerystoreitems?.map(
+    (item: GroceryStoreItemType) => {
+      return expandedView ? (
+        <ExpandedGroceryStoreItem key={item.id} groceryStoreItem={item} />
+      ) : (
+        <GroceryStoreItem key={item.id} groceryStoreItem={item} />
+      );
+    }
+  );
+
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Container
-          maxWidth={false}
-          disableGutters
-          sx={{
-            height: "85%",
-            display: "flex",
-            flexFlow: "column",
-            alignItems: "center",
-            backgroundColor: "primary.light",
-            gap: 3,
-            p: 2,
-            border: 2,
-          }}
-        >
-          {expandedView !== undefined &&
-          grocerystoreitems &&
-          grocerystoreitems.length > 0 ? (
-            grocerystoreitems.map((item: GroceryStoreItemType) => {
-              return (
-                <GroceryStoreItem
-                  key={item.id}
-                  expanded={expandedView}
-                  groceryStoreItem={item}
-                />
-              );
-            })
-          ) : (
-            <NoItems />
-          )}
-        </Container>
+        {grocerystoreitems && grocerystoreitems.length > 0 ? (
+          <Container
+            disableGutters
+            sx={{
+              mt: 2,
+              height: "100%",
+              width: "95%",
+              display: "flex",
+              flexFlow: "column",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              gap: 3,
+            }}
+          >
+            {groceryStoreItemsToRender}
+          </Container>
+        ) : (
+          <NoItems />
+        )}
+
       </ThemeProvider>
     </>
   );
