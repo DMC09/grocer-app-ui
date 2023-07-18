@@ -14,7 +14,7 @@ export default function NoStores() {
           p: 1,
         }}
       >
-        <Typography variant="h4" color="secondary.main">
+        <Typography variant="h4" color="primary.main">
           No stores found, please add one!
         </Typography>
       </Container>
