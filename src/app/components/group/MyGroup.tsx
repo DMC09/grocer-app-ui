@@ -19,8 +19,8 @@ export default function MyGroup({
   });
 
   return (
-    <Box sx={{ p: 1 }}>
-      <Typography color="#071236" align="center" variant="h5">
+    <Box sx={{ p: 1}}>
+      <Typography color="#071236" align="center" variant="h5" sx={{mb:2}}>
         My group
       </Typography>
       {groupMembers && groupMembers.length > 0 && groupMembersToRender}
