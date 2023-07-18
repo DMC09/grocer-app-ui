@@ -3,7 +3,7 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json }
+  | { [key: string]: Json | undefined }
   | Json[]
 
 export interface Database {
@@ -146,6 +146,7 @@ export interface Database {
           expanded_groceryitem: boolean
           first_name: string | null
           id: string
+          in_group: boolean | null
           last_name: string | null
           phone: string | null
           select_id: string | null
@@ -159,6 +160,7 @@ export interface Database {
           expanded_groceryitem?: boolean
           first_name?: string | null
           id: string
+          in_group?: boolean | null
           last_name?: string | null
           phone?: string | null
           select_id?: string | null
@@ -172,6 +174,7 @@ export interface Database {
           expanded_groceryitem?: boolean
           first_name?: string | null
           id?: string
+          in_group?: boolean | null
           last_name?: string | null
           phone?: string | null
           select_id?: string | null
@@ -189,6 +192,7 @@ export interface Database {
           group_id: string | null
           group_image: string | null
           group_name: string | null
+          id: number | null
           last_name: string | null
         }
         Relationships: []
