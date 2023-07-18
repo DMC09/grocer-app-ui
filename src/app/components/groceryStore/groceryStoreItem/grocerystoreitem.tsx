@@ -20,6 +20,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSupabase } from "../../supabase/supabase-provider";
 import EditItem from "../../utils/editItem";
@@ -32,7 +33,6 @@ export default function GroceryStoreItem({
   const [open, setOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [progress, setProgress] = useState(0);
-
 
   function updatedRecently(timestamp: string | Date | null) {
     if (timestamp) {
@@ -49,10 +49,12 @@ export default function GroceryStoreItem({
     }
   }
   const expandView = false;
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      setProgress((prevProgress) =>
+        prevProgress >= 100 ? 0 : prevProgress + 10
+      );
     }, 800);
 
     return () => {
@@ -84,7 +86,9 @@ export default function GroceryStoreItem({
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      setProgress((prevProgress) =>
+        prevProgress >= 100 ? 0 : prevProgress + 10
+      );
     }, 800);
 
     return () => {
@@ -92,13 +96,12 @@ export default function GroceryStoreItem({
     };
   }, []);
   const handleDelete = async (itemId: string) => {
-    //State to determine the click 
-    //Countdown and display the x 
+    //State to determine the click
+    //Countdown and display the x
     // const { data, error } = await supabase
     //   .from("grocerystoreitems")
     //   .delete()
     //   .eq("id", itemId);
-
     // if (error) {
     //   throw new Error(error.message);
     // }
@@ -150,7 +153,7 @@ export default function GroceryStoreItem({
                 {groceryStoreItem?.quantity}
               </Typography>
             </Box>
-            <Typography align="center" sx={{ marginLeft: 4 }} variant="h4">
+            <Typography align="center" sx={{ marginLeft: 4 }} variant="h5">
               {groceryStoreItem?.name}
             </Typography>
           </Box>
@@ -162,7 +165,7 @@ export default function GroceryStoreItem({
             alignItems: "center",
           }}
         >
-             {/* <CircularProgress variant="determinate" value={progress} /> */}
+          {/* <CircularProgress variant="determinate" value={progress} /> */}
           <IconButton
             sx={{ p: 0.5, m: 0, marginLeft: "auto" }}
             color="success"
@@ -174,47 +177,87 @@ export default function GroceryStoreItem({
         </Box>
       </Card>
       <Dialog
-      color={"green"}
+        PaperProps={{
+          style: {
+            backgroundColor: "background.paper",
+          },
+        }}
         fullWidth
         maxWidth={"xs"}
         open={open}
         onClose={handleClose}
-        style={{  }}
-
       >
-        <Box sx={{ borderRadius:5, border: 1, display: "flex" ,flexFlow:"column" }}>
-       
+        <Box sx={{ display: "flex", flexFlow: "column" }}>
           <CardMedia
             component="img"
             image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
             alt={`Image of${groceryStoreItem.name} `}
-            sx={{ objectFit: "fill",borderTopLeftRadius:10,borderTopRightRadius:10 }}
+            sx={{
+              objectFit: "fill",
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+            }}
           />
-             <Box sx={{ border:3}}>
-            <Typography variant="h5"  align="center">{groceryStoreItem?.name}</Typography>
+          <Box
+            sx={{
+              borderBottom: 1,
+              display: "flex",
+              justifyContent: "space-between",
+              backgroundColor: "background.paper",
+            }}
+          >
             <Box
               sx={{
+                p: 1,
+                flexGrow: 2,
                 display: "flex",
-                flexFlow: "column",
-                justifyContent: "space-around",
-                height: "100%",
-                width: "100%",
+                justifyContent: "center",
                 alignItems: "center",
+                flexFlow: "column",
               }}
             >
-              <Typography color="#071236" variant="subtitle2">
-                {groceryStoreItem.notes}
-              </Typography>
-              <Typography color="#071236" variant="subtitle2">
+              <Typography color="#071236" variant="h6">
                 {groceryStoreItem.quantity}
               </Typography>
             </Box>
+
+            <Box
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexFlow: "column",
+                justifyContent: "space-around",
+                alignItems: "center",
+                flexGrow: 3,
+              }}
+            >
+              <Typography variant="h5" align="center">
+                {groceryStoreItem?.name}
+              </Typography>
+              <Typography color="#071236" variant="subtitle1">
+                {groceryStoreItem.notes}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                flexGrow: 2,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <EditItem {...groceryStoreItem} />
+            </Box>
           </Box>
-      
         </Box>
         <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-          <EditItem {...groceryStoreItem} />
+          <IconButton
+            sx={{
+              color: "primary.dark",
+            }}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogActions>
       </Dialog>
     </>
