@@ -98,13 +98,13 @@ export default function GroceryStoreItem({
   const handleDelete = async (itemId: string) => {
     //State to determine the click
     //Countdown and display the x
-    // const { data, error } = await supabase
-    //   .from("grocerystoreitems")
-    //   .delete()
-    //   .eq("id", itemId);
-    // if (error) {
-    //   throw new Error(error.message);
-    // }
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .delete()
+      .eq("id", itemId);
+    if (error) {
+      throw new Error(error.message);
+    }
   };
 
   function handleEdit() {
