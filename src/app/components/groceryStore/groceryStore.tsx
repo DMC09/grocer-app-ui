@@ -19,7 +19,7 @@ export default function GroceryStore({
     <>
       <Box
         sx={{
-          py:1.5,
+          p:1.5,
           display: "flex",
           justifyContent: "center",
         }}
