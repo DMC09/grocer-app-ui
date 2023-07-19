@@ -1,6 +1,5 @@
 "use client";
 import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
-import SettingsHeader from "../components/settings/settingsHeader";
 import ProfileSettings from "../components/settings/profileSettings";
 import { useState, SetStateAction } from "react";
 import GroupSettings from "../components/settings/groupSettings";
@@ -20,8 +19,11 @@ export default function Settings() {
     <>
 
       <Container
+      disableGutters
+      maxWidth={false}
         sx={{
           height: "100%",
+          width: "100%",
           display: "flex",
           flexFlow: "column",
           justifyContent: "flex-start",
@@ -29,7 +31,6 @@ export default function Settings() {
           backgroundColor: "background.paper",
           overflowY: "scroll",
         }}
-        style={{ flexShrink: 0 }}
       >
         <Box sx={{ height: "fit-content",my:2 }}>
           <Typography align="center" color="primary.main" variant="h3">

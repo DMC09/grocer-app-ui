@@ -13,8 +13,10 @@ export default function SettingsLayout({
       <ThemeProvider theme={theme}>
         <Container
           disableGutters
+          maxWidth={false}
           sx={{
             height: "100vh",
+            width: "100%",
             backgroundColor: "background.paper",
             border: 3,
           }}
