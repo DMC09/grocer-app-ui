@@ -10,7 +10,7 @@ import NoStores from "../components/utils/noStores";
 import useStore from "../hooks/useStore";
 import { useGroceryStoreStore } from "@/state/GrocerStore";
 import {
-  getAllGroceryStoresalt,
+  getAllGroceryStoresData,
   isGroceryStoreDataEmpty,
 } from "../utils/client/groceryStore";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
@@ -23,8 +23,7 @@ export default function Dashboard() {
   const { supabase, session } = useSupabase();
 
   async function getData() {
-    console.log("getting data!");
-    await getAllGroceryStoresalt(supabase);
+    await getAllGroceryStoresData(supabase);
   }
   useEffect(() => {
     if (groceryStoreData) {
