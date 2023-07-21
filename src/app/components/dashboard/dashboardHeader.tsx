@@ -1,9 +1,9 @@
 "use client";
 
 import { ThemeProvider, Typography, Card, Box } from "@mui/material";
-import { theme } from "../utils/theme";
-import AddStore from "./utils/addStore";
-import useStore from "../hooks/useStore";
+import { theme } from "../../utils/theme";
+import AddStore from "../utils/addStore";
+import useStore from "../../hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
 
 export default function DashboardHeader() {
