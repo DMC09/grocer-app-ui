@@ -13,7 +13,7 @@ import { getProfileData } from "@/app/utils/client/profile";
 import useStore from "@/app/hooks/useStore";
 import {
   deleteGroceryStore,
-  getAllGroceryStoresalt,
+  getAllGroceryStoresData,
 } from "@/app/utils/client/groceryStore";
 import { useProfileStore } from "@/state/ProfileStore";
 import { getGroupData } from "@/app/utils/client/group";
@@ -57,7 +57,7 @@ export default function SupabaseListener({
   const MINUTE_MS = 60000 * 15; // every  5  minute
 
   async function getGroceryData() {
-    await getAllGroceryStoresalt(supabase);
+    await getAllGroceryStoresData(supabase);
   }
 
   useEffect(() => {
