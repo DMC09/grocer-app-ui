@@ -10,10 +10,10 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import { useState } from "react";
-import { useSupabase } from "./supabase/supabase-provider";
 import { useRouter } from "next/navigation";
-import useStore from "../hooks/useStore";
+import useStore from "../../hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
+import { useSupabase } from "../supabase/supabase-provider";
 
 
 export default function HeaderMenu() {
