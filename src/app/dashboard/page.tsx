@@ -4,7 +4,7 @@ import { Box, Container } from "@mui/material";
 import { useSupabase } from "../components/supabase/supabase-provider";
 import { useEffect } from "react";
 import { GroceryStoreType } from "@/types";
-import DashboardHeader from "../components/dashboardHeader";
+import DashboardHeader from "../components/dashboard/dashboardHeader";
 import GroceryStore from "../components/groceryStore/groceryStore";
 import NoStores from "../components/utils/noStores";
 import useStore from "../hooks/useStore";

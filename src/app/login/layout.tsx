@@ -1,5 +1,5 @@
 "use client";
-import Header from "../components/header";
+import Header from "../components/header/header";
 import { Container, ThemeProvider, Typography } from "@mui/material";
 import { theme } from "../utils/theme";
 

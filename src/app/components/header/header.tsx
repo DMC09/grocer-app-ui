@@ -1,10 +1,10 @@
 "use client";
 
 import { Box, AppBar, Toolbar, IconButton, ThemeProvider } from "@mui/material";
-import { useSupabase } from "./supabase/supabase-provider";
+import { useSupabase } from "../supabase/supabase-provider";
 import HomeIcon from "@mui/icons-material/Home";
 import { useParams, useRouter } from "next/navigation";
-import { theme } from "../utils/theme";
+import { theme } from "../../utils/theme";
 import HeaderMenu from "./headerMenu";
 
 export default function Header() {
