@@ -1,13 +1,9 @@
 "use client";
+import { Box, Container, Divider } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
+import DashboardHeader from "../components/dashboard/dashboardHeader";
+import DashBoardSkeleton from "../components/skeletons/dashboardSkeleton";
 
 export default function Loading() {
-  return (
-    <>
-      {/* do this  */}
-      <Skeleton variant="rounded" width={350} height={200} />
-      <Skeleton variant="rounded" width={350} height={200} />
-      <Skeleton variant="rounded" width={350} height={200} />
-    </>
-  );
+  return <DashBoardSkeleton />;
 }
