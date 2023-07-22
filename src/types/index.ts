@@ -11,6 +11,33 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      commonitems: {
+        Row: {
+          category: string | null;
+          id: number;
+          image: string | null;
+          item_name: string | null;
+          item_notes: string | null;
+          select_id: string | null;
+        };
+        Insert: {
+          category?: string | null;
+          id?: number;
+          image?: string | null;
+          item_name?: string | null;
+          item_notes?: string | null;
+          select_id?: string | null;
+        };
+        Update: {
+          category?: string | null;
+          id?: number;
+          image?: string | null;
+          item_name?: string | null;
+          item_notes?: string | null;
+          select_id?: string | null;
+        };
+        Relationships: [];
+      };
       grocerystoreitems: {
         Row: {
           created_at: string | null;
@@ -234,7 +261,19 @@ export type ProfileType = Database["public"]["Tables"]["profiles"]["Row"];
 export type GroupType = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupMemberType =
   Database["public"]["Views"]["group_members_view"]["Row"];
+export type CommonGroceryStoreItemType =
+  Database["public"]["Tables"]["commonitems"]["Row"];
 
+export type CommonGroceryStoreItemProps = {
+  item: CommonGroceryStoreItemType;
+  quantity: number;
+};
+
+export type CommonItemToAdd = {
+  name:string;
+  
+
+}
 export type GroceryStoreProps = {
   groceryStore: GroceryStoreType;
   expanded?: boolean | null;
