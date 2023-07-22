@@ -261,19 +261,10 @@ export type ProfileType = Database["public"]["Tables"]["profiles"]["Row"];
 export type GroupType = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupMemberType =
   Database["public"]["Views"]["group_members_view"]["Row"];
-export type CommonGroceryStoreItemType =
+  export type CommonItemType =
   Database["public"]["Tables"]["commonitems"]["Row"];
 
-export type CommonGroceryStoreItemProps = {
-  item: CommonGroceryStoreItemType;
-  quantity: number;
-};
 
-export type CommonItemToAdd = {
-  name:string;
-  
-
-}
 export type GroceryStoreProps = {
   groceryStore: GroceryStoreType;
   expanded?: boolean | null;

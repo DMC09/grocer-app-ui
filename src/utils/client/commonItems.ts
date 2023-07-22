@@ -1,5 +1,6 @@
-import { useCommonItemsStore } from "@/state/CommonItems";
-import { CommonGroceryStoreItemType, Database } from "@/types";
+
+import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
+import {  CommonItemType, Database } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
@@ -13,32 +14,32 @@ export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
 
   const commonItemsToAdd = null;
 
-  const { data, error } = await supabase
-    .from("grocerystoreitems")
-    .insert([
-      {
-        store_id: storeId,
-        name,
-        notes,
-        quantity: Number(quantity),
-        select_id: selectId,
-        image: imagePath,
-      },
-    ])
-    .select();
+  // const { data, error } = await supabase
+    // .from("grocerystoreitems")
+    // .insert([
+    //   {
+    //     store_id: storeId,
+    //     name,
+    //     notes,
+    //     quantity: Number(quantity),
+    //     select_id: selectId,
+    //     image: imagePath,
+    //   },
+    // ])
+    // .select();
 }
 
 export async function addToCommonItems(supabase: SupabaseClient<Database>,) {
 
-    const {data, error} = await supabase.from("commonitems").insert({
-        item_name:item_name,
-        item_notes:item_notes,
-        select_id: selectId,
-        image: imagePath,
-        category:category
+    // const {data, error} = await supabase.from("commonitems").insert({
+    //     item_name:item_name,
+    //     item_notes:item_notes,
+    //     select_id: selectId,
+    //     image: imagePath,
+    //     category:category
 
 
-    })
+    // })
 }
 
 export async function getAllCommonItems(supabase: SupabaseClient<Database>) {
@@ -47,8 +48,8 @@ export async function getAllCommonItems(supabase: SupabaseClient<Database>) {
   if (error) {
     throw new Error(error.message);
   } else {
-    useCommonItemsStore.setState({
-      catalog: data as CommonGroceryStoreItemType[],
+    CommonItemsDataStore.setState({
+      catalog: data as CommonItemType[],
     });
   }
 }
