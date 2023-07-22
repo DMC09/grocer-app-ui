@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "item_name": "Pencil",
+    "item_notes": "A writing utensil with a sharp point.",
+    "select_id": "123e4567-e89b-12d3-a456-426655440000",
+    "image": "https://svg.template.creately.com/MIQyt1kde0t",
+    "category": "Stationery"
+  },
+  {
+    "id": 2,
+    "item_name": "Eraser",
+    "item_notes": "A tool for removing pencil marks.",
+    "select_id": "543210ef-dcba-12d3-a456-426655440000",
+    "image": "https://svg.template.creately.com/MIQyt1kde0t",
+    "category": "Stationery"
+  },
+  {
+    "id": 3,
+    "item_name": "Notebook",
+    "item_notes": "A book with blank pages for writing.",
+    "select_id": "98765432-abcd-12d3-a456-426655440000",
+    "image": "https://svg.template.creately.com/MIQyt1kde0t",
+    "category": "Stationery"
+  }
+ ]
