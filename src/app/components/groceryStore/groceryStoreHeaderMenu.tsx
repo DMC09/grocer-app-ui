@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardMedia,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -19,6 +20,7 @@ import {
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import GridViewIcon from "@mui/icons-material/GridView";
 import TocIcon from "@mui/icons-material/Toc";
 import { useEffect, useState } from "react";
@@ -27,7 +29,12 @@ import { Settings } from "@mui/icons-material";
 import { useSupabase } from "../supabase/supabase-provider";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
-import { GroceryStoreType, ProfileType } from "@/types";
+import {
+  CommonGroceryStoreItemProps,
+  CommonGroceryStoreItemType,
+  GroceryStoreType,
+  ProfileType,
+} from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { User } from "@supabase/supabase-js";
 import {
@@ -44,6 +51,8 @@ import useStore from "@/app/hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
 import { handleChangeGroceryStoreItemView } from "@/app/utils/client/profile";
 import CloseIcon from "@mui/icons-material/Close";
+import commonitems from "../../../stub/commonitems.json";
+import CommonGroceryStoreItem from "./groceryStoreItem/commonGroceryItem";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useStore(useProfileStore, (state) => state?.data);
@@ -60,6 +69,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const [quantity, setQuantity] = useState("");
   const [notes, setNotes] = useState("");
   const [openSettingsDialog, setOpenSettingsDialog] = useState<boolean>(false);
+  const [openCommonItemsDialog, setOpenCommonItemsDialog] =
+    useState<boolean>(false);
   const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [updatedGroceryStoreName, setUpdatedGroceryStoreName] =
@@ -74,6 +85,12 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     raw: "",
   });
 
+  const renderCommonItems = commonitems.map(
+    (item: CommonGroceryStoreItemType) => {
+      return <CommonGroceryStoreItem key={item.id} item={item} quantity={1} />;
+    }
+  );
+
   // Need to seperate dialogs for this,including seperate the state
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -86,6 +103,9 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
   async function handleCreateDialogClose() {
     setOpenCreateDialog(false);
+  }
+  async function handleCommonItemsDialogClose() {
+    setOpenCommonItemsDialog(false);
   }
 
   async function handleDelete() {
@@ -183,6 +203,10 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     }
   }
 
+  function handleAddCommonItems(event: any): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       <IconButton
@@ -236,6 +260,12 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             <ControlPointIcon fontSize="small" />
           </ListItemIcon>
           Add Item
+        </MenuItem>
+        <MenuItem onClick={() => setOpenCommonItemsDialog(true)}>
+          <ListItemIcon>
+            <ListAltIcon fontSize="small" />
+          </ListItemIcon>
+          Add Common Item
         </MenuItem>
         <MenuItem onClick={() => setOpenSettingsDialog(true)}>
           <ListItemIcon>
@@ -412,6 +442,34 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           <DialogActions>
             <Button onClick={handleSettingsDialogClose}>Cancel</Button>
             <Button onClick={handleUpdateGroceryStoreSettings}>Save</Button>
+          </DialogActions>
+        </Dialog>
+      </>
+      <>
+        {/* Common Items Dialog */}
+        <Dialog
+          fullScreen={fullScreen}
+          id="grocery-store-settings-dialog"
+          open={openCommonItemsDialog}
+          onClose={handleCommonItemsDialogClose}
+        >
+          <DialogTitle>Common Items!</DialogTitle>
+          <DialogContent>
+            <Container
+              sx={{
+                display: "flex",
+                flexFlow: "column",
+                border: 1,
+                height: "100%",
+                overflowY: "scroll",
+              }}
+            >
+              {renderCommonItems}
+            </Container>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCommonItemsDialogClose}>Cancel</Button>
+            <Button onClick={handleAddCommonItems}>Add Items</Button>
           </DialogActions>
         </Dialog>
       </>
