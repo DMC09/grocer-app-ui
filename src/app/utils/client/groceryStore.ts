@@ -148,7 +148,7 @@ export async function addNewGroceryStoreItem(
   }
 }
 
-export async function getAllGroceryStoresalt(
+export async function getAllGroceryStoresData(
   supabase: SupabaseClient<Database>
 ) {
   // console.log(supabase,'supabase?')
