@@ -211,7 +211,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     <>
       <IconButton
         sx={{ color: "primary.main" }}
-        aria-label="more"
+        aria-label={!open? "Close grocery store menu":"Open grocery store menu"}
         id="long-button"
         aria-controls={open ? "long-menu" : undefined}
         aria-expanded={open ? "true" : undefined}

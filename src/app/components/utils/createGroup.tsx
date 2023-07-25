@@ -129,7 +129,7 @@ export default function CreateGroup(profile: ProfileType | null) {
     <>
       <IconButton
         sx={{ color: "primary.main" }}
-        aria-label="add to grocery store"
+        aria-label="Create new group"
         onClick={handleClickOpen}
       >
         Create Group

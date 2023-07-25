@@ -35,7 +35,7 @@ export default function GroceryStoreHeader() {
           >
             <IconButton
               onClick={() => router.back()}
-              aria-label="add to grocery store"
+              aria-label="Go back to dashboard"
               color="primary"
               size="large"
             >
