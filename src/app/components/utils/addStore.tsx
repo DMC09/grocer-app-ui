@@ -120,7 +120,7 @@ export default function AddStore({ select_id }: { select_id: string }) {
         }}
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
-        <DialogTitle>Add new Store</DialogTitle>
+        <DialogTitle align="center">Add new Store</DialogTitle>
         <DialogContent>
           <TextField
             error={isInvalid || undefined}
