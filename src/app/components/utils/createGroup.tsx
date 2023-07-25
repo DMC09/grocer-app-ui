@@ -48,7 +48,6 @@ export default function CreateGroup(profile: ProfileType | null) {
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);
       } else {
-
       }
     }
   }
@@ -128,12 +127,12 @@ export default function CreateGroup(profile: ProfileType | null) {
   return (
     <>
       <IconButton
-        sx={{ color: "primary.main" }}
+        sx={{ color: "primary.main", fontSize: 40 }}
         aria-label="Create new group"
         onClick={handleClickOpen}
       >
+        <PersonAddAlt1Icon sx={{ fontSize: 40, mr: 1 }} />
         Create Group
-        <PersonAddAlt1Icon sx={{ fontSize: 25 }} />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add new item</DialogTitle>

@@ -27,12 +27,6 @@ export default function JoinGroup(profile: ProfileType) {
   };
 
   async function handleSubmit() {
-    // call the RPC
-    // dialog to open a box and enter the code
-    // app thinks and maybe a loading screen
-    // state if successfull, I should refresh the group settings stuff
-    // Failture notify user. but shouldn't really happen
-
     if (
       profile &&
       profile.first_name &&
@@ -53,10 +47,8 @@ export default function JoinGroup(profile: ProfileType) {
       }
 
       if (data) {
-        console.log("Insert successful");
         return true;
       } else {
-        console.log("Insert failed");
         return false;
       }
     } else {
@@ -67,12 +59,13 @@ export default function JoinGroup(profile: ProfileType) {
   return (
     <>
       <IconButton
-        sx={{ color: "primary.main" }}
+        sx={{ color: "primary.main", fontSize: 40 }}
         aria-label="Join a group"
+        size="large"
         onClick={handleClickOpen}
       >
+        <GroupAddIcon sx={{ fontSize: 40, mr: 1 }} />
         Join Group
-        <GroupAddIcon sx={{ fontSize: 25 }} />
       </IconButton>
 
       <Dialog open={open} onClose={handleClose}>
