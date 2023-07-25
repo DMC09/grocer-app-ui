@@ -19,11 +19,26 @@ export default function MyGroup({
   });
 
   return (
-    <Box sx={{ p: 1}}>
-      <Typography color="#071236" align="center" variant="h5" sx={{mb:2}}>
-        My group
+    <Box
+      sx={{
+        display: "flex",
+        flexFlow: "column",
+        justifyContent: "space-around",
+
+        height: "100%",
+      }}
+    >
+      <Typography color="#071236" align="center" variant="h5" sx={{ my: 2 }}>
+        {groupMembers[0].group_name}
       </Typography>
-      {groupMembers && groupMembers.length > 0 && groupMembersToRender}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        {groupMembers && groupMembers.length > 0 && groupMembersToRender}
+      </Box>
     </Box>
   );
 }
