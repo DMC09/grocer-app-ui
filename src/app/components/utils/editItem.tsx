@@ -129,7 +129,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     <>
       <IconButton
         sx={{ color: "primary.main" }}
-        aria-label="add to grocery store"
+        aria-label="Edit Item"
         onClick={handleClickOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />

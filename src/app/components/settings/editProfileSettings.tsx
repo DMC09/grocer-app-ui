@@ -123,7 +123,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
     <>
       <IconButton
         sx={{ color: "primary.main" }}
-        aria-label="add to grocery store"
+        aria-label="Edit Profile Settings"
         onClick={handleClickOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />

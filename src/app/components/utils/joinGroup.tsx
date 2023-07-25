@@ -66,7 +66,7 @@ export default function JoinGroup(profile: ProfileType) {
     <>
       <IconButton
         sx={{ color: "primary.main" }}
-        aria-label="add to grocery store"
+        aria-label="Join a group"
         onClick={handleClickOpen}
       >
         Join Group
