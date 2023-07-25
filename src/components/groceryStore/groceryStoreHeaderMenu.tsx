@@ -267,7 +267,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           open={openCreateDialog}
           onClose={handleCreateDialogClose}
         >
-          <DialogTitle>Add new item</DialogTitle>
+          <DialogTitle align="center">Add new item</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -359,7 +359,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           open={openSettingsDialog}
           onClose={handleSettingsDialogClose}
         >
-          <DialogTitle>Grocery Store Settings</DialogTitle>
+          <DialogTitle align="center">Grocery Store Settings</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
