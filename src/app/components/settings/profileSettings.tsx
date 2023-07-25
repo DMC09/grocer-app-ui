@@ -45,13 +45,20 @@ export default function ProfileSettings() {
         onRefresh={handleRefresh}
         style={{ textAlign: "center" }}
       >
-        <Container sx={{ borderColor: "purple" }}>
+        <Container sx={{}}>
           {currentTabIndex === 0 && (
             <Box
               id="edit-button-container"
               sx={{
                 display: "flex",
                 flexFlow: "column",
+                borderColor: "primary.main",
+                backgroundColor: "background.paper",
+                borderRadius: 8,
+                border: 2,
+                p: 2,
+                mt: 2,
+                boxShadow: 5,
               }}
             >
               <Box
