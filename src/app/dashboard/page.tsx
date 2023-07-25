@@ -77,35 +77,35 @@ export default function Dashboard() {
             <GroceryStoreSkeleton />
           </>
         ) : (
-          <Container
-            disableGutters
-            sx={{ height: "100%", width: "98%", overflowY: "scroll" }}
+          <PullToRefresh
+            refreshingContent={<CircularProgress />}
+            pullingContent={""}
+            onRefresh={handleRefresh}
           >
-            {groceryStoreData && groceryStoreData.length > 0 ? (
-              <Container
-                disableGutters
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  flexFlow: "column",
-                  justifyContent: "flex-start",
-                  backgroundColor: "white",
-                  overflowY: "scroll",
-                }}
-              >
-                <PullToRefresh
-                  refreshingContent={<CircularProgress />}
-                  pullingContent={""}
-                  onRefresh={handleRefresh}
+            <Container
+              disableGutters
+              sx={{ height: "100%", width: "98%", overflowY: "scroll" }}
+            >
+              {groceryStoreData && groceryStoreData.length > 0 ? (
+                <Container
+                  disableGutters
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexFlow: "column",
+                    justifyContent: "flex-start",
+                    backgroundColor: "white",
+                    overflowY: "scroll",
+                  }}
                 >
                   <ul>{groceryStoresToRender}</ul>
-                </PullToRefresh>
-              </Container>
-            ) : (
-              <NoStores />
-            )}
-          </Container>
+                </Container>
+              ) : (
+                <NoStores />
+              )}
+            </Container>
+          </PullToRefresh>
         )}
       </Container>
     </>
