@@ -27,7 +27,7 @@ export default function LeaveGroup() {
         sx={{ height: "fit-content",fontSize:"small" }}
         variant="contained"
         onClick={handleLeaveGroup}
-        endIcon={<ExitToAppIcon />}
+        startIcon={<ExitToAppIcon />}
       >
         Leave group
       </Button>

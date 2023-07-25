@@ -17,7 +17,7 @@ export default function SettingsLayout({
           sx={{
             height: "100vh",
             width: "100%",
-            backgroundColor: "background.paper",
+            backgroundColor: "background.default",
             border: 3,
           }}
         >

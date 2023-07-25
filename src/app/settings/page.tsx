@@ -17,10 +17,9 @@ export default function Settings() {
 
   return (
     <>
-
       <Container
-      disableGutters
-      maxWidth={false}
+        disableGutters
+        maxWidth={false}
         sx={{
           height: "100%",
           width: "100%",
@@ -28,11 +27,11 @@ export default function Settings() {
           flexFlow: "column",
           justifyContent: "flex-start",
           alignItems: "center",
-          backgroundColor: "background.paper",
+          backgroundColor: "background.default",
           overflowY: "scroll",
         }}
       >
-        <Box sx={{ height: "fit-content",my:2 }}>
+        <Box sx={{ height: "fit-content", my: 2 }}>
           <Typography align="center" color="primary.main" variant="h3">
             Settings
           </Typography>
