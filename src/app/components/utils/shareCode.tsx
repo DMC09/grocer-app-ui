@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { ProfileType } from "@/types";
 import { useSupabase } from "../supabase/supabase-provider";
@@ -28,15 +28,22 @@ export default function ShareCode(profile: ProfileType | null) {
   }
   return (
     <>
-      <Button
-        sx={{ height: "fit-content", fontSize: "small" }}
-        variant="contained"
-        onClick={handleShareCode}
-        endIcon={<LibraryAddSharpIcon />}
+      <Box
+        sx={{
+          display: "flex",
+          flexFlow: "column",
+        }}
       >
-        Share Code
-      </Button>
-      <Typography>{shareCode}</Typography>
+        <Button
+          sx={{ height: "fit-content", fontSize: "small" }}
+          variant="contained"
+          onClick={handleShareCode}
+          startIcon={<LibraryAddSharpIcon />}
+        >
+          Share Code
+        </Button>
+        <Typography>{shareCode}</Typography>
+      </Box>
     </>
   );
 }
