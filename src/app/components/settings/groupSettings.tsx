@@ -26,10 +26,7 @@ export default function GroupSettings(profile: ProfileType | null) {
   return (
     <>
       {profile && (
-        <Container
-          id="group-settings-container"
-          sx={{ height: "100%" }}
-        >
+        <Container id="group-settings-container" sx={{ height: "100%" }}>
           {profile.in_group ? (
             <>
               <Box
@@ -53,21 +50,20 @@ export default function GroupSettings(profile: ProfileType | null) {
               <Box
                 sx={{
                   display: "flex",
-                  flexFlow: "column",
                   width: "100%",
                   border: 2,
                   borderColor: "primary.main",
                   borderRadius: 8,
                   py: 2,
                   backgroundColor: "background.paper",
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   justifyContent: "space-around",
                   boxShadow: 5,
-                  height: "20%",
+                  height: "10%",
                 }}
               >
-                <LeaveGroup />
                 <ShareCode {...profile} />
+                <LeaveGroup />
               </Box>
             </>
           ) : (
