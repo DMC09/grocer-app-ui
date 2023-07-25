@@ -42,7 +42,13 @@ export default function ShareCode(profile: ProfileType | null) {
         >
           Share Code
         </Button>
-        <Typography>{shareCode}</Typography>
+        <Box
+          sx={{
+            mt: 2,
+          }}
+        >
+          <Typography align="center">{shareCode}</Typography>
+        </Box>
       </Box>
     </>
   );
