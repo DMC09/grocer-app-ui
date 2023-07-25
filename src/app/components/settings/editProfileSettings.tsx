@@ -129,7 +129,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
-        <DialogTitle>Edit Profile Settings</DialogTitle>
+        <DialogTitle align="center">Edit Profile Settings</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus

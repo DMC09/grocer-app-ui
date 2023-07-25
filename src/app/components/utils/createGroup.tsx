@@ -135,7 +135,7 @@ export default function CreateGroup(profile: ProfileType | null) {
         Create Group
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add new item</DialogTitle>
+        <DialogTitle align="center">Create New Group</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
