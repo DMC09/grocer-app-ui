@@ -59,6 +59,8 @@ export default function JoinGroup(profile: ProfileType) {
         console.log("Insert failed");
         return false;
       }
+    } else {
+      throw new Error("missing information")
     }
   }
 
