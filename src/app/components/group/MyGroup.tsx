@@ -28,13 +28,16 @@ export default function MyGroup({
         height: "100%",
       }}
     >
-      <Typography color="#071236" align="center" variant="h5" sx={{ my: 2 }}>
+      <Typography color="#071236" align="center" variant="h3" sx={{ my: 2 }}>
         {groupMembers[0].group_name}
       </Typography>
       <Box
         sx={{
           display: "flex",
           flexWrap: "wrap",
+          height: "50%",
+          overflowY: "scroll",
+          justifyContent: "space-around",
         }}
       >
         {groupMembers && groupMembers.length > 0 && groupMembersToRender}
