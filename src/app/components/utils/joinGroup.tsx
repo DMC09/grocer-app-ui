@@ -84,7 +84,7 @@ export default function JoinGroup(profile: ProfileType) {
             type="text"
             fullWidth
             variant="standard"
-            onChange={(e) => setShareCode(e.target.value)}
+            onChange={(e) => setShareCode(e.target.value.toLocaleUpperCase())}
             value={shareCode}
           />
         </DialogContent>
