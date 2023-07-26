@@ -1,7 +1,7 @@
 import { GroceryStoreType } from "@/types";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { headers, cookies } from "next/headers";
-import { useSupabase } from "../../components/supabase/supabase-provider";
+
 import { PostgrestError } from "@supabase/supabase-js";
 
 export async function getGroceryStoreData(id: number) {

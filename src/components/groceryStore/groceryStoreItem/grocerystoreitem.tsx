@@ -8,9 +8,6 @@ import {
   Button,
   Card,
   CardActionArea,
-  CardActions,
-  CardContent,
-  CardHeader,
   CardMedia,
   CircularProgress,
   Dialog,
@@ -22,9 +19,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useSupabase } from "../../supabase/supabase-provider";
-import EditItem from "../../utils/editItem";
-import { theme } from "@/app/utils/theme";
+import { theme } from "@/utils/theme";
+import { useSupabase } from "@/components/supabase/supabase-provider";
+import EditItem from "@/components/utils/editItem";
 
 export default function GroceryStoreItem({
   groceryStoreItem,
@@ -107,9 +104,7 @@ export default function GroceryStoreItem({
     }
   };
 
-  function handleEdit() {
-    throw new Error("Function not implemented.");
-  }
+
 
   return (
     <>

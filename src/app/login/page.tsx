@@ -1,12 +1,12 @@
 "use client";
 
 import { Auth } from "@supabase/auth-ui-react";
-import { useSupabase } from "../components/supabase/supabase-provider";
-import { ThemeMinimal, ThemeSupa } from "@supabase/auth-ui-shared";
+import {  ThemeSupa } from "@supabase/auth-ui-shared";
 import { Box } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import DashBoardSkeleton from "../components/skeletons/dashboardSkeleton";
+import { useSupabase } from "@/components/supabase/supabase-provider";
+
 
 export default function LoginPage() {
   const { supabase, session } = useSupabase();

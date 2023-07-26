@@ -9,14 +9,14 @@ import {
   GroceryStoreWithItemsType,
   ProfileType,
 } from "@/types";
-import { getProfileData } from "@/app/utils/client/profile";
-import useStore from "@/app/hooks/useStore";
+import { getProfileData } from "@/utils/client/profile";
+import useStore from "@/hooks/useStore";
 import {
   deleteGroceryStore,
   getAllGroceryStoresData,
-} from "@/app/utils/client/groceryStore";
+} from "@/utils/client/groceryStore";
 import { useProfileStore } from "@/state/ProfileStore";
-import { getGroupData } from "@/app/utils/client/group";
+import { getGroupData } from "@/utils/client/group";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components

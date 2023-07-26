@@ -19,8 +19,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import {
   generateGroceryStoreImagePath,
   handleGroceryStoreImageUpload,
-} from "@/app/utils/client/image";
-import { addNewGroceryStore } from "@/app/utils/client/groceryStore";
+} from "@/utils/client/image";
+import { addNewGroceryStore } from "@/utils/client/groceryStore";
 
 export default function AddStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();

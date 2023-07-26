@@ -1,9 +1,9 @@
 import { Session } from "@supabase/supabase-js";
-import Header from "./components/header/header";
 import "./globals.css";
-import SupabaseProvider from "./components/supabase/supabase-provider";
-import { createServerClient } from "./utils/supabase.server";
-import SupabaseListener from "./components/supabase/supabase-listener";
+import SupabaseListener from "@/components/supabase/supabase-listener";
+import { createServerClient } from "@/utils/supabase.server";
+import SupabaseProvider from "@/components/supabase/supabase-provider";
+import Header from "@/components/header/header";
 
 export const metadata = {
   title: "Grocer App",
@@ -27,7 +27,6 @@ export default async function RootLayout({
         <div id="app">
           <SupabaseProvider session={session}>
             <SupabaseListener serverAccessToken={session?.access_token} />
-
             <Header />
             {children}
           </SupabaseProvider>

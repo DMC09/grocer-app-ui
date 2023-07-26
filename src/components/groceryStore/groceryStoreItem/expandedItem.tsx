@@ -19,8 +19,9 @@ import {
   Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useSupabase } from "../../supabase/supabase-provider";
-import EditItem from "../../utils/editItem";
+import EditItem from "@/components/utils/editItem";
+import { useSupabase } from "@/components/supabase/supabase-provider";
+
 
 export default function ExpandedGroceryStoreItem({
   groceryStoreItem,

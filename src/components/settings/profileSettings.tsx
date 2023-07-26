@@ -12,12 +12,12 @@ import {
 } from "@mui/material";
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
-import useStore from "@/app/hooks/useStore";
+import useStore from "@/hooks/useStore";
 import { useProfileStore } from "@/state/ProfileStore";
 import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
-import { getProfileData } from "@/app/utils/client/profile";
-import { getGroupData } from "@/app/utils/client/group";
+import { getProfileData } from "@/utils/client/profile";
+import { getGroupData } from "@/utils/client/group";
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
 
