@@ -48,7 +48,7 @@ const initialProfileState: ProfileState = {
   ],
 };
 
-const profileStore = immer<ProfileState & ProfileActions>((set, get) => ({
+const _ProfileDataStore = immer<ProfileState & ProfileActions>((set, get) => ({
   data: initialProfileState.data,
   groupData: initialProfileState.groupData,
   resetStore: () => {
@@ -74,8 +74,10 @@ const profileStore = immer<ProfileState & ProfileActions>((set, get) => ({
     }),
 }));
 
-export const useProfileStore = create(
-  subscribeWithSelector(devtools(persist(profileStore, { name: "Profile cache" })))
+export const ProfileDataStore = create(
+  subscribeWithSelector(
+    devtools(persist(_ProfileDataStore, { name: "Profile cache" }))
+  )
 );
 
 if (process.env.NODE_ENV === "development") {
