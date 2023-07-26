@@ -6,7 +6,7 @@ import AddStore from "../utils/addStore";
 
 import { theme } from "@/utils/theme";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 
 
 export default function DashboardHeader() {

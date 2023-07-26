@@ -15,7 +15,7 @@ import { GroupMemberType, GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/leaveGroup";
 import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 import JoinCreateActions from "../group/joinCreateActions";
 import ShareCode from "../utils/shareCode";
 

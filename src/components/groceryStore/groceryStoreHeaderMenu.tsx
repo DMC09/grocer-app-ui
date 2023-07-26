@@ -44,7 +44,7 @@ import { theme } from "@/utils/theme";
 import { handleChangeGroceryStoreItemView } from "@/utils/client/profile";
 import CloseIcon from "@mui/icons-material/Close";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
