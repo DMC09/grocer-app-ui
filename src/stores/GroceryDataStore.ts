@@ -52,7 +52,7 @@ const initialGroceryStoreState: GroceryStoreState = {
   ],
 };
 
-const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
+const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
   (set, get) => ({
     data: initialGroceryStoreState.data,
     resetStore: () => {
@@ -152,12 +152,12 @@ const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
   })
 );
 
-export const useGroceryStoreStore = create(
-  devtools(persist(GroceryStoreStore, { name: "Grocery Store store" }))
+export const GroceryDataStore = create(
+  devtools(persist(_GroceryDataStore, { name: "Grocery Data Cache" }))
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Grocery Store store", useGroceryStoreStore);
+  mountStoreDevtool("Grocery Store store", GroceryDataStore);
 }
 
 export function findGroceryStoreIndex(

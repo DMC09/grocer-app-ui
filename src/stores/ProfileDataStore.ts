@@ -71,7 +71,7 @@ const _ProfileDataStore = immer<ProfileState & ProfileActions>((set, get) => ({
 
 export const ProfileDataStore = create(
   subscribeWithSelector(
-    devtools(persist(_ProfileDataStore, { name: "Profile cache" }))
+    devtools(persist(_ProfileDataStore, { name: "Profile Data Cache" }))
   )
 );
 

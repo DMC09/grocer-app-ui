@@ -1,5 +1,5 @@
 import groceryStore from "@/components/groceryStore/groceryStore";
-import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   Database,
   GroceryStoreItemType,
@@ -158,7 +158,7 @@ export async function getAllGroceryStoresData(
   if (error) {
     throw new Error(error.message);
   } else {
-    useGroceryStoreStore.setState({
+    GroceryDataStore.setState({
       data: data as GroceryStoreWithItemsType[],
     }); 
   }
