@@ -2,7 +2,7 @@ import { GroupMemberType, ProfileType } from "@/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { mountStoreDevtool } from "simple-zustand-devtools";
-import { subscribeWithSelector } from 'zustand/middleware'
+import { subscribeWithSelector } from "zustand/middleware";
 import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
 // Profiles
@@ -12,7 +12,6 @@ interface ProfileState {
 }
 
 type ProfileActions = {
-  editLastname: (name: string) => void;
   resetStore: () => void;
   setProfileState: (fetchedData: ProfileType) => void;
   setGroupState: (groupMembers: GroupMemberType[]) => void;
@@ -36,7 +35,7 @@ const initialProfileState: ProfileState = {
   },
   groupData: [
     {
-      id:null,
+      id: null,
       avatar_url: null,
       email: null,
       first_name: null,
@@ -59,17 +58,13 @@ const _ProfileDataStore = immer<ProfileState & ProfileActions>((set, get) => ({
       state.data = fetchedData;
     });
   },
-  editLastname: (lastName: string) =>
-    set((state) => {
-      state.data.last_name = lastName;
-    }),
   setGroupState: (groupMembers: GroupMemberType[]) =>
     set((state) => {
       state.groupData = groupMembers;
     }),
   resetGroupState: () =>
     set((state) => {
-      console.log('resetting group data!')
+      console.log("resetting group data!");
       state.groupData = [];
     }),
 }));
@@ -81,5 +76,5 @@ export const ProfileDataStore = create(
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Profile State", useProfileStore);
+  mountStoreDevtool("Profile State", ProfileDataStore);
 }
