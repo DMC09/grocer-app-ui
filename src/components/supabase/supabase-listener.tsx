@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
-import { useGroceryStoreStore } from "@/stores/GrocerStore";
+import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
 import {
   GroceryStoreItemType,
   GroceryStoreWithItemsType,
@@ -18,7 +18,7 @@ import {
 
 import { getGroupData } from "@/utils/client/group";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components

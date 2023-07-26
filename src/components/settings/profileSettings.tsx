@@ -20,7 +20,7 @@ import { getGroupData } from "@/utils/client/group";
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 
 export default function ProfileSettings() {
   const profileData = useZustandStore(useProfileStore, (state) => state?.data);

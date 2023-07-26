@@ -1,5 +1,5 @@
 
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 import { Database, ProfileType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 

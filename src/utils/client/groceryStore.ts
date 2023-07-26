@@ -1,5 +1,5 @@
 import groceryStore from "@/components/groceryStore/groceryStore";
-import { useGroceryStoreStore } from "@/stores/GrocerStore";
+import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
 import {
   Database,
   GroceryStoreItemType,

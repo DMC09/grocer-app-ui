@@ -5,7 +5,7 @@ import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import GroupSettings from "@/components/settings/groupSettings";
 import ProfileSettings from "@/components/settings/profileSettings";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileDataStore";
 
 export default function Settings() {
   const profileData = useZustandStore(useProfileStore, (state) => state?.data);
