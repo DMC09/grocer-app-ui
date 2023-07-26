@@ -7,21 +7,23 @@ import { GroceryStoreItemType } from "@/types";
 import NoItems from "@/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/utils/theme";
-import useStore from "@/hooks/useStore";
-import { useGroceryStoreStore } from "@/state/GrocerStore";
+
+
 import { useProfileStore } from "@/state/ProfileStore";
 import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
 import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
+import useZustandStore from "@/hooks/useZustandStore";
+import { useGroceryStoreStore } from "@/state/GrocerStore";
 
 // need to grab the pfiles boolean and render the differnt view.
 
 export default function Page() {
   const { store_id } = useParams();
-  const expandedView = useStore(
+  const expandedView = useZustandStore(
     useProfileStore,
     (state) => state?.data?.expanded_groceryitem
   );
-  const grocerystoreitems = useStore(
+  const grocerystoreitems = useZustandStore(
     useGroceryStoreStore,
     (state) => state?.data
   )?.filter((grocerystore) => Number(grocerystore.id) === Number(store_id))?.[0]

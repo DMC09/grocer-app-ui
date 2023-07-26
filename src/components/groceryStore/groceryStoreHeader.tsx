@@ -6,13 +6,14 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
 import { theme } from "@/utils/theme";
 import { ThemeProvider } from "@emotion/react";
-import useStore from "@/hooks/useStore";
+import useZustandStore from "@/hooks/useZustandStore";
 import { useGroceryStoreStore } from "@/state/GrocerStore";
+
 
 export default function GroceryStoreHeader() {
   const { store_id } = useParams();
 
-  const groceryStoreData = useStore(
+  const groceryStoreData = useZustandStore(
     useGroceryStoreStore,
     (state) => state?.data
   )?.filter(
