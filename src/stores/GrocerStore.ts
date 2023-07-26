@@ -119,8 +119,8 @@ const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
     deleteGroceryItem: (itemId: number) => {
       set(
         produce((draft) => {
-          const storeIndex = findGrocerystoreIndex(draft, itemId);
-          const itemIndex = findGrocerystoreitemIndexInStore(
+          const storeIndex = findGroceryStoreIndex(draft, itemId);
+          const itemIndex = findGroceryStoreItemIndexInStore(
             draft,
             itemId,
             storeIndex
@@ -137,9 +137,9 @@ const GroceryStoreStore = immer<GroceryStoreState & GroceryStoreActions>(
     updateGroceryItem: (updatedItemData: GroceryStoreItemType) => {
       set(
         produce((draft) => {
-          const storeIndex = findGrocerystoreIndex(draft, updatedItemData.id);
+          const storeIndex = findGroceryStoreIndex(draft, updatedItemData.id);
 
-          const itemIndex = findGrocerystoreitemIndexInStore(
+          const itemIndex = findGroceryStoreItemIndexInStore(
             draft,
             updatedItemData.id,
             storeIndex
@@ -160,7 +160,7 @@ if (process.env.NODE_ENV === "development") {
   mountStoreDevtool("Grocery Store store", useGroceryStoreStore);
 }
 
-export function findGrocerystoreIndex(
+export function findGroceryStoreIndex(
   state: GroceryStoreState,
   grocerystoreitemId: number
 ) {
@@ -173,7 +173,7 @@ export function findGrocerystoreIndex(
   return grocerystoreIndex === -1 ? -1 : 0;
 }
 
-export function findGrocerystoreitemIndexInStore(
+export function findGroceryStoreItemIndexInStore(
   state: GroceryStoreState,
   grocerystoreitemId: number,
   storeIndex: number
