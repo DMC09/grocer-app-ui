@@ -1,29 +1,25 @@
 "use client";
 
-import { Box, CircularProgress, Container, Skeleton } from "@mui/material";
-import { useSupabase } from "../components/supabase/supabase-provider";
+import { CircularProgress, Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import { GroceryStoreType } from "@/types";
-import DashboardHeader from "../components/dashboard/dashboardHeader";
-import GroceryStore from "../components/groceryStore/groceryStore";
-import NoStores from "../components/utils/noStores";
-import useStore from "../hooks/useStore";
-import { useGroceryStoreStore } from "@/state/GrocerStore";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import PullToRefresh from "react-simple-pull-to-refresh";
+import { useSupabase } from "@/components/supabase/supabase-provider";
+import DashboardHeader from "@/components/dashboard/dashboardHeader";
+import GroceryStore from "@/components/groceryStore/groceryStore";
+import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
 import {
   getAllGroceryStoresData,
   isGroceryStoreDataEmpty,
-} from "../utils/client/groceryStore";
-import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
-import PullToRefresh from "react-simple-pull-to-refresh";
-import DashBoardSkeleton from "../components/skeletons/dashboardSkeleton";
-import GroceryStoreSkeleton from "../components/skeletons/groceryStoreSkeleton";
+} from "@/utils/client/groceryStore";
+import NoStores from "@/components/utils/noStores";
+import useZustandStore from "@/hooks/useZustandStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);
-  const groceryStoreData = useStore(
-    useGroceryStoreStore,
+  const groceryStoreData = useZustandStore(
+    GroceryDataStore,
     (state) => state?.data
   );
   const { supabase, session } = useSupabase();

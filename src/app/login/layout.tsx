@@ -1,7 +1,8 @@
 "use client";
-import Header from "../components/header/header";
+
+import { theme } from "@/utils/theme";
 import { Container, ThemeProvider, Typography } from "@mui/material";
-import { theme } from "../utils/theme";
+
 
 export default function LoginLayout({
   children,

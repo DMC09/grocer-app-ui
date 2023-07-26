@@ -1,13 +1,14 @@
 "use client";
-import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
-import ProfileSettings from "../components/settings/profileSettings";
 import { useState, SetStateAction } from "react";
-import GroupSettings from "../components/settings/groupSettings";
-import useStore from "../hooks/useStore";
-import { useProfileStore } from "@/state/ProfileStore";
+
+import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
+import GroupSettings from "@/components/settings/groupSettings";
+import ProfileSettings from "@/components/settings/profileSettings";
+import useZustandStore from "@/hooks/useZustandStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
 export default function Settings() {
-  const profileData = useStore(useProfileStore, (state) => state?.data);
+  const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const handleTabChange = (e: any, tabIndex: SetStateAction<number>) => {

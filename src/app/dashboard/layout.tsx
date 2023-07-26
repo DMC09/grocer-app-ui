@@ -1,6 +1,7 @@
 "use client";
+import { theme } from "@/utils/theme";
 import { Container, ThemeProvider } from "@mui/material";
-import { theme } from "../utils/theme";
+
 
 export default function DashboardLayout({
   children,
