@@ -1,4 +1,4 @@
-import { useProfileStore } from "@/state/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileStore";
 import { Database, GroupMemberType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 

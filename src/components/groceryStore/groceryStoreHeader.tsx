@@ -7,7 +7,7 @@ import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
 import { theme } from "@/utils/theme";
 import { ThemeProvider } from "@emotion/react";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useGroceryStoreStore } from "@/state/GrocerStore";
+import { useGroceryStoreStore } from "@/stores/GrocerStore";
 
 
 export default function GroceryStoreHeader() {
