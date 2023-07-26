@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSupabase } from "../supabase/supabase-provider";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileDataStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
 
 
@@ -24,7 +24,7 @@ export default function HeaderMenu() {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const profileData = useZustandStore(useProfileStore, (state) => state?.data);
+  const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

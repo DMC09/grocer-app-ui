@@ -15,13 +15,13 @@ import { GroupMemberType, GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/leaveGroup";
 import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
-import { useProfileStore } from "@/stores/ProfileDataStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import JoinCreateActions from "../group/joinCreateActions";
 import ShareCode from "../utils/shareCode";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
-  const groupMembers = useProfileStore((state) => state.groupData);
+  const groupMembers = ProfileDataStore((state) => state.groupData);
 
   return (
     <>

@@ -20,10 +20,10 @@ import { getGroupData } from "@/utils/client/group";
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileDataStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
 export default function ProfileSettings() {
-  const profileData = useZustandStore(useProfileStore, (state) => state?.data);
+  const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
   const { supabase, session } = useSupabase();
 
   async function handleRefresh(): Promise<void> {

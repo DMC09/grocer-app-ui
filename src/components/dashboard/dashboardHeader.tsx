@@ -6,11 +6,11 @@ import AddStore from "../utils/addStore";
 
 import { theme } from "@/utils/theme";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileDataStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
 
 export default function DashboardHeader() {
-  const selectId = useZustandStore(useProfileStore, (state) => state?.data?.select_id);
+  const selectId = useZustandStore(ProfileDataStore, (state) => state?.data?.select_id);
 
   return (
     <>

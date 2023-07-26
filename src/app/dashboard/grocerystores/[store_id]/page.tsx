@@ -7,9 +7,7 @@ import { GroceryStoreItemType } from "@/types";
 import NoItems from "@/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/utils/theme";
-
-
-import { useProfileStore } from "@/stores/ProfileDataStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
 import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
@@ -20,7 +18,7 @@ import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
 export default function Page() {
   const { store_id } = useParams();
   const expandedView = useZustandStore(
-    useProfileStore,
+    ProfileDataStore,
     (state) => state?.data?.expanded_groceryitem
   );
   const grocerystoreitems = useZustandStore(

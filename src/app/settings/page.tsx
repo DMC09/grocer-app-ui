@@ -5,10 +5,10 @@ import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import GroupSettings from "@/components/settings/groupSettings";
 import ProfileSettings from "@/components/settings/profileSettings";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/stores/ProfileDataStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
 export default function Settings() {
-  const profileData = useZustandStore(useProfileStore, (state) => state?.data);
+  const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const handleTabChange = (e: any, tabIndex: SetStateAction<number>) => {
