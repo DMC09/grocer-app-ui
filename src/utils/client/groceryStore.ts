@@ -1,4 +1,4 @@
-import groceryStore from "@/app/components/groceryStore/groceryStore";
+import groceryStore from "@/components/groceryStore/groceryStore";
 import { useGroceryStoreStore } from "@/state/GrocerStore";
 import {
   Database,

@@ -1,10 +1,10 @@
 "use client";
-import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
-import ProfileSettings from "../components/settings/profileSettings";
 import { useState, SetStateAction } from "react";
-import GroupSettings from "../components/settings/groupSettings";
-import useStore from "../hooks/useStore";
+import useStore from "@/hooks/useStore";
+import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import { useProfileStore } from "@/state/ProfileStore";
+import GroupSettings from "@/components/settings/groupSettings";
+import ProfileSettings from "@/components/settings/profileSettings";
 
 export default function Settings() {
   const profileData = useStore(useProfileStore, (state) => state?.data);

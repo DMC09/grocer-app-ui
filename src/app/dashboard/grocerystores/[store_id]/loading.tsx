@@ -1,9 +1,7 @@
 "use client";
 
-import GroceryStoreSkeleton from "@/app/components/skeletons/groceryStoreSkeleton";
-import { Container, Box } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
-import { Divider } from "@supabase/ui";
+import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
+
 
 export default function Loading() {
   return <GroceryStoreSkeleton />;

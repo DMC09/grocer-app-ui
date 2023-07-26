@@ -34,16 +34,17 @@ import {
   addNewGroceryStoreItem,
   deleteGroceryStore,
   updateGroceryStore,
-} from "@/app/utils/client/groceryStore";
+} from "@/utils/client/groceryStore";
 import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
-} from "@/app/utils/client/image";
-import { theme } from "@/app/utils/theme";
-import useStore from "@/app/hooks/useStore";
-import { useProfileStore } from "@/state/ProfileStore";
-import { handleChangeGroceryStoreItemView } from "@/app/utils/client/profile";
+} from "@/utils/client/image";
+import { theme } from "@/utils/theme";
+
+import { handleChangeGroceryStoreItemView } from "@/utils/client/profile";
 import CloseIcon from "@mui/icons-material/Close";
+import useStore from "@/hooks/useStore";
+import { useProfileStore } from "@/state/ProfileStore";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useStore(useProfileStore, (state) => state?.data);

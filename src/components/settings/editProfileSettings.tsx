@@ -17,7 +17,7 @@ import { useState } from "react";
 import { ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "../supabase/supabase-provider";
-import { theme } from "@/app/utils/theme";
+import { theme } from "@/utils/theme";
 
 export default function EditProfileSettings(profile: ProfileType | null) {
   const { supabase } = useSupabase();

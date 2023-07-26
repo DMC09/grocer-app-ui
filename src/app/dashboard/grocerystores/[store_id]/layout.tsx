@@ -1,4 +1,4 @@
-import GroceryStoreHeader from "@/app/components/groceryStore/groceryStoreHeader";
+import GroceryStoreHeader from "@/components/groceryStore/groceryStoreHeader";
 
 export default async function GroceryStoreLayout({
   children,

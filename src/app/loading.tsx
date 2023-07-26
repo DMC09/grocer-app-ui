@@ -1,7 +1,5 @@
 "use client";
-import Skeleton from "@mui/material/Skeleton";
-import DashBoardSkeleton from "./components/skeletons/dashboardSkeleton";
-import { Container, Box } from "@mui/material";
+import DashBoardSkeleton from "@/components/skeletons/dashboardSkeleton";
 
 export default function Loading() {
   // TODO: Fix this

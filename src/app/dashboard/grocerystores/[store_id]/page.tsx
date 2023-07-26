@@ -4,14 +4,14 @@ import { Container, Skeleton, ThemeProvider } from "@mui/material";
 
 import { useParams } from "next/navigation";
 import { GroceryStoreItemType } from "@/types";
-import NoItems from "@/app/components/utils/noItems";
+import NoItems from "@/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
-import { theme } from "@/app/utils/theme";
-import useStore from "@/app/hooks/useStore";
+import { theme } from "@/utils/theme";
+import useStore from "@/hooks/useStore";
 import { useGroceryStoreStore } from "@/state/GrocerStore";
 import { useProfileStore } from "@/state/ProfileStore";
-import GroceryStoreItem from "@/app/components/groceryStore/groceryStoreItem/grocerystoreitem";
-import ExpandedGroceryStoreItem from "@/app/components/groceryStore/groceryStoreItem/expandedItem";
+import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
+import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 
 // need to grab the pfiles boolean and render the differnt view.
 
