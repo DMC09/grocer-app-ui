@@ -243,12 +243,12 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           </ListItemIcon>
           Store Settings
         </MenuItem>
-        <MenuItem onClick={handleChangeView}>
+        {/* <MenuItem onClick={handleChangeView}>
           <ListItemIcon>
             {profileData?.expanded_groceryitem ? <GridViewIcon /> : <TocIcon />}
           </ListItemIcon>
           Change View
-        </MenuItem>
+        </MenuItem> */}
         <Divider />
         <MenuItem onClick={handleDelete}>
           {/* need a modal to show the store settings which right now is the nmae */}
