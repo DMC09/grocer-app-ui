@@ -1,7 +1,7 @@
-// useStore.ts
+// useZustandStore.ts
 import { useState, useEffect } from "react";
 
-const useStore = <T, F>(
+const useZustandStore = <T, F>(
   store: (callback: (state: T) => unknown) => unknown,
   callback: (state: T) => F
 ) => {
@@ -16,4 +16,4 @@ const useStore = <T, F>(
   return data;
 };
 
-export default useStore;
+export default useZustandStore;

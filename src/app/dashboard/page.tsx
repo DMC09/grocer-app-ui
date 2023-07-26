@@ -13,12 +13,12 @@ import {
   isGroceryStoreDataEmpty,
 } from "@/utils/client/groceryStore";
 import NoStores from "@/components/utils/noStores";
-import useStore from "@/hooks/useStore";
+import useZustandStore from "@/hooks/useZustandStore";
 import { useGroceryStoreStore } from "@/state/GrocerStore";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);
-  const groceryStoreData = useStore(
+  const groceryStoreData = useZustandStore(
     useGroceryStoreStore,
     (state) => state?.data
   );

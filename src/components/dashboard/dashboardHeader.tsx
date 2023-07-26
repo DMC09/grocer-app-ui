@@ -5,11 +5,12 @@ import { ThemeProvider, Typography, Card } from "@mui/material";
 import AddStore from "../utils/addStore";
 
 import { theme } from "@/utils/theme";
-import useStore from "@/hooks/useStore";
+import useZustandStore from "@/hooks/useZustandStore";
 import { useProfileStore } from "@/state/ProfileStore";
 
+
 export default function DashboardHeader() {
-  const selectId = useStore(useProfileStore, (state) => state?.data?.select_id);
+  const selectId = useZustandStore(useProfileStore, (state) => state?.data?.select_id);
 
   return (
     <>

@@ -12,17 +12,18 @@ import {
 } from "@mui/material";
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
-import useStore from "@/hooks/useStore";
-import { useProfileStore } from "@/state/ProfileStore";
+
 import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 import { getProfileData } from "@/utils/client/profile";
 import { getGroupData } from "@/utils/client/group";
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
+import useZustandStore from "@/hooks/useZustandStore";
+import { useProfileStore } from "@/state/ProfileStore";
 
 export default function ProfileSettings() {
-  const profileData = useStore(useProfileStore, (state) => state?.data);
+  const profileData = useZustandStore(useProfileStore, (state) => state?.data);
   const { supabase, session } = useSupabase();
 
   async function handleRefresh(): Promise<void> {

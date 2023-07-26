@@ -43,11 +43,12 @@ import { theme } from "@/utils/theme";
 
 import { handleChangeGroceryStoreItemView } from "@/utils/client/profile";
 import CloseIcon from "@mui/icons-material/Close";
-import useStore from "@/hooks/useStore";
+import useZustandStore from "@/hooks/useZustandStore";
 import { useProfileStore } from "@/state/ProfileStore";
 
+
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
-  const profileData = useStore(useProfileStore, (state) => state?.data);
+  const profileData = useZustandStore(useProfileStore, (state) => state?.data);
 
   // bring in the zustand stuff.
   // Hooks

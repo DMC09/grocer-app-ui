@@ -10,13 +10,15 @@ import {
   ProfileType,
 } from "@/types";
 import { getProfileData } from "@/utils/client/profile";
-import useStore from "@/hooks/useStore";
+
 import {
   deleteGroceryStore,
   getAllGroceryStoresData,
 } from "@/utils/client/groceryStore";
-import { useProfileStore } from "@/state/ProfileStore";
+
 import { getGroupData } from "@/utils/client/group";
+import useZustandStore from "@/hooks/useZustandStore";
+import { useProfileStore } from "@/state/ProfileStore";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -53,7 +55,7 @@ export default function SupabaseListener({
   const deleteItem = useGroceryStoreStore((state) => state.deleteGroceryItem);
   const updateItem = useGroceryStoreStore((state) => state.updateGroceryItem);
 
-  const selectId = useStore(useProfileStore, (state) => state?.data?.select_id);
+  const selectId = useZustandStore(useProfileStore, (state) => state?.data?.select_id);
   const MINUTE_MS = 60000 * 15; // every  5  minute
 
   async function getGroceryData() {
