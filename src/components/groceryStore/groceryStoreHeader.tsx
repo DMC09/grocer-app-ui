@@ -7,14 +7,14 @@ import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
 import { theme } from "@/utils/theme";
 import { ThemeProvider } from "@emotion/react";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 
 export default function GroceryStoreHeader() {
   const { store_id } = useParams();
 
   const groceryStoreData = useZustandStore(
-    useGroceryStoreStore,
+    GroceryDataStore,
     (state) => state?.data
   )?.filter(
     (grocerystore) => Number(grocerystore.id) === Number(store_id)

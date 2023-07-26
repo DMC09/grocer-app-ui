@@ -11,7 +11,7 @@ import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
 import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 // need to grab the pfiles boolean and render the differnt view.
 
@@ -22,7 +22,7 @@ export default function Page() {
     (state) => state?.data?.expanded_groceryitem
   );
   const grocerystoreitems = useZustandStore(
-    useGroceryStoreStore,
+    GroceryDataStore,
     (state) => state?.data
   )?.filter((grocerystore) => Number(grocerystore.id) === Number(store_id))?.[0]
     .grocerystoreitems;

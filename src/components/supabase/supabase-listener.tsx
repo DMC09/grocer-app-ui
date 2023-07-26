@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
-import { useGroceryStoreStore } from "@/stores/GroceryDataStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   GroceryStoreItemType,
   GroceryStoreWithItemsType,
@@ -37,23 +37,23 @@ export default function SupabaseListener({
   const resetProfileState = ProfileDataStore((state) => state.resetStore);
 
   // Grocery store
-  const resetGroceryState = useGroceryStoreStore((state) => state.resetStore);
+  const resetGroceryState = GroceryDataStore((state) => state.resetStore);
 
-  const addNewGroceryStore = useGroceryStoreStore(
+  const addNewGroceryStore = GroceryDataStore(
     (state) => state.addNewGroceryStore
   );
-  const deleteGroceryStore = useGroceryStoreStore(
+  const deleteGroceryStore = GroceryDataStore(
     (state) => state.deleteGroceryStore
   );
-  const updatedGroceryStore = useGroceryStoreStore(
+  const updatedGroceryStore = GroceryDataStore(
     (state) => state.updateGroceryStore
   );
 
   // Grocery items
 
-  const addNewitem = useGroceryStoreStore((state) => state.insertGroceryItem);
-  const deleteItem = useGroceryStoreStore((state) => state.deleteGroceryItem);
-  const updateItem = useGroceryStoreStore((state) => state.updateGroceryItem);
+  const addNewitem = GroceryDataStore((state) => state.insertGroceryItem);
+  const deleteItem = GroceryDataStore((state) => state.deleteGroceryItem);
+  const updateItem = GroceryDataStore((state) => state.updateGroceryItem);
 
   const selectId = useZustandStore(ProfileDataStore, (state) => state?.data?.select_id);
   const MINUTE_MS = 60000 * 15; // every  5  minute
