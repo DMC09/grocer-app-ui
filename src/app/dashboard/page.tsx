@@ -14,7 +14,7 @@ import {
 } from "@/utils/client/groceryStore";
 import NoStores from "@/components/utils/noStores";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useGroceryStoreStore } from "@/state/GrocerStore";
+import { useGroceryStoreStore } from "@/stores/GrocerStore";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);

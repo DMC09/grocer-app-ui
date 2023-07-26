@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSupabase } from "../supabase/supabase-provider";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useProfileStore } from "@/state/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileStore";
 
 
 

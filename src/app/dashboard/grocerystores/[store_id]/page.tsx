@@ -9,11 +9,11 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/utils/theme";
 
 
-import { useProfileStore } from "@/state/ProfileStore";
+import { useProfileStore } from "@/stores/ProfileStore";
 import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
 import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
-import { useGroceryStoreStore } from "@/state/GrocerStore";
+import { useGroceryStoreStore } from "@/stores/GrocerStore";
 
 // need to grab the pfiles boolean and render the differnt view.
 
