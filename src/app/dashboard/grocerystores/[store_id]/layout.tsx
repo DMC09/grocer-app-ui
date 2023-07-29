@@ -1,4 +1,5 @@
 import GroceryStoreHeader from "@/components/groceryStore/groceryStoreHeader";
+import { DialogContextProvider } from "@/context/DialogContext";
 
 export default async function GroceryStoreLayout({
   children,
@@ -11,8 +12,10 @@ export default async function GroceryStoreLayout({
 }) {
   return (
     <>
-      <GroceryStoreHeader />
-      {children}
+      <DialogContextProvider>
+        <GroceryStoreHeader />
+        {children}
+      </DialogContextProvider>
     </>
   );
 }
