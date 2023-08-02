@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { GroceryStoreItemProps, GroceryStoreItemType } from "@/types";
 import {
   Badge,
@@ -14,6 +14,7 @@ import {
   DialogActions,
   DialogTitle,
   IconButton,
+  Switch,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -28,6 +29,7 @@ export default function GroceryStoreItem({
 }: GroceryStoreItemProps) {
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
+  const [checked, setChecked] = useState<boolean | null>(null);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [progress, setProgress] = useState(0);
 
@@ -45,27 +47,7 @@ export default function GroceryStoreItem({
       return false;
     }
   }
-  const expandView = false;
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 0 : prevProgress + 10
-      );
-    }, 800);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
   const created_atLocal = () => {
     if (groceryStoreItem?.created_at) {
       const localDate = new Date(
@@ -92,6 +74,26 @@ export default function GroceryStoreItem({
       clearInterval(timer);
     };
   }, []);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prevProgress) =>
+        prevProgress >= 100 ? 0 : prevProgress + 10
+      );
+    }, 800);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
   const handleDelete = async (itemId: string) => {
     //State to determine the click
     //Countdown and display the x
@@ -104,7 +106,50 @@ export default function GroceryStoreItem({
     }
   };
 
+  const handleAddToCommonItems = async (
+    groceryStoreItem: GroceryStoreItemType
+  ) => {};
 
+  async function handleChange(
+    event: ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) {
+    setChecked(event.target.checked);
+
+    if (checked) {
+      //Add to the common items tabl
+      const { data: commonItemResponse, error } = await supabase
+        .from("commonitems")
+        .insert({
+          item_name: groceryStoreItem.name,
+          item_notes: groceryStoreItem.notes,
+          select_id: groceryStoreItem.select_id,
+          image: groceryStoreItem.image,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      } else {
+        const CommonId = commonItemResponse?.id;
+
+        const { data, error } = await supabase
+          .from("grocerystoreitems")
+          .update({
+            cid: CommonId,
+          })
+          .eq("id", `${groceryStoreItem.id}`)
+          .select()
+          .single();
+
+        if (error) {
+          throw new Error(error.message);
+        } else {
+        }
+      }
+    }
+  }
 
   return (
     <>
@@ -240,6 +285,18 @@ export default function GroceryStoreItem({
                 justifyContent: "center",
               }}
             >
+              {!groceryStoreItem.cid && (
+                <>
+                  <Typography variant="body2">Add To Common Items</Typography>
+                  <Switch
+                    checked={!!checked}
+                    onChange={handleChange}
+                    inputProps={{
+                      title: "controlled",
+                    }}
+                  />
+                </>
+              )}
               <EditItem {...groceryStoreItem} />
             </Box>
           </Box>
