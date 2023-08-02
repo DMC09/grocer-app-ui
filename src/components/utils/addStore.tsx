@@ -21,6 +21,8 @@ import {
   handleGroceryStoreImageUpload,
 } from "@/utils/client/image";
 import { addNewGroceryStore } from "@/utils/client/groceryStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { GroceryStoreWithItemsType } from "@/types";
 
 export default function AddStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();
@@ -87,21 +89,42 @@ export default function AddStore({ select_id }: { select_id: string }) {
     }
   }
 
+  const addNewGroceryStoreToState = GroceryDataStore(
+    (state) => state.addNewGroceryStore
+  );
+
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
+
   async function handleSubmit() {
     const isValidResult = await validation();
 
     if (isValidResult) {
       if (image.raw && imagePath) {
+        // TODO: error handling
+        console.log(image.raw, "image properties");
         await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
-        await addNewGroceryStore(
-          supabase,
-          newGroceryStoreName,
-          select_id,
-          imagePath
-        );
-      } else {
-        await addNewGroceryStore(supabase, newGroceryStoreName, select_id);
       }
+
+      const newStore = await addNewGroceryStore(
+        supabase,
+        newGroceryStoreName,
+        select_id,
+        imagePath
+      );
+
+      const addedToState = GroceryStoreData.some(
+        (groceryStore) => groceryStore.id === newStore?.id
+      );
+
+      if (!addedToState) {
+        console.log(
+          newStore,
+          addedToState,
+          "Adding the store via the component because it hasn't been added already"
+        );
+        addNewGroceryStoreToState(newStore as GroceryStoreWithItemsType);
+      }
+
       setOpen(false);
       setNewGroceryStoreName("");
       setImage({ preview: "", raw: "" });
@@ -116,7 +139,7 @@ export default function AddStore({ select_id }: { select_id: string }) {
         endIcon={<AddCircleIcon />}
         size="large"
         sx={{
-          marginLeft:"auto"
+          marginLeft: "auto",
         }}
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>

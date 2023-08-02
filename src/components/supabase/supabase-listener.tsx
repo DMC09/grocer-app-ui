@@ -138,10 +138,21 @@ export default function SupabaseListener({
           filter: `select_id=eq.${selectId}`,
         },
         (payload) => {
-          console.log(payload, "We just inserted a grocery store!");
+          console.log(payload, "Insert for Grocery Store");
 
-          if (payload && payload?.new && payload?.new?.id)
-            addNewGroceryStore(payload.new as GroceryStoreWithItemsType);
+          if (payload && payload?.new && payload?.new?.id) {
+            const addedToState = GroceryStoreData.some(
+              (groceryStore) => groceryStore.id === payload?.new?.id
+            );
+
+            if (!addedToState) {
+              console.log(
+                addedToState,
+                "Added the store to state via the listener since it's not there!"
+              );
+              addNewGroceryStore(payload.new as GroceryStoreWithItemsType);
+            }
+          }
         }
       )
       .on(
