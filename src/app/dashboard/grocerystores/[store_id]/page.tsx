@@ -25,7 +25,7 @@ export default function Page() {
     GroceryDataStore,
     (state) => state?.data
   )?.filter((grocerystore) => Number(grocerystore.id) === Number(store_id))?.[0]
-    .grocerystoreitems;
+    ?.grocerystoreitems;
 
   const groceryStoreItemsToRender = grocerystoreitems?.map(
     (item: GroceryStoreItemType) => {
@@ -59,7 +59,6 @@ export default function Page() {
         ) : (
           <NoItems />
         )}
-
       </ThemeProvider>
     </>
   );
