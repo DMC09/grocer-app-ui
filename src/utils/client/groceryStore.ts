@@ -28,7 +28,11 @@ export async function addNewGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "Grocery Store added");
+      if (data) {
+        return data;
+      } else {
+        return null;
+      }
     }
   } else {
     const { data, error } = await supabase
@@ -40,7 +44,11 @@ export async function addNewGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "Grocery Store added");
+      if (data) {
+        return data;
+      } else {
+        return null;
+      }
     }
   }
 }
@@ -62,6 +70,7 @@ export async function updateGroceryStore(
       throw new Error(error.message);
     } else {
       console.log(data, "updated settings");
+      return data;
     }
   } else {
     const { data, error } = await supabase
@@ -74,6 +83,7 @@ export async function updateGroceryStore(
       throw new Error(error.message);
     } else {
       console.log(data, "updated settings");
+      return data;
     }
   }
 }
@@ -87,16 +97,67 @@ export async function deleteGroceryStore(
     .from("grocerystores")
     .delete()
     .eq("id", groceryStoreId)
-    .select();
+    .select()
+    .single();
 
-  if (data && data.length > 0) {
+  if (data) {
     router.push("/dashboard");
+    console.log(data, "after a delete");
+    return data?.id;
   }
   if (error) {
     throw new Error(error.message);
   }
 }
 
+export async function updateGroceryStoreItem(
+  supabase: SupabaseClient<Database>,
+  itemId: number,
+  name: string,
+  notes: string | null = null,
+  quantity: number = 1,
+  modified_at: string,
+  imagePath: string | null = null
+) {
+  if (imagePath) {
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .update({
+        name,
+        notes,
+        quantity: Number(quantity),
+        modified_at,
+        image: imagePath,
+      })
+      .eq("id", itemId)
+      .select()
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "Updated Item but with no new image");
+      return data;
+    }
+  } else {
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .update({
+        name,
+        notes,
+        quantity: Number(quantity),
+        modified_at,
+      })
+      .eq("id", itemId)
+      .select()
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "Updated Item but with  new image");
+      return data;
+    }
+  }
+}
 export async function addNewGroceryStoreItem(
   supabase: SupabaseClient<Database>,
   storeId: number,
@@ -125,6 +186,7 @@ export async function addNewGroceryStoreItem(
       throw new Error(error.message);
     } else {
       console.log(data, "added new item with images and");
+      return data;
     }
   } else {
     const { data, error } = await supabase
@@ -144,6 +206,7 @@ export async function addNewGroceryStoreItem(
       throw new Error(error.message);
     } else {
       console.log(data, "added new item without images and");
+      return data;
     }
   }
 }
@@ -160,7 +223,7 @@ export async function getAllGroceryStoresData(
   } else {
     GroceryDataStore.setState({
       data: data as GroceryStoreWithItemsType[],
-    }); 
+    });
   }
 }
 
