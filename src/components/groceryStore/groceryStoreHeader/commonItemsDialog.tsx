@@ -10,23 +10,93 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
+import commonItemsStubData from "@/stub/commonitems.json";
+import CommonGroceryStoreItem from "../groceryStoreItem/commonGroceryItem";
+import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
+import { useSupabase } from "@/components/supabase/supabase-provider";
+import {
+  getAllCommonItems,
+  isCommonItemDataStoreEmpty,
+} from "@/utils/client/commonItems";
+import { CommonItemType } from "@/types";
 
-export default function CommonItemsDialog() {
-  // const { openCommonItemsDialog, setCommonItemsDialog } = useContext(DialogContext);
-  // const { openDialog } = useContext(DialogContext);
+export default function CommonItemsDialog({
+  storeId,
+  selectId,
+}: {
+  storeId: number;
+  selectId: string | null;
+}) {
+  const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
+  const itemsToSubmit = CommonItemsDataStore((state) => state.itemsToSubmit);
 
-  const {  openCommonItemsDialog, handleCommonItemsDialogClose } =
+  useEffect(() => {
+    if (commonItemsCatalog) {
+      if (isCommonItemDataStoreEmpty(commonItemsCatalog)) {
+        console.log("we need to fetch the common items!");
+        getData();
+      } else {
+        console.log("we have common items!");
+      }
+    }
+  }, []);
+
+  //need to check if common items is empty? if so fetch the datat\
+  // set up realtime listerers for it
+  // Duplicate
+  const { supabase, session } = useSupabase();
+
+  const { openCommonItemsDialog, handleCommonItemsDialogClose } =
     useDialogContext();
 
-  console.log(openCommonItemsDialog, "other var");
+  const clearItemsToSubmit = CommonItemsDataStore(
+    (state) => state.clearItemsToSubmit
+  );
 
-  // const [open, SetOpen] = useState(openCommonItemsDialog);
-  // createa hook so that on mount we get to use the open and if we want we can slose it
+  async function getData() {
+    await getAllCommonItems(supabase);
+  }
 
-  // console.log(data, "what is tihs");
+  const mappedItems = itemsToSubmit.map((item) => ({
+    cid: item.id,
+    store_id: storeId,
+    name: item.name,
+    notes: item.notes,
+    quantity: Number(item.quantity),
+    select_id: selectId,
+    image: item.image,
+  }));
 
-  function handleAddCommonItems(event: any): void {
-    throw new Error("Function not implemented.");
+  async function handleAddCommonItems(event: any) {
+    console.log(itemsToSubmit, "From the store");
+    console.log(mappedItems, "After mapping");
+    //take the current store array for itemsToSubmit and add them to the grocery store.
+    // need to make sure the array's object has these revlant ones
+
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .insert(mappedItems)
+      .select();
+
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "data from respone/?");
+      handleCommonItemsDialogClose();
+      // close the dialog
+      //also it to state
+    }
+  }
+
+  const commonItemsToRender = commonItemsCatalog.map(
+    (commonItem: CommonItemType) => {
+      return <CommonGroceryStoreItem key={commonItem.id} {...commonItem} />;
+    }
+  );
+
+  function handleClose(): void {
+    handleCommonItemsDialogClose();
+    clearItemsToSubmit();
   }
 
   return (
@@ -41,17 +111,14 @@ export default function CommonItemsDialog() {
             alignItems: "center",
             flexFlow: "column",
           }}
-        ></DialogContent>
+        >
+          {commonItemsToRender}
+        </DialogContent>
         <DialogActions>
-          {/* <Button onClick={() => setCommonItemsDialog(false)}>Cancel</Button> */}
-          <Button onClick={handleCommonItemsDialogClose}>Close!</Button>
+          <Button onClick={handleClose}>Close</Button>
           <Button onClick={handleAddCommonItems}>Add</Button>
         </DialogActions>
       </Dialog>
     </>
   );
-}
-
-function useMediaQuery(arg0: any) {
-  throw new Error("Function not implemented.");
 }
