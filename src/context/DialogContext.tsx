@@ -22,27 +22,31 @@ export function DialogContextProvider({
   children: React.ReactNode;
 }) {
   const [openCommonItemsDialog, setOpenCommonItemsDialog] = useState(false);
+
+  async function handleCommonItemsDialogOpen() {
+    setOpenCommonItemsDialog(true);
+  }
+  async function handleCommonItemsDialogClose() {
+    setOpenCommonItemsDialog(false);
+  }
+
   const [openAddNewItemDialog, setOpenAddNewItemDialog] = useState(false);
+
+  async function handleAddNewItemDialogOpen() {
+    setOpenAddNewItemDialog(true);
+  }
+  async function handleAddNewItemDialogClose() {
+    setOpenAddNewItemDialog(false);
+  }
+
   const [openStoreSettingsDialog, setOpenStoreSettingsDialog] = useState(false);
 
-  const handleCommonItemsDialogOpen = () => {
-    setOpenCommonItemsDialog(true);
-  };
-  const handleCommonItemsDialogClose = () => {
-    setOpenCommonItemsDialog(false);
-  };
-  const handleAddNewItemDialogOpen = () => {
-    setOpenAddNewItemDialog(true);
-  };
-  const handleAddNewItemDialogClose = () => {
-    setOpenAddNewItemDialog(false);
-  };
-  const handleStoreSettingsDialogOpen = () => {
+  async function handleStoreSettingsDialogOpen() {
     setOpenStoreSettingsDialog(true);
-  };
-  const handleStoreSettingsDialogClose = () => {
+  }
+  async function handleStoreSettingsDialogClose() {
     setOpenStoreSettingsDialog(false);
-  };
+  }
 
   return (
     <Context.Provider
