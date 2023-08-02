@@ -40,6 +40,7 @@ export interface Database {
       };
       grocerystoreitems: {
         Row: {
+          cid: number | null;
           created_at: string | null;
           id: number;
           image: string | null;
@@ -51,6 +52,7 @@ export interface Database {
           store_id: number;
         };
         Insert: {
+          cid?: number | null;
           created_at?: string | null;
           id?: number;
           image?: string | null;
@@ -62,6 +64,7 @@ export interface Database {
           store_id: number;
         };
         Update: {
+          cid?: number | null;
           created_at?: string | null;
           id?: number;
           image?: string | null;
@@ -73,6 +76,12 @@ export interface Database {
           store_id?: number;
         };
         Relationships: [
+          {
+            foreignKeyName: "grocerystoreitems_cid_fkey";
+            columns: ["cid"];
+            referencedRelation: "commonitems";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "grocerystoreitems_store_id_fkey";
             columns: ["store_id"];
@@ -261,9 +270,16 @@ export type ProfileType = Database["public"]["Tables"]["profiles"]["Row"];
 export type GroupType = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupMemberType =
   Database["public"]["Views"]["group_members_view"]["Row"];
-  export type CommonItemType =
-  Database["public"]["Tables"]["commonitems"]["Row"];
+export type CommonItemType = Database["public"]["Tables"]["commonitems"]["Row"];
 
+export type CommonItemToAdd = {
+  index: number;
+  id: number;
+  name: string;
+  notes: string;
+  quantity: number;
+  image: string;
+};
 
 export type GroceryStoreProps = {
   groceryStore: GroceryStoreType;
