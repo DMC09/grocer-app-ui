@@ -45,9 +45,9 @@ export interface Database {
           id: number;
           image: string | null;
           modified_at: string | null;
-          name: string | null;
+          name: string ;
           notes: string | null;
-          quantity: number | null;
+          quantity: number ;
           select_id: string | null;
           store_id: number;
         };
@@ -57,9 +57,9 @@ export interface Database {
           id?: number;
           image?: string | null;
           modified_at?: string | null;
-          name?: string | null;
+          name?: string;
           notes?: string | null;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
           store_id: number;
         };
@@ -69,9 +69,9 @@ export interface Database {
           id?: number;
           image?: string | null;
           modified_at?: string | null;
-          name?: string | null;
+          name?: string ;
           notes?: string | null;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
           store_id?: number;
         };
@@ -96,7 +96,7 @@ export interface Database {
           id: number;
           image: string | null;
           name: string;
-          quantity: number | null;
+          quantity: number ;
           select_id: string | null;
         };
         Insert: {
@@ -104,7 +104,7 @@ export interface Database {
           id?: number;
           image?: string | null;
           name: string;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
         };
         Update: {
@@ -112,7 +112,7 @@ export interface Database {
           id?: number;
           image?: string | null;
           name?: string;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
         };
         Relationships: [];
