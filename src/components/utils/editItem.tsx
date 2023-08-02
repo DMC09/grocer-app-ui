@@ -15,41 +15,33 @@ import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import { GroceryStoreItemType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import {
+  GroceryDataStore,
+  findGroceryStoreIndex,
+  findGroceryStoreItemIndexInStore,
+} from "@/stores/GroceryDataStore";
+import { handleGroceryStoreItemImageUpload } from "@/utils/client/image";
+import { updateGroceryStoreItem } from "@/utils/client/groceryStore";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
-  const { supabase,session } = useSupabase();
+  const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
 
-  const [name, setName] = useState<string | null>(groceryStoreItem.name);
+  const [name, setName] = useState<string>(groceryStoreItem.name);
   const [notes, setNotes] = useState<string | null>(groceryStoreItem.notes);
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [image, setImage] = useState({
     preview: groceryStoreItem?.image,
     raw: "",
   });
-  const [quantity, setQuantity] = useState<number | null>(
-    groceryStoreItem.quantity
-  );
+
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
+  const updatedItemState = GroceryDataStore((state) => state.updateGroceryItem);
+  const [quantity, setQuantity] = useState<number>(groceryStoreItem.quantity);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
-  async function handleImageUpload() {
-    if (image.raw && imagePath) {
-      console.log(imagePath, "imagePath");
-      const { data, error } = await supabase.storage
-        .from("grocerystore")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
-        .upload(imagePath, image.raw);
-      if (error) {
-        throw new Error(`Error uploading image ${error.message}`);
-      } else {
-        console.log(data, "image uploaded successfully");
-      }
-    }
-  }
 
   async function generateImagePath(select_id: string) {
     //Formula is last 16 characters of select_id + Current DateTime in seconds/
@@ -82,46 +74,40 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     // do the update on this one I guess
 
     const now = new Date().toISOString();
-    if (image.raw) {
-      await handleImageUpload();
-      const { data, error } = await supabase
-        .from("grocerystoreitems")
-        .update(
-          {
-            name,
-            notes,
-            quantity: Number(quantity),
-            modified_at: now,
-            image: imagePath,
-          },
-        )
-        .eq("id", groceryStoreItem.id)
-        .select();
+    if (image.raw && imagePath) {
+      await handleGroceryStoreItemImageUpload(supabase, imagePath, image?.raw);
+      console.log("Upload image");
+    }
+    const updatedItem = await updateGroceryStoreItem(
+      supabase,
+      groceryStoreItem.id,
+      name,
+      notes,
+      quantity,
+      now,
+      imagePath
+    );
 
-      if (data) {
-        setOpen(false);
-      } else if (error) {
-        throw new Error(error.message);
-      }
-    } else {
-      const { data, error } = await supabase
-        .from("grocerystoreitems")
-        .update(
-          {
-            name,
-            notes,
-            quantity: Number(quantity),
-            modified_at: now,
-          },
-        )
-        .eq("id", groceryStoreItem.id)
-        .select();
+    const groceryStoreIndex = findGroceryStoreIndex(
+      GroceryStoreData,
+      updatedItem.id
+    );
 
-      if (data) {
-        setOpen(false);
-      } else if (error) {
-        throw new Error(error.message);
-      }
+    const itemIndex = findGroceryStoreItemIndexInStore(
+      GroceryStoreData,
+      updatedItem.id,
+      groceryStoreIndex
+    );
+
+    const currentItem =
+      GroceryStoreData[groceryStoreIndex].grocerystoreitems[itemIndex].id;
+    console.log(currentItem, "item from the update?");
+
+    const isObjectTheSame = Object.is(updatedItem, currentItem);
+
+    if (!isObjectTheSame) {
+      console.log("updating the item in the componentPfor");
+      updatedItemState(updatedItem);
     }
   }
 
@@ -173,12 +159,12 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
           />
         </DialogContent>
         <DialogContent
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexFlow: "column",
-        }}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexFlow: "column",
+          }}
         >
           {image.raw ? (
             <Card

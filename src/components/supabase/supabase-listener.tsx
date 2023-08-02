@@ -265,6 +265,27 @@ export default function SupabaseListener({
         { event: "UPDATE", schema: "public", table: "grocerystoreitems" },
         (payload) => {
           console.log(payload, "After an update");
+
+          const groceryStoreIndex = findGroceryStoreIndex(
+            GroceryStoreData,
+            payload.old.id
+          );
+
+          const groceryStoreItemIndex = findGroceryStoreItemIndexInStore(
+            GroceryStoreData,
+            groceryStoreIndex,
+            payload.old.id
+          );
+
+          const currentObject =
+            GroceryStoreData[groceryStoreIndex].grocerystoreitems[
+              groceryStoreItemIndex
+            ];
+
+          const isObjectTheSame = Object.is(currentObject, payload.new);
+
+          if (!isObjectTheSame) {
+            console.log("updating the item in the listner");
           updateItem(payload.new as GroceryStoreItemType);
         }
       )
@@ -273,6 +294,19 @@ export default function SupabaseListener({
         { event: "DELETE", schema: "public", table: "grocerystoreitems" },
         (payload) => {
           console.log(payload, "After a delete an item!");
+
+          const groceryStoreIndex = findGroceryStoreIndex(
+            GroceryStoreData,
+            payload.old.id
+          );
+
+          const isDeletedIdInState = GroceryStoreData[
+            groceryStoreIndex
+          ].grocerystoreitems.some((item) => item.id === payload.old.id);
+          // tricky becase we only have the id of the item?
+
+          if (isDeletedIdInState) {
+            console.log("well we gotta delete this in the listern");
           deleteItem(payload.old.id);
         }
       )
