@@ -239,8 +239,25 @@ export default function SupabaseListener({
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "grocerystoreitems" },
         (payload) => {
-          console.log(payload, "After an insert");
-          addNewitem(payload.new as GroceryStoreItemType);
+          console.log(payload, "After inserting a grocery store item");
+
+          const groceryStoreIndex = findGroceryStoreIndex(
+            GroceryStoreData,
+            payload.new.id
+          );
+
+          if (payload && payload?.new && payload?.new?.id) {
+            const itemFoundInState = GroceryStoreData[
+              groceryStoreIndex
+            ].grocerystoreitems.some((item) => item.id === payload?.new?.id);
+
+            if (!itemFoundInState) {
+              console.log(
+                "Well it look like we have to add the item via the listener"
+              );
+              addNewitem(payload.new as GroceryStoreItemType);
+            }
+          }
         }
       )
       .on(

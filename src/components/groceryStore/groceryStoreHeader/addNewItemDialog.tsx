@@ -15,13 +15,15 @@ import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
 } from "@/utils/client/image";
-import groceryStore from "../groceryStore";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialogContext } from "@/context/DialogContext";
 import { addNewGroceryStoreItem } from "@/utils/client/groceryStore";
-import { supabase } from "@supabase/auth-ui-shared";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import { GroceryStoreType } from "@/types";
+import { GroceryStoreItemType, GroceryStoreType } from "@/types";
+import {
+  GroceryDataStore,
+  findGroceryStoreIndex,
+} from "@/stores/GroceryDataStore";
 
 export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   const [newItemName, setNewItemName] = useState<string>();
@@ -32,6 +34,9 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     preview: "",
     raw: "",
   });
+
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
+  const addItemToState = GroceryDataStore((state) => state.insertGroceryItem);
 
   const { openAddNewItemDialog, handleAddNewItemDialogClose } =
     useDialogContext();
@@ -53,28 +58,34 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   async function handleSubmitNewItem() {
     if (groceryStore.select_id && newItemName) {
       if (image.raw && imagePath) {
+        // TODO: error handling
         await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
-        await addNewGroceryStoreItem(
-          supabase,
-          groceryStore.id,
-          newItemName,
-          notes,
-          Number(quantity),
-          groceryStore.select_id,
-          imagePath
+      }
+      const newItemData = await addNewGroceryStoreItem(
+        supabase,
+        groceryStore.id,
+        newItemName,
+        notes,
+        Number(quantity),
+        groceryStore.select_id,
+        imagePath
+      );
+      const storeIndex = findGroceryStoreIndex(
+        GroceryStoreData,
+        newItemData.id
+      );
+
+      const inStore = GroceryStoreData[storeIndex]?.grocerystoreitems?.some(
+        (item) => item.id == newItemData.id
+      );
+
+      if (!inStore) {
+        console.log(
+          "well it looks like we have to add an item via the component"
         );
-      } else {
-        await addNewGroceryStoreItem(
-          supabase,
-          groceryStore.id,
-          newItemName,
-          notes,
-          Number(quantity),
-          groceryStore.select_id
-        );
+        addItemToState(newItemData as GroceryStoreItemType);
       }
 
-      //   add error handling!
       setNewItemName("");
       handleAddNewItemDialogClose();
       setNotes("");
