@@ -23,6 +23,10 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { theme } from "@/utils/theme";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/editItem";
+import {
+  GroceryDataStore,
+  findGroceryStoreIndex,
+} from "@/stores/GroceryDataStore";
 
 export default function GroceryStoreItem({
   groceryStoreItem,
@@ -32,6 +36,9 @@ export default function GroceryStoreItem({
   const [checked, setChecked] = useState<boolean | null>(null);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [progress, setProgress] = useState(0);
+
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
+  const deleteItem = GroceryDataStore((state) => state.deleteGroceryItem);
 
   function updatedRecently(timestamp: string | Date | null) {
     if (timestamp) {
@@ -100,9 +107,23 @@ export default function GroceryStoreItem({
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .delete()
-      .eq("id", itemId);
+      .eq("id", itemId)
+      .select()
+      .single();
     if (error) {
       throw new Error(error.message);
+    } else {
+      const storeIndex = findGroceryStoreIndex(GroceryStoreData, data.id);
+
+      const isDeletedIdInState = GroceryStoreData[
+        storeIndex
+      ].grocerystoreitems.some((item) => item.id === data.id);
+      // tricky becase we only have the id of the item?
+
+      if (isDeletedIdInState) {
+        console.log("well we gotta delete this in the component");
+        deleteItem(data.id);
+      }
     }
   };
 
@@ -117,6 +138,7 @@ export default function GroceryStoreItem({
     setChecked(event.target.checked);
 
     if (checked) {
+      // mode to it's own client utl
       //Add to the common items tabl
       const { data: commonItemResponse, error } = await supabase
         .from("commonitems")

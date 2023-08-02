@@ -307,7 +307,8 @@ export default function SupabaseListener({
 
           if (isDeletedIdInState) {
             console.log("well we gotta delete this in the listern");
-          deleteItem(payload.old.id);
+            deleteItem(payload.old.id);
+          }
         }
       )
       .subscribe();
