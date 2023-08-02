@@ -166,9 +166,32 @@ export default function SupabaseListener({
         (payload) => {
           console.log(payload, "After an update");
           if (payload && payload?.new && payload?.new?.id) {
-            updatedGroceryStore(payload.new as GroceryStoreWithItemsType);
+            const currentGroceryStoreObjectIndex = GroceryStoreData.findIndex(
+              (grocerystore) => grocerystore.id == payload.new.id
+            );
+            console.log(currentGroceryStoreObjectIndex, "index");
+
+            //compoare the payload.new to the current object with that ide
+            const currentGroceryStoreObject =
+              GroceryStoreData[currentGroceryStoreObjectIndex];
+
+            console.log(currentGroceryStoreObject, "current object");
+            console.log(payload.new, "payload object object");
+
+            const areObjectsEqual = Object.is(
+              currentGroceryStoreObject,
+              payload.new
+            );
+
+            if (!areObjectsEqual) {
+              console.log(
+                areObjectsEqual,
+                "Welp looks like we need to update the state in the listner"
+              );
+
+              updatedGroceryStore(payload.new as GroceryStoreWithItemsType);
+            }
           }
-        }
       )
       .on(
         "postgres_changes",
@@ -192,6 +215,7 @@ export default function SupabaseListener({
             if (inGroceryStoreData) {
               console.log(storeId, "Deleting Store in listener");
               deleteGroceryStore(storeId);
+            }
           }
         }
       )
@@ -201,6 +225,7 @@ export default function SupabaseListener({
       supabase.removeChannel(channel);
     };
   }, [
+    GroceryStoreData,
     addNewGroceryStore,
     deleteGroceryStore,
     selectId,

@@ -1,7 +1,7 @@
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { useDialogContext } from "@/context/DialogContext";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { GroceryStoreType } from "@/types";
+import { GroceryStoreType, GroceryStoreWithItemsType } from "@/types";
 import { theme } from "@/utils/theme";
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
   handleGroceryStoreImageUpload,
 } from "@/utils/client/image";
 import { updateGroceryStore } from "@/utils/client/groceryStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   //state
@@ -32,15 +33,20 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
     raw: "",
   });
 
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
+
+  const updateGroceryStoreState = GroceryDataStore(
+    (state) => state.updateGroceryStore
+  );
+
   //hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
     useDialogContext();
 
-
-//handlers 
-  async function handleSetUpdatedImage(event: any) {
+  //handlers
+  async function handleImageUpdate(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
       const generatedImagePath = await generateGroceryStoreItemImagePath(
         groceryStore?.select_id
@@ -52,28 +58,37 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       });
     }
   }
-  async function handleUpdateGroceryStoreSettings() {
+  async function handleUpdate() {
     if (updatedImage.raw && imagePath) {
+      // TODO: error handling
       await handleGroceryStoreImageUpload(
         supabase,
         imagePath,
         updatedImage?.raw
       );
-      await updateGroceryStore(
-        supabase,
-        groceryStore.id,
-        updatedGroceryStoreName,
-        imagePath
-      );
-      handleStoreSettingsDialogClose();
-    } else {
-      await updateGroceryStore(
-        supabase,
-        groceryStore.id,
-        updatedGroceryStoreName
-      );
-      handleStoreSettingsDialogClose();
     }
+    const updatedStoreData = await updateGroceryStore(
+      supabase,
+      groceryStore.id,
+      updatedGroceryStoreName,
+      imagePath
+    );
+
+    const index = GroceryStoreData.findIndex(
+      (groceryStore) => groceryStore.id == updatedStoreData.id
+    );
+    const currentGroceryStoreObject = GroceryStoreData[index];
+
+    const areObjectsEqual = Object.is(
+      currentGroceryStoreObject,
+      updatedStoreData
+    );
+    if (!areObjectsEqual) {
+      console.log("had to update the data in the component itself");
+      updateGroceryStoreState(updatedStoreData as GroceryStoreWithItemsType);
+    }
+
+    handleStoreSettingsDialogClose();
   }
 
   return (
@@ -133,12 +148,12 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
             startIcon={<AddPhotoAlternateIcon />}
           >
             Upload File
-            <input type="file" onChange={handleSetUpdatedImage} hidden />
+            <input type="file" onChange={handleImageUpdate} hidden />
           </Button>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleStoreSettingsDialogClose}>Cancel</Button>
-          <Button onClick={handleUpdateGroceryStoreSettings}>Save</Button>
+          <Button onClick={handleUpdate}>Save</Button>
         </DialogActions>
       </Dialog>
     </>
