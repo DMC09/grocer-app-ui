@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import {
+  GroceryDataStore,
+  findGroceryStoreIndex,
+  findGroceryStoreItemIndexInStore,
+} from "@/stores/GroceryDataStore";
 import {
   CommonItemType,
   GroceryStoreItemType,
@@ -40,6 +44,7 @@ export default function SupabaseListener({
 
   // Grocery store
   const resetGroceryState = GroceryDataStore((state) => state.resetStore);
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
 
   const addNewGroceryStore = GroceryDataStore(
     (state) => state.addNewGroceryStore
@@ -70,12 +75,13 @@ export default function SupabaseListener({
     ProfileDataStore,
     (state) => state?.data?.select_id
   );
-  const MINUTE_MS = 60000 * 15; // every  5  minute
+  const MINUTE_MS = 60000 * 10; // every  10  minutes
 
   async function getGroceryData() {
     await getAllGroceryStoresData(supabase);
   }
 
+  // --------------------------------------------------- Select ID Water ---------------------------------------------------
   useEffect(() => {
     const selectIdWatcher = ProfileDataStore.subscribe(
       (state) => state.data.select_id,
@@ -94,15 +100,17 @@ export default function SupabaseListener({
     };
   }, [supabase]);
 
+  // --------------------------------------------------- Polling Events ---------------------------------------------------
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Refetching data now!");
+      console.log("Refreshing data!");
       getGroceryData();
     }, MINUTE_MS);
 
     return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   }, []);
 
+  // --------------------------------------------------- Profile Listeners Events ---------------------------------------------------
   useEffect(() => {
     const channel = supabase
       .channel("alt-profiles-channel")
@@ -126,6 +134,7 @@ export default function SupabaseListener({
     };
   }, [session?.user?.id, setProfileState, supabase]);
 
+  // --------------------------------------------------- Grocery Store Listeners Events ---------------------------------------------------
   useEffect(() => {
     const channel = supabase
       .channel("alt-grocerystore-channel")
@@ -192,6 +201,7 @@ export default function SupabaseListener({
               updatedGroceryStore(payload.new as GroceryStoreWithItemsType);
             }
           }
+        }
       )
       .on(
         "postgres_changes",
@@ -202,7 +212,6 @@ export default function SupabaseListener({
           filter: `select_id=eq.${selectId}`,
         },
         (payload) => {
-          console.log(payload, "After a deleted grocery store");
           if (payload && payload?.old && payload?.old.id) {
             const storeId = Number(payload?.old?.id);
             console.log(storeId, "in the listenre");
@@ -232,6 +241,9 @@ export default function SupabaseListener({
     supabase,
     updatedGroceryStore,
   ]);
+
+  // --------------------------------------------------- Grocery Store Item Events ---------------------------------------------------
+
   useEffect(() => {
     const channel = supabase
       .channel("alt-grocerystoreitems-channel")
@@ -286,7 +298,8 @@ export default function SupabaseListener({
 
           if (!isObjectTheSame) {
             console.log("updating the item in the listner");
-          updateItem(payload.new as GroceryStoreItemType);
+            updateItem(payload.new as GroceryStoreItemType);
+          }
         }
       )
       .on(
@@ -316,7 +329,9 @@ export default function SupabaseListener({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [addNewitem, deleteItem, supabase, updateItem]);
+  }, [GroceryStoreData, addNewitem, deleteItem, supabase, updateItem]);
+
+  // --------------------------------------------------- Common Item Listeners Events ---------------------------------------------------
 
   useEffect(() => {
     const channel = supabase
@@ -348,6 +363,7 @@ export default function SupabaseListener({
             "After a delete an item to the commonitems tables"
           );
           removeFromCatalog(payload.old.id);
+
           // TODO: function
         }
       )
@@ -357,6 +373,8 @@ export default function SupabaseListener({
       supabase.removeChannel(channel);
     };
   }, [addNewitem, deleteItem, supabase, updateItem]);
+
+  // --------------------------------------------------- Group Listeners Events ---------------------------------------------------
 
   useEffect(() => {
     const channel = supabase
@@ -402,6 +420,7 @@ export default function SupabaseListener({
     };
   }, [supabase]);
 
+  // --------------------------------------------------- Auth Listeners Events ---------------------------------------------------
   useEffect(() => {
     // what there is no session, redirect to the login
     //because of this code block I am constantly getting the profile data and setting if I make a change...
