@@ -76,5 +76,5 @@ export const ProfileDataStore = create(
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Profile State", ProfileDataStore);
+  mountStoreDevtool("Profile Data State", ProfileDataStore);
 }

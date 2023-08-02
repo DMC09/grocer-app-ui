@@ -38,6 +38,7 @@ const initialGroceryStoreState: GroceryStoreState = {
       grocerystoreitems: [
         {
           created_at: null,
+          cid:null,
           id: 0,
           image: null,
           modified_at: null,
@@ -157,7 +158,7 @@ export const GroceryDataStore = create(
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Grocery Store store", GroceryDataStore);
+  mountStoreDevtool("Grocery Data store", GroceryDataStore);
 }
 
 export function findGroceryStoreIndex(
