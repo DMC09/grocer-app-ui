@@ -28,7 +28,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   const [notes, setNotes] = useState("");
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [quantity, setQuantity] = useState("");
-  const [newImage, setNewImage] = useState({
+  const [image, setImage] = useState({
     preview: "",
     raw: "",
   });
@@ -37,13 +37,13 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     useDialogContext();
   const { supabase, session } = useSupabase();
 
-  async function handleSetNewImage(event: any) {
+  async function handleSetImage(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
       const generatedImagePath = await generateGroceryStoreItemImagePath(
         groceryStore?.select_id
       );
       setImagePath(generatedImagePath);
-      setNewImage({
+      setImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
       });
@@ -52,8 +52,8 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
 
   async function handleSubmitNewItem() {
     if (groceryStore.select_id && newItemName) {
-      if (newImage.raw && imagePath) {
-        await handleGroceryStoreImageUpload(supabase, imagePath, newImage?.raw);
+      if (image.raw && imagePath) {
+        await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
         await addNewGroceryStoreItem(
           supabase,
           groceryStore.id,
@@ -74,12 +74,12 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         );
       }
 
-    //   add error handling!
+      //   add error handling!
       setNewItemName("");
       handleAddNewItemDialogClose();
       setNotes("");
       setQuantity("");
-      setNewImage({ preview: "", raw: "" });
+      setImage({ preview: "", raw: "" });
     }
   }
 
@@ -137,11 +137,11 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
             mt: 4,
           }}
         >
-          {newImage.preview ? (
+          {image.preview ? (
             <CardMedia
               component="img"
               height="150"
-              image={newImage.preview}
+              image={image.preview}
               alt={`Image of `}
             />
           ) : (
@@ -162,7 +162,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           startIcon={<AddPhotoAlternateIcon />}
         >
           Upload File
-          <input type="file" onChange={handleSetNewImage} hidden />
+          <input type="file" onChange={handleSetImage} hidden />
         </Button>
       </DialogContent>
       <DialogActions>
