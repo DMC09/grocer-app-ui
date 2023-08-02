@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
+  CommonItemType,
   GroceryStoreItemType,
   GroceryStoreWithItemsType,
   ProfileType,
@@ -19,6 +20,7 @@ import {
 import { getGroupData } from "@/utils/client/group";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -54,8 +56,20 @@ export default function SupabaseListener({
   const addNewitem = GroceryDataStore((state) => state.insertGroceryItem);
   const deleteItem = GroceryDataStore((state) => state.deleteGroceryItem);
   const updateItem = GroceryDataStore((state) => state.updateGroceryItem);
+  // commonItems items
 
-  const selectId = useZustandStore(ProfileDataStore, (state) => state?.data?.select_id);
+  const addToCatalog = CommonItemsDataStore((state) => state.addToCatalog);
+  const removeFromCatalog = CommonItemsDataStore(
+    (state) => state.removeFromCatalog
+  );
+  const updateToCatalog = CommonItemsDataStore(
+    (state) => state.updateToCatalog
+  );
+
+  const selectId = useZustandStore(
+    ProfileDataStore,
+    (state) => state?.data?.select_id
+  );
   const MINUTE_MS = 60000 * 15; // every  5  minute
 
   async function getGroceryData() {
@@ -199,6 +213,46 @@ export default function SupabaseListener({
         (payload) => {
           console.log(payload, "After a delete an item!");
           deleteItem(payload.old.id);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [addNewitem, deleteItem, supabase, updateItem]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("alt-commonitems-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "commonitems" },
+        (payload) => {
+          console.log(payload, "After an insert to the commonitems tables");
+          addToCatalog(payload.new as CommonItemType);
+          // TODO: function
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "commonitems" },
+        (payload) => {
+          console.log(payload, "After an update to the commonitems tables");
+          updateToCatalog(payload.new as CommonItemType);
+          // TODO: function
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "commonitems" },
+        (payload) => {
+          console.log(
+            payload,
+            "After a delete an item to the commonitems tables"
+          );
+          removeFromCatalog(payload.old.id);
+          // TODO: function
         }
       )
       .subscribe();
