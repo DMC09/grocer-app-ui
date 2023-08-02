@@ -30,4 +30,20 @@ export async function handleGroceryStoreImageUpload(
     console.log(data, "image uploaded successfully");
   }
 }
+export async function handleGroceryStoreItemImageUpload(
+  supabase: SupabaseClient<Database>,
+  imagePath: string,
+  imageRaw: string
+) {
+  const { data, error } = await supabase?.storage
+    .from("grocerystore")
+    // Need a custom path thing for this.
+    // Also need to getthe public url
+    .upload(imagePath, imageRaw);
+  if (error) {
+    throw new Error(`Error uploading image ${error.message}`);
+  } else {
+    console.log(data, "image uploaded successfully");
+  }
+}
 
