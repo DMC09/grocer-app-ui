@@ -33,7 +33,7 @@ const initialGroceryStoreState: GroceryStoreState = {
       id: 0,
       image: "",
       name: "",
-      quantity: null,
+      quantity: 0,
       select_id: null,
       grocerystoreitems: [
         {
@@ -42,9 +42,9 @@ const initialGroceryStoreState: GroceryStoreState = {
           id: 0,
           image: null,
           modified_at: null,
-          name: null,
+          name: "",
           notes: null,
-          quantity: null,
+          quantity: 0,
           select_id: null,
           store_id: 0,
         },
