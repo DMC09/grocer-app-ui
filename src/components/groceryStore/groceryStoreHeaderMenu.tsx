@@ -28,6 +28,7 @@ import CommonItemsDialog from "./groceryStoreHeader/commonItemsDialog";
 import { useDialogContext } from "@/context/DialogContext";
 import AddNewItemDialog from "./groceryStoreHeader/addNewItemDialog";
 import EditGroceryStoreDialog from "./groceryStoreHeader/editGroceryStoreDialog";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -35,7 +36,14 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const router = useRouter();
   // State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   const open = Boolean(anchorEl);
+
+  const GroceryStoreData = GroceryDataStore((state) => state.data);
+
+  const deleteGroceryStoreFromState = GroceryDataStore(
+    (state) => state.deleteGroceryStore
+  );
 
   // TODO: Click way listener
 
@@ -53,7 +61,19 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
 
   async function handleDeleteGroceryStore() {
-    await deleteGroceryStore(supabase, groceryStore.id, router);
+    const deletedStoreId = await deleteGroceryStore(
+      supabase,
+      groceryStore.id,
+      router
+    );
+    const inGroceryStoreData = GroceryStoreData.some(
+      (groceryStore) => groceryStore.id === deletedStoreId
+    );
+
+    if (deletedStoreId && inGroceryStoreData) {
+      console.log(deletedStoreId, "in the componeont we are deleting from ste");
+      deleteGroceryStoreFromState(deletedStoreId);
+    }
   }
 
   async function handleChangeView() {
@@ -156,7 +176,10 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         <EditGroceryStoreDialog {...groceryStore} />
       </>
       <>
-        <CommonItemsDialog selectId={groceryStore.select_id} storeId={groceryStore.id} />
+        <CommonItemsDialog
+          selectId={groceryStore.select_id}
+          storeId={groceryStore.id}
+        />
       </>
     </>
   );

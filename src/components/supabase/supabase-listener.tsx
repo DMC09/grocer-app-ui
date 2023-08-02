@@ -171,8 +171,16 @@ export default function SupabaseListener({
           console.log(payload, "After a deleted grocery store");
           if (payload && payload?.old && payload?.old.id) {
             const storeId = Number(payload?.old?.id);
-            console.log(storeId, "store id ");
-            deleteGroceryStore(storeId);
+            console.log(storeId, "in the listenre");
+
+            const inGroceryStoreData = GroceryStoreData.some(
+              (groceryStore) => groceryStore.id === storeId
+            );
+
+            console.log(inGroceryStoreData, "in the state stiillp");
+            if (inGroceryStoreData) {
+              console.log(storeId, "Deleting Store in listener");
+              deleteGroceryStore(storeId);
           }
         }
       )
