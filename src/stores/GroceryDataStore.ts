@@ -38,7 +38,7 @@ const initialGroceryStoreState: GroceryStoreState = {
       grocerystoreitems: [
         {
           created_at: null,
-          cid:null,
+          cid: null,
           id: 0,
           image: null,
           modified_at: null,
@@ -120,9 +120,9 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
     deleteGroceryItem: (itemId: number) => {
       set(
         produce((draft) => {
-          const storeIndex = findGroceryStoreIndex(draft, itemId);
+          const storeIndex = findGroceryStoreIndex(draft.data, itemId);
           const itemIndex = findGroceryStoreItemIndexInStore(
-            draft,
+            draft.data,
             itemId,
             storeIndex
           );
@@ -138,10 +138,13 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
     updateGroceryItem: (updatedItemData: GroceryStoreItemType) => {
       set(
         produce((draft) => {
-          const storeIndex = findGroceryStoreIndex(draft, updatedItemData.id);
+          const storeIndex = findGroceryStoreIndex(
+            draft.data,
+            updatedItemData.id
+          );
 
           const itemIndex = findGroceryStoreItemIndexInStore(
-            draft,
+            draft.data,
             updatedItemData.id,
             storeIndex
           );
@@ -162,10 +165,10 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export function findGroceryStoreIndex(
-  state: GroceryStoreState,
+  data: GroceryStoreWithItemsType[],
   grocerystoreitemId: number
 ) {
-  const grocerystoreIndex = state.data.findIndex((grocerystore) => {
+  const grocerystoreIndex = data.findIndex((grocerystore) => {
     return grocerystore.grocerystoreitems.some((grocerystoreitem) => {
       return grocerystoreitem.id === grocerystoreitemId;
     });
@@ -175,11 +178,11 @@ export function findGroceryStoreIndex(
 }
 
 export function findGroceryStoreItemIndexInStore(
-  state: GroceryStoreState,
+  data: GroceryStoreWithItemsType[],
   grocerystoreitemId: number,
   storeIndex: number
 ) {
-  const grocerystore = state.data[storeIndex];
+  const grocerystore = data[storeIndex];
   const grocerystoreitemIndex = grocerystore?.grocerystoreitems?.findIndex(
     (grocerystoreitem) => {
       return grocerystoreitem.id === grocerystoreitemId;
