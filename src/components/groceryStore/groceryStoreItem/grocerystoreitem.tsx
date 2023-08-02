@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/editItem";
 import {

@@ -11,7 +11,7 @@ import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
 import {
   getAllGroceryStoresData,
   isGroceryStoreDataEmpty,
-} from "@/utils/client/groceryStore";
+} from "@/helpers/client/groceryStore";
 import NoStores from "@/components/utils/noStores";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";

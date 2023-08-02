@@ -14,14 +14,14 @@ import {
   GroceryStoreWithItemsType,
   ProfileType,
 } from "@/types";
-import { getProfileData } from "@/utils/client/profile";
+import { getProfileData } from "@/helpers/client/profile";
 
 import {
   deleteGroceryStore,
   getAllGroceryStoresData,
-} from "@/utils/client/groceryStore";
+} from "@/helpers/client/groceryStore";
 
-import { getGroupData } from "@/utils/client/group";
+import { getGroupData } from "@/helpers/client/group";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";

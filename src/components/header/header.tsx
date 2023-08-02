@@ -5,7 +5,7 @@ import { Box, AppBar, Toolbar, IconButton, ThemeProvider } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { useParams, useRouter } from "next/navigation";
 import { useSupabase } from "../supabase/supabase-provider";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import HeaderMenu from "./headerMenu";
 
 

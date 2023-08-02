@@ -4,7 +4,7 @@ import { Box, Button, Card, IconButton, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import { ThemeProvider } from "@emotion/react";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";

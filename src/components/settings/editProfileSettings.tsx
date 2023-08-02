@@ -17,7 +17,7 @@ import { useState } from "react";
 import { ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "../supabase/supabase-provider";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 
 export default function EditProfileSettings(profile: ProfileType | null) {
   const { supabase } = useSupabase();
@@ -45,7 +45,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
 
   async function handleImageUpload() {
     if (image.raw && imagePath) {
-      console.log(imagePath, "imagePath");
+      // TODO: error handling
       const { data, error } = await supabase.storage
         .from("profile")
         // Need a custom path thing for this.

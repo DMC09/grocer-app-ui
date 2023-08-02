@@ -1,7 +1,7 @@
 import { Session } from "@supabase/supabase-js";
 import "./globals.css";
 import SupabaseListener from "@/components/supabase/supabase-listener";
-import { createServerClient } from "@/utils/supabase.server";
+import { createServerClient } from "@/helpers/supabase.server";
 import SupabaseProvider from "@/components/supabase/supabase-provider";
 import Header from "@/components/header/header";
 

@@ -17,7 +17,7 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import {
   getAllCommonItems,
   isCommonItemDataStoreEmpty,
-} from "@/utils/client/commonItems";
+} from "@/helpers/commonItems";
 import { CommonItemType } from "@/types";
 
 export default function CommonItemsDialog({

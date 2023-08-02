@@ -9,15 +9,15 @@ import {
   DialogActions,
   useMediaQuery,
 } from "@mui/material";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import { useState } from "react";
 import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
-} from "@/utils/client/image";
+} from "@/helpers/client/image";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialogContext } from "@/context/DialogContext";
-import { addNewGroceryStoreItem } from "@/utils/client/groceryStore";
+import { addNewGroceryStoreItem } from "@/helpers/client/groceryStore";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { GroceryStoreItemType, GroceryStoreType } from "@/types";
 import {

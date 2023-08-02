@@ -19,8 +19,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import {
   generateGroceryStoreImagePath,
   handleGroceryStoreImageUpload,
-} from "@/utils/client/image";
-import { addNewGroceryStore } from "@/utils/client/groceryStore";
+} from "@/helpers/client/image";
+import { addNewGroceryStore } from "@/helpers/client/groceryStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import { GroceryStoreWithItemsType } from "@/types";
 

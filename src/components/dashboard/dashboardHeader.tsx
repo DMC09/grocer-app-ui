@@ -4,7 +4,7 @@ import { ThemeProvider, Typography, Card } from "@mui/material";
 
 import AddStore from "../utils/addStore";
 
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 

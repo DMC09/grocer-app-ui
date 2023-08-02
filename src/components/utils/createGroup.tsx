@@ -40,6 +40,7 @@ export default function CreateGroup(profile: ProfileType | null) {
 
   async function handleImageUpload() {
     if (image.raw && imagePath) {
+      // TODO: error handling
       const { data, error } = await supabase.storage
         .from("profile")
         // Need a custom path thing for this.
@@ -71,6 +72,7 @@ export default function CreateGroup(profile: ProfileType | null) {
 
   async function handleSubmit() {
     if (image.raw && imagePath) {
+      // TODO: error handling
       await handleImageUpload();
       const { data, error } = await supabase
         .from("groups")

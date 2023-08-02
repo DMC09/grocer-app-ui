@@ -15,8 +15,8 @@ import GroupSettings from "./groupSettings";
 
 import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
-import { getProfileData } from "@/utils/client/profile";
-import { getGroupData } from "@/utils/client/group";
+import { getProfileData } from "@/helpers/client/profile";
+import { getGroupData } from "@/helpers/client/group";
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
 import useZustandStore from "@/hooks/useZustandStore";

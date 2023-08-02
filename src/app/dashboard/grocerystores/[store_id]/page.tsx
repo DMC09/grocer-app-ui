@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { GroceryStoreItemType } from "@/types";
 import NoItems from "@/components/utils/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
 import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";

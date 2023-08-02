@@ -2,7 +2,7 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import { useDialogContext } from "@/context/DialogContext";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { GroceryStoreType, GroceryStoreWithItemsType } from "@/types";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import {
   Dialog,
   DialogTitle,
@@ -18,8 +18,8 @@ import { useState } from "react";
 import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
-} from "@/utils/client/image";
-import { updateGroceryStore } from "@/utils/client/groceryStore";
+} from "@/helpers/client/image";
+import { updateGroceryStore } from "@/helpers/client/groceryStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {

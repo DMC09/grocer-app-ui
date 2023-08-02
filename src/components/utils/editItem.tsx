@@ -20,8 +20,8 @@ import {
   findGroceryStoreIndex,
   findGroceryStoreItemIndexInStore,
 } from "@/stores/GroceryDataStore";
-import { handleGroceryStoreItemImageUpload } from "@/utils/client/image";
-import { updateGroceryStoreItem } from "@/utils/client/groceryStore";
+import { handleGroceryStoreItemImageUpload } from "@/helpers/client/image";
+import { updateGroceryStoreItem } from "@/helpers/client/groceryStore";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   const { supabase, session } = useSupabase();
