@@ -3,17 +3,24 @@ import { immer } from "zustand/middleware/immer";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { devtools, persist } from "zustand/middleware";
 import { produce } from "immer";
-import { CommonItemType } from "@/types";
+import { CommonItemToAdd, CommonItemType } from "@/types";
 
 // grocery store
 interface CommonItemsState {
   catalog: CommonItemType[];
-  // itemsToAdd: []
+  itemsToSubmit: CommonItemToAdd[];
 }
 
 type CommonItemsActions = {
   resetStore: () => void;
   setCatalogState: (fetchedData: []) => void;
+  addToCatalog: (item: CommonItemType) => void;
+  removeFromCatalog: (id: number) => void;
+  updateToCatalog: (updatedItem: CommonItemType) => void;
+  addItemToSubmit: (itemToAdd: CommonItemToAdd) => void;
+  removeItemToSubmit: (index: number) => void;
+  clearItemsToSubmit: () => void;
+  updateItemToSubmit: (index: number, quantity: number) => void;
 };
 
 const initialCommonItemsState: CommonItemsState = {
@@ -27,11 +34,13 @@ const initialCommonItemsState: CommonItemsState = {
       select_id: null,
     },
   ],
+  itemsToSubmit: [],
 };
 
 const _CommonItemsDataStore = immer<CommonItemsState & CommonItemsActions>(
   (set, get) => ({
     catalog: initialCommonItemsState.catalog,
+    itemsToSubmit: initialCommonItemsState.itemsToSubmit,
     resetStore: () => {
       set(initialCommonItemsState);
     },
@@ -40,13 +49,81 @@ const _CommonItemsDataStore = immer<CommonItemsState & CommonItemsActions>(
         state.catalog = fetchedData;
       });
     },
+    addToCatalog: (item: CommonItemType) => {
+      set(
+        produce((draft) => {
+          if (item) {
+            draft.catalog.push(item);
+          }
+        }, initialCommonItemsState)
+      );
+    },
+    removeFromCatalog: (id: number) => {
+      set(
+        produce((draft) => {
+          if (id) {
+            console.log("removing from common items catalog");
+            console.log(draft?.catalog);
+            const itemIndex = draft.catalog.findIndex((item) => item.id === id);
+            draft.catalog.splice(itemIndex, 1);
+          }
+        }, initialCommonItemsState)
+      );
+    },
+    updateToCatalog: (updatedItem: CommonItemType) => {
+      set(
+        produce((draft) => {
+          const itemIndex = draft.catalog.findIndex(
+            (item) => item.id === updatedItem.id
+          );
+
+          draft.catalog[itemIndex] = updatedItem;
+        }, initialCommonItemsState)
+      );
+    },
+    addItemToSubmit: (itemToAdd: CommonItemToAdd) => {
+      set(
+        produce((draft) => {
+          console.log(itemToAdd, "Trying to Add this item?");
+          draft.itemsToSubmit.push(itemToAdd);
+        }, initialCommonItemsState)
+      );
+      {
+      }
+    },
+    removeItemToSubmit: (index: number) => {
+      set(
+        produce((draft) => {
+          draft.itemsToSubmit.splice(index, 1);
+        }, initialCommonItemsState)
+      );
+    },
+    clearItemsToSubmit: () => {
+      set((state) => {
+        state.itemsToSubmit = initialCommonItemsState.itemsToSubmit;
+      });
+    },
+    updateItemToSubmit: (index: number, newQuantity: number) => {
+      set(
+        produce((draft: CommonItemsState) => {
+          draft.itemsToSubmit[index].quantity = newQuantity;
+        }, initialCommonItemsState)
+      );
+    },
   })
 );
 
 export const CommonItemsDataStore = create(
-  devtools(persist(_CommonItemsDataStore, { name: "Common Items store" }))
+  devtools(
+    persist(_CommonItemsDataStore, {
+      name: "Common Items Cache",
+      partialize: (state) => ({
+        catalog: state.catalog,
+      }),
+    })
+  )
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Common Items store", CommonItemsDataStore);
+  mountStoreDevtool("Common Items Data store", CommonItemsDataStore);
 }
