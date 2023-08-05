@@ -1,4 +1,4 @@
-import { useDialogContext } from "@/context/DialogContext";
+import { useDialog } from "@/context/DialogContext";
 import {
   Dialog,
   DialogTitle,
@@ -11,14 +11,15 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import commonItemsStubData from "@/stub/commonitems.json";
-import CommonGroceryStoreItem from "../groceryStoreItem/commonGroceryItem";
+
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import {
   getAllCommonItems,
   isCommonItemDataStoreEmpty,
-} from "@/helpers/commonItems";
+} from "@/helpers/commonItem";
 import { CommonItemType } from "@/types";
+import CommonGroceryStoreItem from "../groceryStoreItem/commonGroceryItem";
 
 export default function CommonItemsDialog({
   storeId,
@@ -27,9 +28,18 @@ export default function CommonItemsDialog({
   storeId: number;
   selectId: string | null;
 }) {
+  // hooks
+  const { supabase, session } = useSupabase();
+  const { openCommonItemsDialog, handleCommonItemsDialogClose } = useDialog();
+
+  // Zustand
   const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
   const itemsToSubmit = CommonItemsDataStore((state) => state.itemsToSubmit);
+  const clearItemsToSubmit = CommonItemsDataStore(
+    (state) => state.clearItemsToSubmit
+  );
 
+  //Refresh datat
   useEffect(() => {
     if (commonItemsCatalog) {
       if (isCommonItemDataStoreEmpty(commonItemsCatalog)) {
@@ -40,18 +50,6 @@ export default function CommonItemsDialog({
       }
     }
   }, []);
-
-  //need to check if common items is empty? if so fetch the datat\
-  // set up realtime listerers for it
-  // Duplicate
-  const { supabase, session } = useSupabase();
-
-  const { openCommonItemsDialog, handleCommonItemsDialogClose } =
-    useDialogContext();
-
-  const clearItemsToSubmit = CommonItemsDataStore(
-    (state) => state.clearItemsToSubmit
-  );
 
   async function getData() {
     await getAllCommonItems(supabase);
@@ -67,12 +65,7 @@ export default function CommonItemsDialog({
     image: item.image,
   }));
 
-  async function handleAddCommonItems(event: any) {
-    console.log(itemsToSubmit, "From the store");
-    console.log(mappedItems, "After mapping");
-    //take the current store array for itemsToSubmit and add them to the grocery store.
-    // need to make sure the array's object has these revlant ones
-
+  async function handleAddCommonItems() {
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .insert(mappedItems)

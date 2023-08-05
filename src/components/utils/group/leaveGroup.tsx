@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@mui/material";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export default function LeaveGroup() {

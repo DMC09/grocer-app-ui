@@ -15,12 +15,13 @@ import GroupSettings from "./groupSettings";
 
 import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
-import { getProfileData } from "@/helpers/client/profile";
-import { getGroupData } from "@/helpers/client/group";
+
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import { getProfileData } from "@/helpers/profile";
+import { getGroupData } from "@/helpers/group";
 
 export default function ProfileSettings() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);

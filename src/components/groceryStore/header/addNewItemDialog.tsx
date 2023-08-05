@@ -11,21 +11,24 @@ import {
 } from "@mui/material";
 import { theme } from "@/helpers/theme";
 import { useState } from "react";
-import {
-  generateGroceryStoreItemImagePath,
-  handleGroceryStoreImageUpload,
-} from "@/helpers/client/image";
+
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useDialogContext } from "@/context/DialogContext";
-import { addNewGroceryStoreItem } from "@/helpers/client/groceryStore";
+import { useDialog } from "@/context/DialogContext";
+
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { GroceryStoreItemType, GroceryStoreType } from "@/types";
 import {
   GroceryDataStore,
   findGroceryStoreIndex,
 } from "@/stores/GroceryDataStore";
+import {
+  generateGroceryStoreItemImagePath,
+  handleGroceryStoreImageUpload,
+} from "@/helpers/image";
+import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
 
 export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
+  //Component State
   const [newItemName, setNewItemName] = useState<string>();
   const [notes, setNotes] = useState("");
   const [imagePath, setImagePath] = useState<string | null>(null);
@@ -35,12 +38,22 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     raw: "",
   });
 
+  // Zustand
   const GroceryStoreData = GroceryDataStore((state) => state.data);
   const addItemToState = GroceryDataStore((state) => state.insertGroceryItem);
 
-  const { openAddNewItemDialog, handleAddNewItemDialogClose } =
-    useDialogContext();
+  // hooks
   const { supabase, session } = useSupabase();
+  const { openAddNewItemDialog, handleAddNewItemDialogClose } = useDialog();
+
+  //handlers
+  async function resetComponentState() {
+    setNewItemName("");
+    handleAddNewItemDialogClose();
+    setNotes("");
+    setQuantity("");
+    setImage({ preview: "", raw: "" });
+  }
 
   async function handleSetImage(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
@@ -55,13 +68,13 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     }
   }
 
-  async function handleSubmitNewItem() {
+  async function handleAddNewItem() {
     if (groceryStore.select_id && newItemName) {
       if (image.raw && imagePath) {
         // TODO: error handling
         await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
       }
-      const newItemData = await addNewGroceryStoreItem(
+      const newItem = await addNewGroceryStoreItem(
         supabase,
         groceryStore.id,
         newItemName,
@@ -70,27 +83,22 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         groceryStore.select_id,
         imagePath
       );
-      const storeIndex = findGroceryStoreIndex(
-        GroceryStoreData,
-        newItemData.id
-      );
+      const newItemIndex = findGroceryStoreIndex(GroceryStoreData, newItem.id);
 
-      const inStore = GroceryStoreData[storeIndex]?.grocerystoreitems?.some(
-        (item) => item.id == newItemData.id
-      );
+      const stateUpdated = GroceryStoreData[
+        newItemIndex
+      ]?.grocerystoreitems?.some((item) => item.id == newItem.id);
 
-      if (!inStore) {
+      if (!stateUpdated) {
         console.log(
-          "well it looks like we have to add an item via the component"
+          "%cAdding new item",
+          "color: white; background-color: #007acc;",
+          newItem
         );
-        addItemToState(newItemData as GroceryStoreItemType);
-      }
 
-      setNewItemName("");
-      handleAddNewItemDialogClose();
-      setNotes("");
-      setQuantity("");
-      setImage({ preview: "", raw: "" });
+        addItemToState(newItem as GroceryStoreItemType);
+      }
+      await resetComponentState();
     }
   }
 
@@ -105,7 +113,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           margin="dense"
           id="Name"
           label="Name"
-          type="email"
+          type="search"
           fullWidth
           variant="standard"
           onChange={(e) => setNewItemName(e.target.value)}
@@ -118,7 +126,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           margin="dense"
           id="Notes"
           label="Notes"
-          type="email"
+          type="search"
           fullWidth
           variant="standard"
           onChange={(e) => setNotes(e.target.value)}
@@ -135,7 +143,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       >
         <TextField
           fullWidth
-          type="number"
+          type="tel"
           id="outlined-basic"
           label="Quantity"
           variant="outlined"
@@ -178,7 +186,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleAddNewItemDialogClose}>Cancel</Button>
-        <Button onClick={handleSubmitNewItem}>Submit</Button>
+        <Button onClick={handleAddNewItem}>Submit</Button>
       </DialogActions>
     </Dialog>
   );

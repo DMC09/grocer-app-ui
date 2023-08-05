@@ -1,5 +1,5 @@
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import { useDialogContext } from "@/context/DialogContext";
+import { useDialog } from "@/context/DialogContext";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { GroceryStoreType, GroceryStoreWithItemsType } from "@/types";
 import { theme } from "@/helpers/theme";
@@ -15,12 +15,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
+
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { updateGroceryStore } from "@/helpers/groceryStore";
 import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
-} from "@/helpers/client/image";
-import { updateGroceryStore } from "@/helpers/client/groceryStore";
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
+} from "@/helpers/image";
 
 export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   //state
@@ -43,7 +44,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
-    useDialogContext();
+    useDialog();
 
   //handlers
   async function handleImageUpdate(event: any) {
@@ -84,7 +85,11 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       updatedStoreData
     );
     if (!areObjectsEqual) {
-      console.log("had to update the data in the component itself");
+      console.log(
+        `%cComponent: - Updating ${currentGroceryStoreObject?.name}`,
+        "color: white; background-color: #007acc;",
+        updatedStoreData
+      );
       updateGroceryStoreState(updatedStoreData as GroceryStoreWithItemsType);
     }
 

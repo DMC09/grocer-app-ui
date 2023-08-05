@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { ProfileType } from "@/types";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 import { useState } from "react";
 
 export default function ShareCode(profile: ProfileType | null) {

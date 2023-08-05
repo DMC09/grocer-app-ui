@@ -19,7 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import EditItem from "@/components/utils/editItem";
+import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 
 

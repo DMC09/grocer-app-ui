@@ -13,18 +13,19 @@ import {
   useTheme,
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { GroceryStoreWithItemsType } from "@/types";
 import {
   generateGroceryStoreImagePath,
   handleGroceryStoreImageUpload,
-} from "@/helpers/client/image";
-import { addNewGroceryStore } from "@/helpers/client/groceryStore";
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import { GroceryStoreWithItemsType } from "@/types";
+} from "@/helpers/image";
+import { addNewGroceryStore } from "@/helpers/groceryStore";
 
-export default function AddStore({ select_id }: { select_id: string }) {
+export default function AddNewStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -48,10 +49,11 @@ export default function AddStore({ select_id }: { select_id: string }) {
     if (!regExp.test(newGroceryStoreName)) {
       setErrorText("Please only use letters and number");
       setIsInvalid(true);
+      console.log("%cValidation failed for Store Name", "color:red");
       return false;
     } else {
       setIsInvalid(false);
-      console.log("Validation successful");
+      console.log("%cValidation successful for Store Name", "color:green");
       return true;
     }
   }
@@ -117,12 +119,12 @@ export default function AddStore({ select_id }: { select_id: string }) {
       );
 
       if (!addedToState) {
-        console.log(
-          newStore,
-          addedToState,
-          "Adding the store via the component because it hasn't been added already"
-        );
         addNewGroceryStoreToState(newStore as GroceryStoreWithItemsType);
+        console.log(
+          `%cComponent: - Adding new store ${newStore?.name}`,
+          "color: white; background-color: #007acc;",
+          newStore
+        );
       }
 
       setOpen(false);
@@ -152,7 +154,7 @@ export default function AddStore({ select_id }: { select_id: string }) {
             margin="dense"
             id="Name"
             label="Name"
-            type="email"
+            type="search"
             fullWidth
             variant="standard"
             onChange={handleChange}

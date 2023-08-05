@@ -4,12 +4,12 @@ import { Container, Skeleton, ThemeProvider } from "@mui/material";
 
 import { useParams } from "next/navigation";
 import { GroceryStoreItemType } from "@/types";
-import NoItems from "@/components/utils/noItems";
+import NoItems from "@/components/utils/grocerystoreitems/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/helpers/theme";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
-import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
+import GroceryStoreItem from "@/components/grocerystore/groceryStoreItem/grocerystoreitem";
+import ExpandedGroceryStoreItem from "@/components/grocerystore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 

@@ -2,15 +2,17 @@
 
 import { ThemeProvider, Typography, Card } from "@mui/material";
 
-import AddStore from "../utils/addStore";
-
 import { theme } from "@/helpers/theme";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
+import AddNewStore from "../utils/grocerystore/addnewstore";
 
 export default function DashboardHeader() {
-  const selectId = useZustandStore(ProfileDataStore, (state) => state?.data?.select_id);
+  const selectId = useZustandStore(
+    ProfileDataStore,
+    (state) => state?.data?.select_id
+  );
 
   return (
     <>
@@ -34,7 +36,7 @@ export default function DashboardHeader() {
               Dashboard
             </Typography>
 
-            <AddStore select_id={selectId} />
+            <AddNewStore select_id={selectId} />
           </Card>
         )}
       </ThemeProvider>

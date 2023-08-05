@@ -8,7 +8,7 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 import { useState } from "react";
 import { ProfileType } from "@/types";
 

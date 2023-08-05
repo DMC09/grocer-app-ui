@@ -9,15 +9,15 @@ import {
 } from "@mui/material";
 import { useSupabase } from "../supabase/supabase-provider";
 import { useEffect, useMemo, useState } from "react";
-import JoinGroup from "../utils/joinGroup";
-import CreateGroup from "../utils/createGroup";
+import JoinGroup from "../utils/group/joinGroup";
+import CreateGroup from "../utils/group/createGroup";
 import { GroupMemberType, GroupType, ProfileType } from "@/types";
-import LeaveGroup from "../utils/leaveGroup";
+import LeaveGroup from "../utils/group/leaveGroup";
 import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import JoinCreateActions from "../group/joinCreateActions";
-import ShareCode from "../utils/shareCode";
+import ShareCode from "../utils/group/shareCode";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();

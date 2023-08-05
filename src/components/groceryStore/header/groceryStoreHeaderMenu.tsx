@@ -14,21 +14,24 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useContext, useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings } from "@mui/icons-material";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { deleteGroceryStore } from "@/helpers/client/groceryStore";
-import { handleChangeGroceryStoreItemView } from "@/helpers/client/profile";
+
 import CloseIcon from "@mui/icons-material/Close";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import CommonItemsDialog from "./groceryStoreHeader/commonItemsDialog";
-import { useDialogContext } from "@/context/DialogContext";
-import AddNewItemDialog from "./groceryStoreHeader/addNewItemDialog";
-import EditGroceryStoreDialog from "./groceryStoreHeader/editGroceryStoreDialog";
+
+import { useDialog } from "@/context/DialogContext";
+
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { deleteGroceryStore } from "@/helpers/groceryStore";
+import { handleChangeGroceryStoreItemView } from "@/helpers/profile";
+import AddNewItemDialog from "./addNewItemDialog";
+import CommonItemsDialog from "./commonItemsDialog";
+import EditGroceryStoreDialog from "./editGroceryStoreDialog";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -51,7 +54,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     handleCommonItemsDialogOpen,
     handleAddNewItemDialogOpen,
     handleStoreSettingsDialogOpen,
-  } = useDialogContext();
+  } = useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -66,12 +69,23 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       groceryStore.id,
       router
     );
+
+    
     const inGroceryStoreData = GroceryStoreData.some(
       (groceryStore) => groceryStore.id === deletedStoreId
     );
 
+    const storeToBeRemoved = GroceryStoreData.filter(
+      (store) => store.id === groceryStore.id
+    )?.[0];
+
     if (deletedStoreId && inGroceryStoreData) {
-      console.log(deletedStoreId, "in the componeont we are deleting from ste");
+      console.log(
+        `%cComponent: - Deleting store ${storeToBeRemoved?.name}`,
+        "color: white; background-color: #007acc;",
+        storeToBeRemoved
+      );
+
       deleteGroceryStoreFromState(deletedStoreId);
     }
   }

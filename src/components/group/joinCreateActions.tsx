@@ -2,8 +2,8 @@
 
 import { Divider, Chip, Box } from "@mui/material";
 import { profile } from "console";
-import CreateGroup from "../utils/createGroup";
-import JoinGroup from "../utils/joinGroup";
+import CreateGroup from "../utils/group/createGroup";
+import JoinGroup from "../utils/group/joinGroup";
 import { ProfileType } from "@/types";
 
 export default function JoinCreateActions(profile: ProfileType) {

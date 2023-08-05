@@ -12,16 +12,16 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 import { GroceryStoreItemType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import {
   GroceryDataStore,
   findGroceryStoreIndex,
-  findGroceryStoreItemIndexInStore,
+  getGroceryStoreItemIndex,
 } from "@/stores/GroceryDataStore";
-import { handleGroceryStoreItemImageUpload } from "@/helpers/client/image";
-import { updateGroceryStoreItem } from "@/helpers/client/groceryStore";
+import { handleGroceryStoreItemImageUpload } from "@/helpers/image";
+import { updateGroceryStoreItem } from "@/helpers/groceryStoreItem";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   const { supabase, session } = useSupabase();
@@ -53,12 +53,12 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     );
   }
 
-  const handleClose = () => {
+  async function handleClose() {
     setOpen(false);
     setName(groceryStoreItem.name);
     setNotes(groceryStoreItem.notes);
     setQuantity(groceryStoreItem.quantity);
-  };
+  }
 
   async function handleImageSet(event: any) {
     if (event.target.files.length && groceryStoreItem?.select_id) {
@@ -93,14 +93,14 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       updatedItem.id
     );
 
-    const itemIndex = findGroceryStoreItemIndexInStore(
+    const itemIndex = getGroceryStoreItemIndex(
       GroceryStoreData,
       updatedItem.id,
       groceryStoreIndex
     );
 
     const currentItem =
-      GroceryStoreData[groceryStoreIndex].grocerystoreitems[itemIndex].id;
+      GroceryStoreData[groceryStoreIndex].grocerystoreitems[itemIndex]?.id;
     console.log(currentItem, "item from the update?");
 
     const isObjectTheSame = Object.is(updatedItem, currentItem);
@@ -109,6 +109,8 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       console.log("updating the item in the componentPfor");
       updatedItemState(updatedItem);
     }
+
+    await handleClose();
   }
 
   return (
@@ -150,7 +152,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
         </DialogContent>
         <DialogContent>
           <TextField
-            type="number"
+            type="tel"
             id="outlined-basic"
             label="Quantity"
             variant="outlined"
