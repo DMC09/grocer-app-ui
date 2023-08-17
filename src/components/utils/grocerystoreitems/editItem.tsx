@@ -22,6 +22,7 @@ import {
 } from "@/stores/GroceryDataStore";
 import { handleGroceryStoreItemImageUpload } from "@/helpers/image";
 import { updateGroceryStoreItem } from "@/helpers/groceryStoreItem";
+import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   const { supabase, session } = useSupabase();
@@ -70,6 +71,10 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     }
   }
 
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
+  }
+
   async function handleEdit() {
     // do the update on this one I guess
 
@@ -88,26 +93,8 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       imagePath
     );
 
-    const groceryStoreIndex = findGroceryStoreIndex(
-      GroceryStoreData,
-      updatedItem.id
-    );
-
-    const itemIndex = getGroceryStoreItemIndex(
-      GroceryStoreData,
-      updatedItem.id,
-      groceryStoreIndex
-    );
-
-    const currentItem =
-      GroceryStoreData[groceryStoreIndex].grocerystoreitems[itemIndex]?.id;
-    console.log(currentItem, "item from the update?");
-
-    const isObjectTheSame = Object.is(updatedItem, currentItem);
-
-    if (!isObjectTheSame) {
-      console.log("updating the item in the componentPfor");
-      updatedItemState(updatedItem);
+    if (updatedItem) {
+      fetchData();
     }
 
     await handleClose();
