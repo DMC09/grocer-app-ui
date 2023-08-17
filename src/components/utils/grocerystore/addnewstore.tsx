@@ -23,7 +23,10 @@ import {
   generateGroceryStoreImagePath,
   handleGroceryStoreImageUpload,
 } from "@/helpers/image";
-import { addNewGroceryStore } from "@/helpers/groceryStore";
+import {
+  addNewGroceryStore,
+  getAllGroceryStoresData,
+} from "@/helpers/groceryStore";
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();
@@ -91,6 +94,10 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     }
   }
 
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
+  }
+
   const addNewGroceryStoreToState = GroceryDataStore(
     (state) => state.addNewGroceryStore
   );
@@ -114,17 +121,8 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         imagePath
       );
 
-      const addedToState = GroceryStoreData.some(
-        (groceryStore) => groceryStore.id === newStore?.id
-      );
-
-      if (!addedToState) {
-        addNewGroceryStoreToState(newStore as GroceryStoreWithItemsType);
-        console.log(
-          `%cComponent: - Adding new store ${newStore?.name}`,
-          "color: white; background-color: #007acc;",
-          newStore
-        );
+      if (newStore) {
+        fetchData();
       }
 
       setOpen(false);
