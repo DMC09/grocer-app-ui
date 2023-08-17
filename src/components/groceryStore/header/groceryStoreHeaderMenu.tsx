@@ -27,7 +27,10 @@ import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { useDialog } from "@/context/DialogContext";
 
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import { deleteGroceryStore } from "@/helpers/groceryStore";
+import {
+  deleteGroceryStore,
+  getAllGroceryStoresData,
+} from "@/helpers/groceryStore";
 import { handleChangeGroceryStoreItemView } from "@/helpers/profile";
 import AddNewItemDialog from "./addNewItemDialog";
 import CommonItemsDialog from "./commonItemsDialog";
@@ -63,6 +66,10 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     setAnchorEl(null);
   }
 
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
+  }
+
   async function handleDeleteGroceryStore() {
     const deletedStoreId = await deleteGroceryStore(
       supabase,
@@ -70,23 +77,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       router
     );
 
-    
-    const inGroceryStoreData = GroceryStoreData.some(
-      (groceryStore) => groceryStore.id === deletedStoreId
-    );
-
-    const storeToBeRemoved = GroceryStoreData.filter(
-      (store) => store.id === groceryStore.id
-    )?.[0];
-
-    if (deletedStoreId && inGroceryStoreData) {
-      console.log(
-        `%cComponent: - Deleting store ${storeToBeRemoved?.name}`,
-        "color: white; background-color: #007acc;",
-        storeToBeRemoved
-      );
-
-      deleteGroceryStoreFromState(deletedStoreId);
+    if (deletedStoreId) {
+      fetchData();
     }
   }
 
