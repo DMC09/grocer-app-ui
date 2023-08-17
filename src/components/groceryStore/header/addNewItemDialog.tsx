@@ -26,8 +26,11 @@ import {
   handleGroceryStoreImageUpload,
 } from "@/helpers/image";
 import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
+import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
 export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   //Component State
   const [newItemName, setNewItemName] = useState<string>();
   const [notes, setNotes] = useState("");
@@ -53,6 +56,10 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     setNotes("");
     setQuantity("");
     setImage({ preview: "", raw: "" });
+  }
+
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
   }
 
   async function handleSetImage(event: any) {
@@ -83,26 +90,15 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         groceryStore.select_id,
         imagePath
       );
-      const newItemIndex = findGroceryStoreIndex(GroceryStoreData, newItem.id);
 
-      const stateUpdated = GroceryStoreData[
-        newItemIndex
-      ]?.grocerystoreitems?.some((item) => item.id == newItem.id);
-
-      if (!stateUpdated) {
-        console.log(
-          "%cAdding new item",
-          "color: white; background-color: #007acc;",
-          newItem
-        );
-
-        addItemToState(newItem as GroceryStoreItemType);
+      if(newItem){
+        fetchData()
       }
-      await resetComponentState();
-    }
-  }
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  }
+}
+
+
 
   return (
     <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
