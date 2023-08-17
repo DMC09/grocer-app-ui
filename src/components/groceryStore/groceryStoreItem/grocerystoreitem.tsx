@@ -22,11 +22,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { theme } from "@/helpers/theme";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import EditItem from "@/components/utils/editItem";
+import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import {
   GroceryDataStore,
   findGroceryStoreIndex,
 } from "@/stores/GroceryDataStore";
+import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
 export default function GroceryStoreItem({
   groceryStoreItem,
@@ -82,13 +83,13 @@ export default function GroceryStoreItem({
     };
   }, []);
 
-  const handleClickOpen = () => {
+  function handleClickOpen() {
     setOpen(true);
-  };
+  }
 
-  const handleClose = () => {
+  function handleClose() {
     setOpen(false);
-  };
+  }
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -101,6 +102,11 @@ export default function GroceryStoreItem({
       clearInterval(timer);
     };
   }, []);
+
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
+  }
+
   const handleDelete = async (itemId: string) => {
     //State to determine the click
     //Countdown and display the x
@@ -111,18 +117,10 @@ export default function GroceryStoreItem({
       .select()
       .single();
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error?.message);
     } else {
-      const storeIndex = findGroceryStoreIndex(GroceryStoreData, data.id);
-
-      const isDeletedIdInState = GroceryStoreData[
-        storeIndex
-      ].grocerystoreitems.some((item) => item.id === data.id);
-      // tricky becase we only have the id of the item?
-
-      if (isDeletedIdInState) {
-        console.log("well we gotta delete this in the component");
-        deleteItem(data.id);
+      if (data && data.id) {
+        fetchData();
       }
     }
   };
