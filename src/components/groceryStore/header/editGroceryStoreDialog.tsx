@@ -17,7 +17,10 @@ import {
 import { useState } from "react";
 
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import { updateGroceryStore } from "@/helpers/groceryStore";
+import {
+  getAllGroceryStoresData,
+  updateGroceryStore,
+} from "@/helpers/groceryStore";
 import {
   generateGroceryStoreItemImagePath,
   handleGroceryStoreImageUpload,
@@ -59,6 +62,11 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       });
     }
   }
+
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
+  }
+
   async function handleUpdate() {
     if (updatedImage.raw && imagePath) {
       // TODO: error handling
@@ -75,22 +83,8 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       imagePath
     );
 
-    const index = GroceryStoreData.findIndex(
-      (groceryStore) => groceryStore.id == updatedStoreData.id
-    );
-    const currentGroceryStoreObject = GroceryStoreData[index];
-
-    const areObjectsEqual = Object.is(
-      currentGroceryStoreObject,
-      updatedStoreData
-    );
-    if (!areObjectsEqual) {
-      console.log(
-        `%cComponent: - Updating ${currentGroceryStoreObject?.name}`,
-        "color: white; background-color: #007acc;",
-        updatedStoreData
-      );
-      updateGroceryStoreState(updatedStoreData as GroceryStoreWithItemsType);
+    if (updatedStoreData) {
+      fetchData();
     }
 
     handleStoreSettingsDialogClose();
