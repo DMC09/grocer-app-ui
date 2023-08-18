@@ -120,7 +120,7 @@ export interface Database {
       groups: {
         Row: {
           confirmation_accepted: boolean | null;
-          created_at: string | null;
+          created_at: string | null; 
           email: string | null;
           first_name: string | null;
           group_id: string | null;
@@ -273,7 +273,7 @@ export type GroupMemberType =
 export type CommonItemType = Database["public"]["Tables"]["commonitems"]["Row"];
 
 export type CommonItemToAdd = {
-  index: number;
+  uniqueItemId: number;
   id: number;
   name: string;
   notes: string;
