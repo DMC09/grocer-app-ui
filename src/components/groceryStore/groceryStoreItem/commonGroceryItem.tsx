@@ -212,6 +212,9 @@ export default function CommonGroceryStoreItem(item: CommonItemType) {
           />
 
           <IconButton
+          sx={{
+            ml:0
+          }}
             onClick={increment}
             aria-label="delete"
             disabled={selected ? false : true}
