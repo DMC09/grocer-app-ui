@@ -67,7 +67,7 @@ export function DialogContextProvider({
   );
 }
 
-export const useDialogContext = () => {
+export const useDialog = () => {
   const context = useContext(Context);
 
   if (context === undefined) {
