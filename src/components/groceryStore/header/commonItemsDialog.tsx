@@ -8,10 +8,10 @@ import {
   CardMedia,
   Button,
   DialogActions,
+  useMediaQuery,
+  Box,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import commonItemsStubData from "@/stub/commonitems.json";
-
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import {
@@ -20,6 +20,9 @@ import {
 } from "@/helpers/commonItem";
 import { CommonItemType } from "@/types";
 import CommonGroceryStoreItem from "../groceryStoreItem/commonGroceryItem";
+import { theme } from "@/helpers/theme";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
 export default function CommonItemsDialog({
   storeId,
@@ -37,6 +40,9 @@ export default function CommonItemsDialog({
   const itemsToSubmit = CommonItemsDataStore((state) => state.itemsToSubmit);
   const clearItemsToSubmit = CommonItemsDataStore(
     (state) => state.clearItemsToSubmit
+  );
+  const insertGroceryItems = GroceryDataStore(
+    (state) => state.insertGroceryItems
   );
 
   //Refresh datat
@@ -65,6 +71,11 @@ export default function CommonItemsDialog({
     image: item.image,
   }));
 
+  async function fetchData() {
+    console.log("fetching data!Pfor");
+    await getAllGroceryStoresData(supabase);
+  }
+
   async function handleAddCommonItems() {
     const { data, error } = await supabase
       .from("grocerystoreitems")
@@ -74,10 +85,10 @@ export default function CommonItemsDialog({
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "data from respone/?");
+      console.log(data, "data after adding common itemS1");
+      fetchData();
+      clearItemsToSubmit();
       handleCommonItemsDialogClose();
-      // close the dialog
-      //also it to state
     }
   }
 
@@ -92,20 +103,39 @@ export default function CommonItemsDialog({
     clearItemsToSubmit();
   }
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <>
-      <Dialog id="grocery-store-settings-dialog" open={!!openCommonItemsDialog}>
+      <Dialog
+        fullScreen={fullScreen}
+        id="grocery-store-settings-dialog"
+        open={!!openCommonItemsDialog}
+        fullWidth
+        sx={{}}
+      >
         <DialogTitle align="center">Add Common Items</DialogTitle>
 
         <DialogContent
           sx={{
+            borderRadius: 6,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            flexFlow: "column",
           }}
         >
-          {commonItemsToRender}
+          <Box
+            sx={{
+              border: 1,
+              borderRadius: 5,
+              width: "100%",
+              height: "50%",
+              maxHeight: 300,
+              overflowY: "scroll",
+            }}
+          >
+            {commonItemsToRender}
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
