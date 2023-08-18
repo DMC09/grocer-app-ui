@@ -18,7 +18,7 @@ type CommonItemsActions = {
   removeFromCatalog: (id: number) => void;
   updateToCatalog: (updatedItem: CommonItemType) => void;
   addItemToSubmit: (itemToAdd: CommonItemToAdd) => void;
-  removeItemToSubmit: (index: number) => void;
+  removeItemToSubmit: (uniqueItemId: number) => void;
   clearItemsToSubmit: () => void;
   updateItemToSubmit: (index: number, quantity: number) => void;
 };
@@ -91,9 +91,13 @@ const _CommonItemsDataStore = immer<CommonItemsState & CommonItemsActions>(
       {
       }
     },
-    removeItemToSubmit: (index: number) => {
+    removeItemToSubmit: (uniqueItemId: number) => {
       set(
         produce((draft) => {
+          const index = draft.itemsToSubmit.findIndex(
+            (item) => item.uniqueItemId === uniqueItemId
+          );
+          console.log(index, "removed this intex??");
           draft.itemsToSubmit.splice(index, 1);
         }, initialCommonItemsState)
       );
@@ -103,9 +107,12 @@ const _CommonItemsDataStore = immer<CommonItemsState & CommonItemsActions>(
         state.itemsToSubmit = initialCommonItemsState.itemsToSubmit;
       });
     },
-    updateItemToSubmit: (index: number, newQuantity: number) => {
+    updateItemToSubmit: (uniqueItemId: number, newQuantity: number) => {
       set(
         produce((draft: CommonItemsState) => {
+          const index = draft.itemsToSubmit.findIndex(
+            (item) => item.uniqueItemId === uniqueItemId
+          );
           draft.itemsToSubmit[index].quantity = newQuantity;
         }, initialCommonItemsState)
       );
