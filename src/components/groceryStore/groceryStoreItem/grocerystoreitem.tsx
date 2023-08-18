@@ -28,6 +28,7 @@ import {
   findGroceryStoreIndex,
 } from "@/stores/GroceryDataStore";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { addToCommonItemCatalog } from "@/helpers/commonItem";
 
 export default function GroceryStoreItem({
   groceryStoreItem,
@@ -125,49 +126,16 @@ export default function GroceryStoreItem({
     }
   };
 
-  const handleAddToCommonItems = async (
-    groceryStoreItem: GroceryStoreItemType
-  ) => {};
-
   async function handleChange(
     event: ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) {
     setChecked(event.target.checked);
 
+    // Needa  new Util function called addToCommonItemCatalog
+
     if (checked) {
-      // mode to it's own client utl
-      //Add to the common items tabl
-      const { data: commonItemResponse, error } = await supabase
-        .from("commonitems")
-        .insert({
-          item_name: groceryStoreItem.name,
-          item_notes: groceryStoreItem.notes,
-          select_id: groceryStoreItem.select_id,
-          image: groceryStoreItem.image,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        const CommonId = commonItemResponse?.id;
-
-        const { data, error } = await supabase
-          .from("grocerystoreitems")
-          .update({
-            cid: CommonId,
-          })
-          .eq("id", `${groceryStoreItem.id}`)
-          .select()
-          .single();
-
-        if (error) {
-          throw new Error(error.message);
-        } else {
-        }
-      }
+      addToCommonItemCatalog(supabase, groceryStoreItem);
     }
   }
 

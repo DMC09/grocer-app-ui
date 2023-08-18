@@ -1,6 +1,7 @@
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
-import { CommonItemType, Database } from "@/types";
+import { CommonItemType, Database, GroceryStoreItemType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { getAllGroceryStoresData } from "./groceryStore";
 
 export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
   // When I do a check on the individal commonGroceryStoreItem
@@ -28,14 +29,44 @@ export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
   // .select();
 }
 
-export async function addToCommonItems(supabase: SupabaseClient<Database>) {
-  // const {data, error} = await supabase.from("commonitems").insert({
-  //     item_name:item_name,
-  //     item_notes:item_notes,
-  //     select_id: selectId,
-  //     image: imagePath,
-  //     category:category
-  // })
+export async function addToCommonItemCatalog(
+  supabase: SupabaseClient<Database>,
+  groceryStoreItem: GroceryStoreItemType
+) {
+  const { data: commonItemResponse, error } = await supabase
+    .from("commonitems")
+    .insert({
+      item_name: groceryStoreItem.name,
+      item_notes: groceryStoreItem.notes,
+      select_id: groceryStoreItem.select_id,
+      image: groceryStoreItem.image,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  } else {
+    console.log(commonItemResponse, "Added new Common Item ");
+    const CommonId = commonItemResponse?.id;
+
+    const { data, error } = await supabase
+      .from("grocerystoreitems")
+      .update({
+        cid: CommonId,
+      })
+      .eq("id", `${groceryStoreItem.id}`)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log(data, "updated items");
+      await getAllGroceryStoresData(supabase);
+      await getAllCommonItems(supabase);
+    }
+  }
 }
 
 export async function getAllCommonItems(supabase: SupabaseClient<Database>) {
