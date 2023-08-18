@@ -12,7 +12,11 @@ import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
 import NoStores from "@/components/utils/grocerystore/nostores";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import { getAllGroceryStoresData, isGroceryStoreDataEmpty } from "@/helpers/groceryStore";
+import {
+  getAllGroceryStoresData,
+  isGroceryStoreDataEmpty,
+} from "@/helpers/groceryStore";
+import { getAllCommonItems } from "@/helpers/commonItem";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);
@@ -24,6 +28,7 @@ export default function Dashboard() {
 
   async function getData() {
     await getAllGroceryStoresData(supabase);
+    await getAllCommonItems(supabase);
   }
   useEffect(() => {
     if (groceryStoreData) {
