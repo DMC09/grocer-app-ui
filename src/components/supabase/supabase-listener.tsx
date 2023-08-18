@@ -6,7 +6,7 @@ import { useSupabase } from "./supabase-provider";
 import {
   GroceryDataStore,
   findGroceryStoreIndex,
-  findGroceryStoreItemIndexInStore,
+  getGroceryStoreItemIndex,
 } from "@/stores/GroceryDataStore";
 import {
   CommonItemType,
@@ -14,17 +14,14 @@ import {
   GroceryStoreWithItemsType,
   ProfileType,
 } from "@/types";
-import { getProfileData } from "@/helpers/client/profile";
 
-import {
-  deleteGroceryStore,
-  getAllGroceryStoresData,
-} from "@/helpers/client/groceryStore";
-
-import { getGroupData } from "@/helpers/client/group";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
+import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { getGroupData } from "@/helpers/group";
+import { getProfileData } from "@/helpers/profile";
+import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -45,6 +42,7 @@ export default function SupabaseListener({
   // Grocery store
   const resetGroceryState = GroceryDataStore((state) => state.resetStore);
   const GroceryStoreData = GroceryDataStore((state) => state.data);
+  const CommonItemCatalog = CommonItemsDataStore((state) => state.catalog);
 
   const addNewGroceryStore = GroceryDataStore(
     (state) => state.addNewGroceryStore
@@ -75,13 +73,13 @@ export default function SupabaseListener({
     ProfileDataStore,
     (state) => state?.data?.select_id
   );
-  const MINUTE_MS = 60000 * 10; // every  10  minutes
+  const MINUTE_MS = 60000 * 1; // every  1  minute
 
   async function getGroceryData() {
     await getAllGroceryStoresData(supabase);
   }
 
-  // --------------------------------------------------- Select ID Water ---------------------------------------------------
+  // --------------------------------------------------- Select ID Watcher ---------------------------------------------------
   useEffect(() => {
     const selectIdWatcher = ProfileDataStore.subscribe(
       (state) => state.data.select_id,
@@ -89,9 +87,12 @@ export default function SupabaseListener({
         resetGroceryState();
         if (session?.user && session?.user && session?.user?.id) {
           getProfileData(supabase, session?.user?.id);
-          //grab the ne wdata
         }
-        console.log(value, oldValue, "Select Id changed!");
+        console.log(
+          ` Old Select Id ending in  ${oldValue?.slice(-6)} is now ${value?.slice(
+            -6
+          )}`
+        );
       }
     );
 
@@ -103,7 +104,7 @@ export default function SupabaseListener({
   // --------------------------------------------------- Polling Events ---------------------------------------------------
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Refreshing data!");
+      console.log("Refecthing Datat!");
       getGroceryData();
     }, MINUTE_MS);
 
@@ -112,127 +113,142 @@ export default function SupabaseListener({
 
   // --------------------------------------------------- Profile Listeners Events ---------------------------------------------------
   useEffect(() => {
-    const channel = supabase
-      .channel("alt-profiles-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "profiles",
-          filter: `id=eq.${session?.user?.id}`,
-        },
-        (payload) => {
-          console.log(payload, "updates in profile??");
-          setProfileState(payload.new as ProfileType);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [session?.user?.id, setProfileState, supabase]);
+    if (selectId) {
+      const profileChannel = supabase
+        .channel(`Profile - ${selectId?.slice(-4)}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "profiles",
+            filter: `id=eq.${session?.user?.id}`,
+          },
+          (payload) => {
+            console.log(payload, "New Update to Profile");
+            setProfileState(payload.new as ProfileType);
+          }
+        )
+        .subscribe();
+      return () => {
+        supabase.removeChannel(profileChannel);
+      };
+    }
+  }, [selectId, session?.user?.id, setProfileState, supabase]);
 
   // --------------------------------------------------- Grocery Store Listeners Events ---------------------------------------------------
   useEffect(() => {
-    const channel = supabase
-      .channel("alt-grocerystore-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "grocerystores",
-          filter: `select_id=eq.${selectId}`,
-        },
-        (payload) => {
-          console.log(payload, "Insert for Grocery Store");
-
-          if (payload && payload?.new && payload?.new?.id) {
-            const addedToState = GroceryStoreData.some(
-              (groceryStore) => groceryStore.id === payload?.new?.id
-            );
-
-            if (!addedToState) {
-              console.log(
-                addedToState,
-                "Added the store to state via the listener since it's not there!"
-              );
-              addNewGroceryStore(payload.new as GroceryStoreWithItemsType);
-            }
-          }
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "grocerystores",
-          filter: `select_id=eq.${selectId}`,
-        },
-        (payload) => {
-          console.log(payload, "After an update");
-          if (payload && payload?.new && payload?.new?.id) {
-            const currentGroceryStoreObjectIndex = GroceryStoreData.findIndex(
-              (grocerystore) => grocerystore.id == payload.new.id
-            );
-            console.log(currentGroceryStoreObjectIndex, "index");
-
-            //compoare the payload.new to the current object with that ide
-            const currentGroceryStoreObject =
-              GroceryStoreData[currentGroceryStoreObjectIndex];
-
-            console.log(currentGroceryStoreObject, "current object");
-            console.log(payload.new, "payload object object");
-
-            const areObjectsEqual = Object.is(
-              currentGroceryStoreObject,
-              payload.new
-            );
-
-            if (!areObjectsEqual) {
-              console.log(
-                areObjectsEqual,
-                "Welp looks like we need to update the state in the listner"
+    if (selectId) {
+      const storeChannel = supabase
+        .channel(`Store - ${selectId?.slice(-4)}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "grocerystores",
+            filter: `select_id=eq.${selectId}`,
+          },
+          (payload) => {
+            if (payload && payload?.new && payload?.new?.id) {
+              const addedToState = GroceryStoreData.some(
+                (groceryStore) => groceryStore.id === payload?.new?.id
               );
 
-              updatedGroceryStore(payload.new as GroceryStoreWithItemsType);
+              if (!addedToState) {
+                console.log(
+                  `%cListener: - Adding new store ${payload.new.name} `,
+                  "color: white; background-color: #AB7D00;",
+                  payload.new
+                );
+                // ! Fetch Data Again
+                addNewGroceryStore(payload.new as GroceryStoreWithItemsType);
+              }
             }
           }
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "grocerystores",
-          filter: `select_id=eq.${selectId}`,
-        },
-        (payload) => {
-          if (payload && payload?.old && payload?.old.id) {
-            const storeId = Number(payload?.old?.id);
-            console.log(storeId, "in the listenre");
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "grocerystores",
+          },
+          (payload) => {
 
-            const inGroceryStoreData = GroceryStoreData.some(
-              (groceryStore) => groceryStore.id === storeId
-            );
+            if (payload && payload?.new && payload?.new?.id) {
+              const currentGroceryStoreObjectIndex = GroceryStoreData.findIndex(
+                (grocerystore) => grocerystore.id == payload.new.id
+              );
+              const currentGroceryStoreObject =
+                GroceryStoreData[currentGroceryStoreObjectIndex];
 
-            console.log(inGroceryStoreData, "in the state stiillp");
-            if (inGroceryStoreData) {
-              console.log(storeId, "Deleting Store in listener");
-              deleteGroceryStore(storeId);
+              const areObjectsEqual = Object.is(
+                currentGroceryStoreObject,
+                payload.new
+              );
+
+              if (!areObjectsEqual) {
+                console.log(
+                  `%cListener: - Updating Store ${currentGroceryStoreObject?.name} `,
+                  "color: white; background-color: #AB7D00;",
+                  payload.new
+                );
+                // ! Fetch Data Again
+                updatedGroceryStore(payload.new as GroceryStoreWithItemsType);
+              }
             }
           }
-        }
-      )
-      .subscribe();
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "DELETE",
+            schema: "public",
+            table: "grocerystores",
+            filter: `select_id=eq.${selectId}`,
+          },
+          (payload) => {
+            if (payload && payload?.old && payload?.old.id) {
+              const storeId = Number(payload?.old?.id);
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+              const storeToBeRemoved = GroceryStoreData.filter(
+                (store) => store.id === payload?.old.id
+              )?.[0];
+
+              const inGroceryStoreData = GroceryStoreData.some(
+                (groceryStore) => groceryStore.id === storeId
+              );
+
+              if (inGroceryStoreData) {
+                console.log(
+                  `%cListener: - Deleting store ${storeToBeRemoved.name} `,
+                  "color: white; background-color: #AB7D00;",
+                  storeToBeRemoved
+                );
+                // ! Fetch Data Again
+
+                deleteGroceryStore(storeId);
+              }
+            }
+          }
+        )
+        .subscribe((status, err) => {
+          console.log(status, err?.message, "Store channel");
+          if (
+            status === REALTIME_SUBSCRIBE_STATES.CLOSED ||
+            status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR ||
+            status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT
+          ) {
+            console.log("bad state");
+          }
+        });
+
+      return () => {
+        console.log(storeChannel, "Store Channel");
+        supabase.removeChannel(storeChannel);
+      };
+    }
   }, [
     GroceryStoreData,
     addNewGroceryStore,
@@ -245,140 +261,202 @@ export default function SupabaseListener({
   // --------------------------------------------------- Grocery Store Item Events ---------------------------------------------------
 
   useEffect(() => {
-    const channel = supabase
-      .channel("alt-grocerystoreitems-channel")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "grocerystoreitems" },
-        (payload) => {
-          console.log(payload, "After inserting a grocery store item");
+    if (selectId) {
+      const itemChannel = supabase
+        .channel(`Item - ${selectId?.slice(-4)}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "grocerystoreitems",
+            filter: `select_id=eq.${selectId}`,
+          },
+          (payload) => {
+            console.log(payload, "After inserting a grocery store item");
 
-          const groceryStoreIndex = findGroceryStoreIndex(
-            GroceryStoreData,
-            payload.new.id
-          );
+            const groceryStoreIndex = findGroceryStoreIndex(
+              GroceryStoreData,
+              payload.new.id
+            );
 
-          if (payload && payload?.new && payload?.new?.id) {
-            const itemFoundInState = GroceryStoreData[
-              groceryStoreIndex
-            ].grocerystoreitems.some((item) => item.id === payload?.new?.id);
-
-            if (!itemFoundInState) {
-              console.log(
-                "Well it look like we have to add the item via the listener"
+            if (payload && payload?.new && payload?.new?.id) {
+              const itemAddedToState = GroceryStoreData[
+                groceryStoreIndex
+              ]?.grocerystoreitems?.some(
+                (item) => item?.id === payload?.new?.id
               );
-              addNewitem(payload.new as GroceryStoreItemType);
+
+              console.log(itemAddedToState, "Item Added to State?");
+
+              if (!itemAddedToState) {
+                console.log(
+                  `%cListener: - Adding new item ${payload.new.name} `,
+                  "color: white; background-color: #AB7D00;",
+                  payload.new
+                );
+                // ! Fetch Data Again
+                addNewitem(payload.new as GroceryStoreItemType);
+              }
             }
           }
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "grocerystoreitems" },
-        (payload) => {
-          console.log(payload, "After an update");
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "grocerystoreitems",
+            filter: `select_id=eq.${selectId}`,
+          },
+          (payload) => {
+            console.log(payload, "After an update");
 
-          const groceryStoreIndex = findGroceryStoreIndex(
-            GroceryStoreData,
-            payload.old.id
-          );
+            const groceryStoreIndex = findGroceryStoreIndex(
+              GroceryStoreData,
+              payload.old.id
+            );
 
-          const groceryStoreItemIndex = findGroceryStoreItemIndexInStore(
-            GroceryStoreData,
-            groceryStoreIndex,
-            payload.old.id
-          );
+            const groceryStoreItemIndex = getGroceryStoreItemIndex(
+              GroceryStoreData,
+              groceryStoreIndex,
+              payload.old.id
+            );
 
-          const currentObject =
-            GroceryStoreData[groceryStoreIndex].grocerystoreitems[
-              groceryStoreItemIndex
-            ];
+            const currentObject =
+              GroceryStoreData[groceryStoreIndex]?.grocerystoreitems[
+                groceryStoreItemIndex
+              ];
 
-          const isObjectTheSame = Object.is(currentObject, payload.new);
+            const isObjectTheSame = Object.is(currentObject, payload.new);
 
-          if (!isObjectTheSame) {
-            console.log("updating the item in the listner");
-            updateItem(payload.new as GroceryStoreItemType);
+            if (!isObjectTheSame) {
+              // ! Fetch Data Again
+              console.log("updating the item in the listner");
+              updateItem(payload.new as GroceryStoreItemType);
+            }
           }
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "grocerystoreitems" },
-        (payload) => {
-          console.log(payload, "After a delete an item!");
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "DELETE",
+            schema: "public",
+            table: "grocerystoreitems",
+            filter: `select_id=eq.${selectId}`,
+          },
+          (payload) => {
+            console.log(payload, "Delete item payload");
+            if (payload && payload?.old && payload?.old?.id) {
+              const storeIndex = findGroceryStoreIndex(
+                GroceryStoreData,
+                payload.old.id
+              );
 
-          const groceryStoreIndex = findGroceryStoreIndex(
-            GroceryStoreData,
-            payload.old.id
-          );
+              const itemIndex = getGroceryStoreItemIndex(
+                GroceryStoreData,
+                storeIndex,
+                payload.old.id
+              );
 
-          const isDeletedIdInState = GroceryStoreData[
-            groceryStoreIndex
-          ].grocerystoreitems.some((item) => item.id === payload.old.id);
-          // tricky becase we only have the id of the item?
+              // const itemToBeDeleted =
+              const isDeletedIdInState = GroceryStoreData[
+                storeIndex
+              ]?.grocerystoreitems.some((item) => item.id === payload.old.id);
 
-          if (isDeletedIdInState) {
-            console.log("well we gotta delete this in the listern");
-            deleteItem(payload.old.id);
+              console.log(isDeletedIdInState, "In the listenr!");
+              if (isDeletedIdInState) {
+                // ! Fetch Data Again
+                console.log(
+                  `%cListener: - Deleting item from store ${GroceryStoreData[storeIndex].name} `,
+                  "color: white; background-color: #AB7D00;",
+                  GroceryStoreData[storeIndex]?.grocerystoreitems[itemIndex]
+                );
+
+                deleteItem(payload.old.id);
+              }
+            }
           }
-        }
-      )
-      .subscribe();
+        )
+        .subscribe((status, err) => {
+          console.log(status, err, "item channel");
+          if (
+            status === REALTIME_SUBSCRIBE_STATES.CLOSED ||
+            status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR ||
+            status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT
+          ) {
+            console.log("Bad Status");
+          }
+          console.log(status, err, "item channel");
+        });
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [GroceryStoreData, addNewitem, deleteItem, supabase, updateItem]);
+      return () => {
+        console.log(itemChannel, "item channel");
+        supabase.removeChannel(itemChannel);
+      };
+    }
+  }, [
+    GroceryStoreData,
+    addNewitem,
+    deleteItem,
+    selectId,
+    supabase,
+    updateItem,
+  ]);
 
   // --------------------------------------------------- Common Item Listeners Events ---------------------------------------------------
 
   useEffect(() => {
-    const channel = supabase
-      .channel("alt-commonitems-channel")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "commonitems" },
-        (payload) => {
-          console.log(payload, "After an insert to the commonitems tables");
-          addToCatalog(payload.new as CommonItemType);
-          // TODO: function
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "commonitems" },
-        (payload) => {
-          console.log(payload, "After an update to the commonitems tables");
-          updateToCatalog(payload.new as CommonItemType);
-          // TODO: function
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "commonitems" },
-        (payload) => {
-          console.log(
-            payload,
-            "After a delete an item to the commonitems tables"
-          );
-          removeFromCatalog(payload.old.id);
+    if (selectId) {
+      const commonItemChannel = supabase
+        .channel(`Common Item: ${selectId?.slice(-4)}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "commonitems" },
+          (payload) => {
+            console.log(payload, "After an insert to the commonitems tables");
+            // ! Fetch Data Again
+            addToCatalog(payload.new as CommonItemType);
+            // TODO: function
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "commonitems" },
+          (payload) => {
+            console.log(payload, "After an update to the commonitems tables");
+            updateToCatalog(payload.new as CommonItemType);
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "DELETE", schema: "public", table: "commonitems" },
+          (payload) => {
+            console.log(
+              payload,
+              "After a delete an item to the commonitems tables"
+            );
+            // ! Fetch Data Again
+            removeFromCatalog(payload.old.id);
 
-          // TODO: function
-        }
-      )
-      .subscribe();
+            // TODO: function
+          }
+        )
+        .subscribe((status, err) =>
+          console.log(status, err, "commonItemChannel")
+        );
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [addNewitem, deleteItem, supabase, updateItem]);
+      return () => {
+        supabase.removeChannel(commonItemChannel);
+      };
+    }
+  }, []);
 
   // --------------------------------------------------- Group Listeners Events ---------------------------------------------------
 
   useEffect(() => {
-    const channel = supabase
-      .channel("custom-grouping-channel")
+    const groupChannel = supabase
+      .channel(`Group - ${selectId?.slice(-4)}`)
       .on(
         "postgres_changes",
         {
@@ -412,13 +490,12 @@ export default function SupabaseListener({
           getGroupData(supabase);
         }
       )
-
-      .subscribe();
+      .subscribe((status, err) => console.log(status, err, "group channel"));
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(groupChannel);
     };
-  }, [supabase]);
+  }, [selectId, supabase]);
 
   // --------------------------------------------------- Auth Listeners Events ---------------------------------------------------
   useEffect(() => {
@@ -462,5 +539,52 @@ export default function SupabaseListener({
     resetGroceryState,
   ]);
 
-  return null;
+  // useEffect(() => {
+  //   const channelA = supabase.channel("room-1");
+
+  //   channelA
+  //     .on("presence", { event: "sync" }, () => {
+  //       const newState = channelA.presenceState();
+  //       console.log("Sync Event", newState);
+  //     })
+  //     .on("presence", { event: "join" }, ({ key, newPresences }) => {
+  //       console.log("Join Event", key, newPresences);
+  //     })
+  //     .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+  //       console.log("Leave Event", key, leftPresences);
+  //     })
+  //     .subscribe(async (status) => {
+  //       console.log(status, "Status?");
+  //       //we need to check if we are the only ones otherwise normal trakcpfor
+  //       if (status === "SUBSCRIBED") {
+  //         setTimeout(async () => {
+  //           //so this works wee need to see the length, then determine if we need to track data.
+  //           const syncedState = channelA.presenceState();
+  //           console.log(syncedState, "state in callback!");
+
+  //           const clone = structuredClone(syncedState);
+
+  //           const length = Object.keys(clone);
+  //           console.log(length, "keys in callback!");
+  //           console.log(
+  //             JSON.stringify(syncedState),
+  //             "STRINGIGYPFOR in callback!"
+  //           );
+
+  //           if (length.length === 1) {
+  //             const presenceTrackStatus = await channelA.track({
+  //               groceryData: GroceryStoreData,
+  //               commonItemsData: CommonItemCatalog,
+  //             });
+  //           }
+  //         }, 3000);
+
+  //         // set the state from what I get from here.
+  //       }
+  //     });
+
+  //   return () => {
+  //     supabase.removeChannel(channelA);
+  //   };
+  // }, [CommonItemCatalog, GroceryStoreData, supabase]);
 }
