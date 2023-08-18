@@ -29,7 +29,6 @@ import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
 export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
-
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   //Component State
   const [newItemName, setNewItemName] = useState<string>();
@@ -91,14 +90,12 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         imagePath
       );
 
-      if(newItem){
-        fetchData()
+      if (newItem) {
+        fetchData();
       }
-
+      resetComponentState();
+    }
   }
-}
-
-
 
   return (
     <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
