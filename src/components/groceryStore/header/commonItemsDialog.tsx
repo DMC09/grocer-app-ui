@@ -129,8 +129,7 @@ export default function CommonItemsDialog({
               border: 1,
               borderRadius: 5,
               width: "100%",
-              height: "50%",
-              maxHeight: 300,
+              height: "75%",
               overflowY: "scroll",
             }}
           >
