@@ -8,10 +8,13 @@ import NoItems from "@/components/utils/grocerystoreitems/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/helpers/theme";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import GroceryStoreItem from "@/components/grocerystore/groceryStoreItem/grocerystoreitem";
+import GroceryStoreItem from "@/components/grocerystore/groceryStoreItem/item";
 import ExpandedGroceryStoreItem from "@/components/grocerystore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import ExpandedItem from "@/components/grocerystore/groceryStoreItem/expandedItem";
+import Item from "@/components/grocerystore/groceryStoreItem/item";
+
 
 // need to grab the pfiles boolean and render the differnt view.
 
@@ -30,9 +33,9 @@ export default function Page() {
   const groceryStoreItemsToRender = grocerystoreitems?.map(
     (item: GroceryStoreItemType) => {
       return expandedView ? (
-        <ExpandedGroceryStoreItem key={item.id} groceryStoreItem={item} />
+        <ExpandedItem key={item.id} groceryStoreItem={item} />
       ) : (
-        <GroceryStoreItem key={item.id} groceryStoreItem={item} />
+        <Item key={item.id} groceryStoreItem={item} />
       );
     }
   );
