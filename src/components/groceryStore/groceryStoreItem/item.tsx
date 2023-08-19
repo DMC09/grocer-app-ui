@@ -30,32 +30,27 @@ import {
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { addToCommonItemCatalog } from "@/helpers/commonItem";
 
-export default function GroceryStoreItem({
-  groceryStoreItem,
-}: GroceryStoreItemProps) {
+export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
   const [checked, setChecked] = useState<boolean | null>(null);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [progress, setProgress] = useState(0);
 
-  const GroceryStoreData = GroceryDataStore((state) => state.data);
-  const deleteItem = GroceryDataStore((state) => state.deleteGroceryItem);
+  // function updatedRecently(timestamp: string | Date | null) {
+  //   if (timestamp) {
+  //     // Convert the timestamp to a Date object.
+  //     const passedDate = new Date(timestamp).getTime();
 
-  function updatedRecently(timestamp: string | Date | null) {
-    if (timestamp) {
-      // Convert the timestamp to a Date object.
-      const passedDate = new Date(timestamp).getTime();
+  //     // Get the current time in milliseconds.
+  //     const now = Date.now();
 
-      // Get the current time in milliseconds.
-      const now = Date.now();
-
-      // Return true if the passedDate is within the last 5 minutes.
-      return passedDate > now - 300000;
-    } else {
-      return false;
-    }
-  }
+  //     // Return true if the passedDate is within the last 5 minutes.
+  //     return passedDate > now - 300000;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   const created_atLocal = () => {
     if (groceryStoreItem?.created_at) {
