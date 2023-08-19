@@ -23,7 +23,7 @@ import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 
 
-export default function ExpandedGroceryStoreItem({
+export default function ExpandedItem({
   groceryStoreItem,
 }: GroceryStoreItemProps) {
   const { supabase, session } = useSupabase();
