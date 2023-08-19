@@ -6,6 +6,7 @@ import GroupSettings from "@/components/settings/groupSettings";
 import ProfileSettings from "@/components/settings/profileSettings";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import CommonItemsSettings from "@/components/settings/commonItemsSettings";
 
 export default function Settings() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -42,12 +43,14 @@ export default function Settings() {
           <Tabs value={currentTabIndex} onChange={handleTabChange}>
             <Tab label="Profile" />
             <Tab label="Group" />
+            <Tab label="Common Items" />
           </Tabs>
         </Box>
         {currentTabIndex === 0 && <ProfileSettings />}
         {currentTabIndex === 1 && profileData && (
           <GroupSettings {...profileData} />
-        )}
+          )}
+          {currentTabIndex === 2 && <CommonItemsSettings />}
       </Container>
     </>
   );
