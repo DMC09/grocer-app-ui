@@ -59,6 +59,11 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     setName(groceryStoreItem.name);
     setNotes(groceryStoreItem.notes);
     setQuantity(groceryStoreItem.quantity);
+    setImagePath(null);
+    setImage({
+      preview: groceryStoreItem.image,
+      raw: "",
+    });
   }
 
   async function handleImageSet(event: any) {
