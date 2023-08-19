@@ -49,10 +49,10 @@ export default function CommonItemsDialog({
   useEffect(() => {
     if (commonItemsCatalog) {
       if (isCommonItemDataStoreEmpty(commonItemsCatalog)) {
-        console.log("we need to fetch the common items!");
+        console.log("Common Item Data Not Found!");
         getData();
       } else {
-        console.log("we have common items!");
+        console.log("Using Cache!");
       }
     }
   }, []);
@@ -72,7 +72,7 @@ export default function CommonItemsDialog({
   }));
 
   async function fetchData() {
-    console.log("fetching data!Pfor");
+
     await getAllGroceryStoresData(supabase);
   }
 
@@ -85,7 +85,7 @@ export default function CommonItemsDialog({
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "data after adding common itemS1");
+
       fetchData();
       clearItemsToSubmit();
       handleCommonItemsDialogClose();

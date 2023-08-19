@@ -74,13 +74,12 @@ export default function AddCommonItem() {
   async function handleSubmit() {
     if (selectId) {
       if (image.raw && imagePath) {
-        console.log("okay we are uploading an image");
         await handleGroceryStoreItemImageUpload(
           supabase,
           imagePath,
           image?.raw
         );
-        console.log("Uploaded image");
+        // TODO: Add error handling and better logging
       }
 
       const item = await addCommonItem(

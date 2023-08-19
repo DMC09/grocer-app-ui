@@ -57,7 +57,6 @@ export default function CommonItem(item: CommonItemType) {
   function generateUiD() {
     console.log("generating index");
     if (itemsToSubmit.length === 0) {
-      console.log("Uid is 1 ");
       setUniqueId(1);
       // return 0;
     } else {
@@ -65,11 +64,7 @@ export default function CommonItem(item: CommonItemType) {
         (prev, curr) => Math.max(prev, curr.uniqueItemId),
         0
       );
-      console.log(
-        `The highest index:${highestIndex}, The new index will be ${
-          highestIndex + 1
-        }`
-      );
+
       setUniqueId(highestIndex + 1);
     }
   }
@@ -80,7 +75,7 @@ export default function CommonItem(item: CommonItemType) {
   ) {
     if (!selected) {
       setSelected(true);
-      console.log("This item is checked", item.item_name);
+
       generateUiD(); // should only be if is true
     } else {
       setSelected(false);
@@ -89,20 +84,16 @@ export default function CommonItem(item: CommonItemType) {
 
   useEffect(() => {
     if (selected) {
-      console.log(memoizedItemToAdd, "Item before adding to state to submit?");
       if (uniqueId !== null)
         addItemToSubmit(memoizedItemToAdd as CommonItemToAdd);
     } else {
-      console.log(memoizedItemToAdd, "Object after selected is false");
       setQuantity(1);
       if (uniqueId !== null) removeItemToSubmit(uniqueId);
     }
   }, [selected, uniqueId]);
 
   useEffect(() => {
-    console.log(memoizedItemToAdd.quantity, "quantity?");
     if (memoizedItemToAdd.quantity && selected) {
-      console.log(quantity, "quantity");
       updateItemToSubmit(
         memoizedItemToAdd.uniqueItemId as number,
         memoizedItemToAdd.quantity as number
@@ -119,11 +110,9 @@ export default function CommonItem(item: CommonItemType) {
   }
 
   async function increment() {
-    console.log("Incrementing");
     setQuantity(Number(quantity + 1));
   }
   async function decrement() {
-    console.log("Decrementing");
     setQuantity(Number(quantity - 1));
   }
 
@@ -212,9 +201,9 @@ export default function CommonItem(item: CommonItemType) {
           />
 
           <IconButton
-          sx={{
-            ml:0
-          }}
+            sx={{
+              ml: 0,
+            }}
             onClick={increment}
             aria-label="delete"
             disabled={selected ? false : true}

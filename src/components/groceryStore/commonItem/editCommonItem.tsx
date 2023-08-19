@@ -75,9 +75,9 @@ export default function EditCommonItem(item: CommonItemType) {
 
   async function handleEdit() {
     if (image.raw && imagePath) {
-      console.log("okay we are uploading an image");
+
       await handleGroceryStoreItemImageUpload(supabase, imagePath, image?.raw);
-      console.log("Uploaded image");
+// TODO: Add better error handling and logging
     }
 
     const updatedCommonItem = await updateCommonItem(

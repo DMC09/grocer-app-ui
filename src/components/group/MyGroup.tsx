@@ -8,8 +8,6 @@ export default function MyGroup({
 }: {
   groupMembers: GroupMemberType[] | [];
 }) {
-  console.log("GroupMembers", groupMembers);
-
   const groupMembersToRender = groupMembers?.map((member: GroupMemberType) => {
     return (
       <>

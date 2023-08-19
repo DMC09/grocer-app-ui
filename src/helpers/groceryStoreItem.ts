@@ -26,7 +26,7 @@ export async function updateGroceryStoreItem(
     if (error) {
       throw new Error(error?.message);
     } else {
-      console.log(data, "Updated Item but with no new image");
+      console.log(data, "Updated Item but with new image");
       return data;
     }
   } else {
@@ -44,7 +44,7 @@ export async function updateGroceryStoreItem(
     if (error) {
       throw new Error(error?.message);
     } else {
-      console.log(data, "Updated Item but with  new image");
+      console.log(data, "Updated Item but with no new image");
       return data;
     }
   }

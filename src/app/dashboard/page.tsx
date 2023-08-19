@@ -33,10 +33,10 @@ export default function Dashboard() {
   useEffect(() => {
     if (groceryStoreData) {
       if (isGroceryStoreDataEmpty(groceryStoreData)) {
-        console.log("no data cached or in state!");
+        console.log("Grocery Store Data not found!");
         getData();
       } else {
-        console.log("we have cached data!");
+        console.log("Using Cache");
       }
     }
     // getData();

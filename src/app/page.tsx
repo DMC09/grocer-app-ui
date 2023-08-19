@@ -16,15 +16,11 @@ export default function HomePage() {
   const [sessionData] = useState<Session | null>(session);
 
   useEffect(() => {
-    console.log(session, "session info");
-    console.log(supabase, "supabase info");
+    // console.log(session, "session info");
+    // console.log(supabase, "supabase info");
 
     sessionData?.user ? router.push("/dashboard") : router.push("/login");
-  }, [
-    // need to see if the sesion is expire if so perform a refresh here
-  ]);
-
-  //if user go straight to the dashboard.
-  //if no user show landing page that has a button to login.
+  }, []);
+// TODO: Add a simple landing page
   return <></>;
 }

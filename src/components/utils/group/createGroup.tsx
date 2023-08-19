@@ -93,15 +93,13 @@ export default function CreateGroup(profile: ProfileType | null) {
       if (error) {
         throw new Error(error.message);
       } else {
-        console.log(data, "data after ubmitting");
+
         await setOpen(false);
         await setGroupName("");
         await setImagePath(null);
         await setImage({ preview: "", raw: "" });
       }
     } else {
-      console.log(groupId);
-      console.log(profile?.id);
       const { data, error } = await supabase.from("groups").insert([
         {
           group_id: groupId,

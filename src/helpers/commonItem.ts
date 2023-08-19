@@ -47,7 +47,7 @@ export async function addToCommonItemCatalog(
   if (error) {
     throw new Error(error.message);
   } else {
-    console.log(commonItemResponse, "Added new Common Item ");
+
     const CommonId = commonItemResponse?.id;
 
     const { data, error } = await supabase

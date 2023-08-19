@@ -13,7 +13,6 @@ export default function Settings() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const handleTabChange = (e: any, tabIndex: SetStateAction<number>) => {
-    console.log(tabIndex);
     setCurrentTabIndex(tabIndex);
   };
 
