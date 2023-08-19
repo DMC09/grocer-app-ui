@@ -13,11 +13,11 @@ import JoinGroup from "../utils/group/joinGroup";
 import CreateGroup from "../utils/group/createGroup";
 import { GroupMemberType, GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/group/leaveGroup";
-import MyGroup from "../group/MyGroup";
 import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import JoinCreateActions from "../group/joinCreateActions";
 import ShareCode from "../utils/group/shareCode";
+import MyGroup from "../group/myGroup";
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
