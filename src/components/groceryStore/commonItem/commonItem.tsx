@@ -17,7 +17,7 @@ import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
-export default function CommonGroceryStoreItem(item: CommonItemType) {
+export default function CommonItem(item: CommonItemType) {
   const [selected, setSelected] = useState<boolean | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [uniqueId, setUniqueId] = useState<number | null>(null);

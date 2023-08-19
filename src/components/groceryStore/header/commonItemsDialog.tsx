@@ -19,10 +19,10 @@ import {
   isCommonItemDataStoreEmpty,
 } from "@/helpers/commonItem";
 import { CommonItemType } from "@/types";
-import CommonGroceryStoreItem from "../groceryStoreItem/commonGroceryItem";
 import { theme } from "@/helpers/theme";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import CommonItem from "../commonItem/commonItem";
 
 export default function CommonItemsDialog({
   storeId,
@@ -94,7 +94,7 @@ export default function CommonItemsDialog({
 
   const commonItemsToRender = commonItemsCatalog.map(
     (commonItem: CommonItemType) => {
-      return <CommonGroceryStoreItem key={commonItem.id} {...commonItem} />;
+      return <CommonItem key={commonItem.id} {...commonItem} />;
     }
   );
 
