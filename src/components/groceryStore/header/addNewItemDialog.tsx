@@ -8,6 +8,7 @@ import {
   Button,
   DialogActions,
   useMediaQuery,
+  Box,
 } from "@mui/material";
 import { theme } from "@/helpers/theme";
 import { useState } from "react";
@@ -99,88 +100,103 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
 
   return (
     <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
-      <DialogTitle align="center">Add new item</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="Name"
-          label="Name"
-          type="search"
-          fullWidth
-          variant="standard"
-          onChange={(e) => setNewItemName(e.target.value)}
-          value={newItemName}
-        />
-      </DialogContent>
-      <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="Notes"
-          label="Notes"
-          type="search"
-          fullWidth
-          variant="standard"
-          onChange={(e) => setNotes(e.target.value)}
-          value={notes}
-        />
-      </DialogContent>
-      <DialogContent
+      <DialogTitle align="center">Add New Item</DialogTitle>
+      <Box
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexFlow: "column",
+
         }}
       >
-        <TextField
-          fullWidth
-          type="tel"
-          id="outlined-basic"
-          label="Quantity"
-          variant="outlined"
-          onChange={(e) => setQuantity(e.target.value)}
-          value={quantity}
-        />
-        <Card
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="Name"
+            label="Name"
+            type="search"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setNewItemName(e.target.value)}
+            value={newItemName}
+          />
+        </DialogContent>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="Notes"
+            label="Notes"
+            type="search"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setNotes(e.target.value)}
+            value={notes}
+          />
+        </DialogContent>
+        <DialogContent
           sx={{
-            maxWidth: 150,
-            mt: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexFlow: "column",
           }}
         >
-          {image.preview ? (
-            <CardMedia
-              component="img"
-              height="150"
-              image={image.preview}
-              alt={`Image of `}
-            />
-          ) : (
-            <CardMedia
-              component="img"
-              height="150"
-              image={
-                "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
-              }
-              alt={`Image of `}
-            />
-          )}
-        </Card>
+          <TextField
+            fullWidth
+            type="tel"
+            id="outlined-basic"
+            label="Quantity"
+            variant="outlined"
+            onChange={(e) => setQuantity(e.target.value)}
+            value={quantity}
+          />
+          <Card
+            sx={{
+              mt: 4,
+              width:"100%"
+            }}
+          >
+            {image.preview ? (
+              <CardMedia
+                component="img"
+                height="200"
 
-        <Button
-          variant="contained"
-          component="label"
-          startIcon={<AddPhotoAlternateIcon />}
-        >
-          Upload File
-          <input type="file" onChange={handleSetImage} hidden />
-        </Button>
-      </DialogContent>
-      <DialogActions>
+                image={image.preview}
+                alt={`Image of `}
+              />
+            ) : (
+              <CardMedia
+                component="img"
+                height="200"
+                image={
+                  "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+                }
+                alt={`Image of `}
+              />
+            )}
+          </Card>
+
+          <Button
+            variant="outlined"
+            component="label"
+            startIcon={<AddPhotoAlternateIcon />}
+            sx={{
+              color: "primary.dark",
+              mt:4
+            }}
+          >
+            Add Item Image?
+            <input type="file" onChange={handleSetImage} hidden />
+          </Button>
+        </DialogContent>
+      </Box>
+      <DialogActions
+        sx={{
+          mt: 4,
+        }}
+      >
         <Button onClick={handleAddNewItemDialogClose}>Cancel</Button>
-        <Button onClick={handleAddNewItem}>Submit</Button>
-      </DialogActions>
+        <Button variant="contained" onClick={handleAddNewItem}>Submit</Button>
+      </DialogActions>{" "}
     </Dialog>
   );
 }
