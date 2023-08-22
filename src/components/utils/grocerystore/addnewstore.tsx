@@ -11,14 +11,15 @@ import {
   CardMedia,
   useMediaQuery,
   useTheme,
+  Box,
+  Typography,
+  IconButton,
 } from "@mui/material";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useSupabase } from "../../supabase/supabase-provider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import { GroceryStoreWithItemsType } from "@/types";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
   generateGroceryStoreImagePath,
   handleGroceryStoreImageUpload,
@@ -29,19 +30,23 @@ import {
 } from "@/helpers/groceryStore";
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
+  // hooks
   const { supabase, session } = useSupabase();
   const theme = useTheme();
+
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  //State
   const [open, setOpen] = useState<boolean>(false);
   const [isInvalid, setIsInvalid] = useState<boolean | null>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
   const [image, setImage] = useState({ preview: "", raw: "" });
-  const [newGroceryStoreName, setNewGroceryStoreName] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [imagePath, setImagePath] = useState<string | null>(null);
+  const [showImageError, setShowImageError] = useState<boolean | null>(null);
 
   async function validation() {
-    if (newGroceryStoreName.trim() === "") {
+    if (name.trim() === "") {
       setIsInvalid(true);
       setErrorText("Please enter a name");
       return false;
@@ -49,7 +54,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
     // Check if the text is valid alphanumeric
     const regExp = /^[a-zA-Z0-9 _\-!\$]+$/i;
-    if (!regExp.test(newGroceryStoreName)) {
+    if (!regExp.test(name)) {
       setErrorText("Please only use letters and number");
       setIsInvalid(true);
       console.log("%cValidation failed for Store Name", "color:red");
@@ -61,48 +66,62 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     }
   }
 
-  async function handleClickOpen() {
-    setOpen(true);
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
   }
 
-  async function handleChange(
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    setNewGroceryStoreName(event.target.value);
-    setErrorText(null);
-    setIsInvalid(null);
+  async function dismissError() {
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
+    setShowImageError(null);
+  }
+
+  async function handleOpen() {
+    setOpen(true);
   }
 
   async function handleClose(event: {}) {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
     setOpen(false);
-    setNewGroceryStoreName("");
+    setName("");
+    setErrorText(null);
+    setIsInvalid(null);
+    setShowImageError(null);
+  }
+
+  async function handleChange(
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setName(event.target.value);
     setErrorText(null);
     setIsInvalid(null);
   }
 
   async function handleSetImage(event: any) {
     const generatedImagePath = await generateGroceryStoreImagePath(select_id);
+    setShowImageError(false);
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
 
+    console.log(event, "this is the event hwne uploaing!!");
     if (event.target.files.length) {
-      setImagePath(generatedImagePath);
-      setImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        raw: event.target.files[0],
-      });
+      const sizeInMB = event.target.files[0].size / 1048576;
+      console.log("hey this is the isze", sizeInMB);
+
+      if (sizeInMB > 10) {
+        setShowImageError(true);
+        setImage({ preview: "", raw: "" });
+        setImagePath(null);
+      } else {
+        setImagePath(generatedImagePath);
+        setImage({
+          preview: URL.createObjectURL(event.target.files[0]),
+          raw: event.target.files[0],
+        });
+      }
     }
   }
-
-  async function fetchData() {
-    await getAllGroceryStoresData(supabase);
-  }
-
-  const addNewGroceryStoreToState = GroceryDataStore(
-    (state) => state.addNewGroceryStore
-  );
-
-  const GroceryStoreData = GroceryDataStore((state) => state.data);
 
   async function handleSubmit() {
     const isValidResult = await validation();
@@ -116,7 +135,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
       const newStore = await addNewGroceryStore(
         supabase,
-        newGroceryStoreName,
+        name,
         select_id,
         imagePath
       );
@@ -126,16 +145,17 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
       }
 
       setOpen(false);
-      setNewGroceryStoreName("");
+      setName("");
       setImage({ preview: "", raw: "" });
       setImagePath(null);
+      setShowImageError(null);
     }
   }
 
   return (
     <>
       <Button
-        onClick={handleClickOpen}
+        onClick={handleOpen}
         endIcon={<AddCircleIcon />}
         size="large"
         sx={{
@@ -143,64 +163,104 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         }}
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
-        <DialogTitle align="center">Add new Store</DialogTitle>
-        <DialogContent>
-          <TextField
-            error={isInvalid || undefined}
-            helperText={isInvalid && errorText}
-            autoFocus
-            margin="dense"
-            id="Name"
-            label="Name"
-            type="search"
-            fullWidth
-            variant="standard"
-            onChange={handleChange}
-            value={newGroceryStoreName}
-          />
-        </DialogContent>
-        <DialogContent
+        <DialogTitle align="center">Add New Store</DialogTitle>
+        <Box
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexFlow: "column",
+            height: "50%",
           }}
         >
-          <>
-            <Card sx={{ mb: 2.5 }}>
-              {image.preview ? (
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={image.preview}
-                  alt={`Image of `}
-                />
-              ) : (
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={
-                    "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
-                  }
-                  alt={`Image of `}
-                />
-              )}
-            </Card>
+          <DialogContent>
+            <TextField
+              error={isInvalid || undefined}
+              helperText={isInvalid && errorText}
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              type="search"
+              fullWidth
+              variant="standard"
+              onChange={handleChange}
+              value={name}
+            />
+          </DialogContent>
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
+            }}
+          >
+            <>
+              <Card sx={{ mb: 2.5 }}>
+                {image.preview ? (
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={image.preview}
+                    alt={`Image of `}
+                  />
+                ) : (
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={
+                      "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+                    }
+                    alt={`Image of `}
+                  />
+                )}
+              </Card>
 
-            <Button
-              variant="contained"
-              component="label"
-              startIcon={<AddPhotoAlternateIcon />}
-            >
-              Upload File
-              <input type="file" onChange={handleSetImage} hidden />
-            </Button>
-          </>
-        </DialogContent>
-        <DialogActions>
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<AddPhotoAlternateIcon />}
+                sx={{
+                  color: "primary.dark",
+                }}
+              >
+                Add Store Image?
+                <input type="file" onChange={handleSetImage} hidden />
+              </Button>
+              {showImageError && (
+                <Box
+                  sx={{
+                    border: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mt: 2,
+                    p: 0.5,
+                    backgroundColor: "red",
+                    borderRadius: 5,
+                  }}
+                >
+                  <IconButton
+                    onClick={async () => await dismissError()}
+                    aria-label="delete"
+                    sx={{
+                      color: "white",
+                    }}
+                  >
+                    <HighlightOffIcon />
+                  </IconButton>
+                  <Typography sx={{pr:1}} color={"white"}>Image too large</Typography>
+                </Box>
+              )}
+            </>
+          </DialogContent>
+        </Box>
+        <DialogActions
+          sx={{
+            mt: 8,
+          }}
+        >
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </>
