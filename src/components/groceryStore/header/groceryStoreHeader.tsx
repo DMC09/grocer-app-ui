@@ -42,7 +42,7 @@ export default function GroceryStoreHeader() {
             >
               <ArrowBackIosNewIcon sx={{ fontSize: 30 }} />
             </IconButton>
-            <Typography color="primary.main" variant="h3">
+            <Typography color="primary.main" variant="h5">
               {groceryStoreData?.name}
             </Typography>
             <Box sx={{ display: "flex", marginLeft: "auto" }}>
