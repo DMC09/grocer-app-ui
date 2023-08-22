@@ -72,7 +72,6 @@ export default function CommonItemsDialog({
   }));
 
   async function fetchData() {
-
     await getAllGroceryStoresData(supabase);
   }
 
@@ -85,7 +84,6 @@ export default function CommonItemsDialog({
     if (error) {
       throw new Error(error.message);
     } else {
-
       fetchData();
       clearItemsToSubmit();
       handleCommonItemsDialogClose();
@@ -112,28 +110,31 @@ export default function CommonItemsDialog({
         id="grocery-store-settings-dialog"
         open={!!openCommonItemsDialog}
         fullWidth
-        sx={{}}
+        sx={{
+          width: "100%",
+        }}
       >
         <DialogTitle align="center">Add Common Items</DialogTitle>
 
         <DialogContent
           sx={{
-            borderRadius: 6,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            p: 0,
+            
           }}
         >
-          <Box
+          <Box sx={{  height: "90%",overflowY:"scroll",border:1 }}>
+            {commonItemsToRender}
+            {/* <Box
             sx={{
               border: 1,
               borderRadius: 5,
-              width: "100%",
+              width: "90%",
               height: "75%",
               overflowY: "scroll",
             }}
           >
-            {commonItemsToRender}
+         
+          </Box> */}
           </Box>
         </DialogContent>
         <DialogActions>
