@@ -13,10 +13,14 @@ import {
   Button,
   DialogActions,
   useMediaQuery,
+  Box,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
   getAllGroceryStoresData,
   updateGroceryStore,
@@ -39,15 +43,18 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
 
   const GroceryStoreData = GroceryDataStore((state) => state.data);
 
-  const updateGroceryStoreState = GroceryDataStore(
-    (state) => state.updateGroceryStore
-  );
-
   //hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [showImageError, setShowImageError] = useState<boolean | null>(null);
   const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
     useDialog();
+
+  async function dismissError() {
+    setUpdatedImage({ preview: "", raw: "" });
+    setImagePath(null);
+    setShowImageError(null);
+  }
 
   //handlers
   async function handleImageUpdate(event: any) {
@@ -98,61 +105,93 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
         open={openStoreSettingsDialog}
         onClose={handleStoreSettingsDialogClose}
       >
-        <DialogTitle align="center">Grocery Store Settings</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Name"
-            label="Name"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setUpdatedGroceryStoreName(e.target.value)}
-            value={updatedGroceryStoreName}
-          />
-        </DialogContent>
-        <DialogContent
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexFlow: "column",
-          }}
-        >
-          <Card
+        <DialogTitle align="center">{`${groceryStore.name} Settings`}</DialogTitle>
+        <Box sx={{}}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setUpdatedGroceryStoreName(e.target.value)}
+              value={updatedGroceryStoreName}
+            />
+          </DialogContent>
+          <DialogContent
             sx={{
-              maxWidth: 150,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
             }}
           >
-            {updatedImage.raw ? (
-              <CardMedia
-                component="img"
-                height="150"
-                image={updatedImage.preview || ""}
-                alt={`Image of `}
-              />
-            ) : (
-              <CardMedia
-                component="img"
-                height="150"
-                image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`} //maybe this should be normal image??
-                alt={`Image of `}
-              />
-            )}{" "}
-          </Card>
+            <Card
+              sx={{
+                width: "100%",
+              }}
+            >
+              {updatedImage.raw ? (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={updatedImage.preview || ""}
+                  alt={`Image of `}
+                />
+              ) : (
+                <CardMedia
+                  component="img"
+                  height="150"
+                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`} //maybe this should be normal image??
+                  alt={`Image of `}
+                />
+              )}{" "}
+            </Card>
 
-          <Button
-            variant="contained"
-            component="label"
-            startIcon={<AddPhotoAlternateIcon />}
-          >
-            Upload File
-            <input type="file" onChange={handleImageUpdate} hidden />
-          </Button>
-        </DialogContent>
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<AddPhotoAlternateIcon />}
+              sx={{
+                mt: 4,
+              }}
+            >
+              Change Image?
+              <input type="file" onChange={handleImageUpdate} hidden />
+            </Button>
+            {showImageError && (
+              <Box
+                sx={{
+                  border: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mt: 1,
+                  p: 0.5,
+                  backgroundColor: "red",
+                  borderRadius: 5,
+                }}
+              >
+                <IconButton
+                  onClick={async () => await dismissError()}
+                  aria-label="delete"
+                  sx={{
+                    color: "white",
+                  }}
+                >
+                  <HighlightOffIcon />
+                </IconButton>
+                <Typography color={"white"}>Image too large</Typography>
+              </Box>
+            )}
+          </DialogContent>
+        </Box>
         <DialogActions>
           <Button onClick={handleStoreSettingsDialogClose}>Cancel</Button>
-          <Button onClick={handleUpdate}>Save</Button>
+          <Button variant="contained" onClick={handleUpdate}>
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </>
