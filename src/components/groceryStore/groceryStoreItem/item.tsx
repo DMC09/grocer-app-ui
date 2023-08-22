@@ -79,11 +79,11 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
     };
   }, []);
 
-  function handleClickOpen() {
+  async function handleClickOpen() {
     setOpen(true);
   }
 
-  function handleClose() {
+  async function handleClose() {
     setOpen(false);
   }
 
@@ -211,27 +211,18 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
         onClose={handleClose}
       >
         <Box sx={{ display: "flex", flexFlow: "column" }}>
-          <CardMedia
-            component="img"
-            image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
-            alt={`Image of${groceryStoreItem.name} `}
-            sx={{
-              objectFit: "fill",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-            }}
-          />
           <Box
             sx={{
-              borderBottom: 1,
               display: "flex",
               justifyContent: "space-between",
-              backgroundColor: "background.paper",
+              backgroundColor: "black",
+              opacity: 0.4,
             }}
           >
             <Box
               sx={{
                 p: 1,
+
                 flexGrow: 2,
                 display: "flex",
                 justifyContent: "center",
@@ -239,7 +230,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 flexFlow: "column",
               }}
             >
-              <Typography color="#071236" variant="h6">
+              <Typography color="background.default" variant="h6">
                 {groceryStoreItem.quantity}
               </Typography>
             </Box>
@@ -254,10 +245,14 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 flexGrow: 3,
               }}
             >
-              <Typography variant="h5" align="center">
+              <Typography
+                color="background.default"
+                variant="h5"
+                align="center"
+              >
                 {groceryStoreItem?.name}
               </Typography>
-              <Typography color="#071236" variant="subtitle1">
+              <Typography color="background.default" variant="subtitle1">
                 {groceryStoreItem.notes}
               </Typography>
             </Box>
@@ -268,8 +263,31 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 justifyContent: "center",
               }}
             >
-              {!groceryStoreItem.cid && (
-                <>
+              <EditItem {...groceryStoreItem} />
+            </Box>
+          </Box>
+          <CardMedia
+            component="img"
+            image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
+            alt={`Image of${groceryStoreItem.name} `}
+            sx={{
+              objectFit: "fill",
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+            }}
+          />
+        </Box>
+        <DialogActions>
+          <Box
+            sx={{
+
+              width:"100%",
+              display:"flex"
+            }}
+          >
+            {!groceryStoreItem.cid && (
+              <>
+                <Box textAlign="center" sx={{ }}>
                   <Typography variant="body2">Add To Common Items</Typography>
                   <Switch
                     checked={!!checked}
@@ -278,21 +296,20 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                       title: "controlled",
                     }}
                   />
-                </>
-              )}
-              <EditItem {...groceryStoreItem} />
-            </Box>
+                </Box>
+              </>
+            )}
+            
+            <IconButton
+              sx={{
+                color: "primary.dark",
+                ml:"auto"
+              }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
           </Box>
-        </Box>
-        <DialogActions>
-          <IconButton
-            sx={{
-              color: "primary.dark",
-            }}
-            onClick={handleClose}
-          >
-            <CloseIcon />
-          </IconButton>
         </DialogActions>
       </Dialog>
     </>
