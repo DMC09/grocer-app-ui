@@ -52,8 +52,8 @@ export default function GroceryStore({
               }}
             >
               <CardHeader
-                titleTypographyProps={{ variant: "h3" }}
-                style={{ textAlign: "center" }}
+                titleTypographyProps={{ variant: "h5" }}
+                style={{ textAlign: "left" }}
                 title={groceryStore.name}
               />
             </CardActionArea>
