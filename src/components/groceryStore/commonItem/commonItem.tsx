@@ -123,7 +123,7 @@ export default function CommonItem(item: CommonItemType) {
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 3,
-    height: 50,
+
     m: 1,
   };
 
@@ -135,6 +135,7 @@ export default function CommonItem(item: CommonItemType) {
     alignItems: "center",
     borderRadius: 3,
     m: 1,
+
   };
 
   return (
@@ -149,68 +150,83 @@ export default function CommonItem(item: CommonItemType) {
             sx={{
               display: "flex",
               alignItems: "center",
+              p: 0,
             }}
           >
             <Checkbox
               size="small"
               onChange={handleChecked}
               checked={!!selected}
-              sx={{}}
             />
-            <Typography variant="h5">{item.item_name}</Typography>
-            <Typography variant="body2" color="text.secondary"></Typography>
+            <Box sx={{}}>
+              <Typography sx={{ width: "100%" }} variant="h6">
+                {item.item_name}
+              </Typography>
+              <Typography sx={{ width: "100%" }} variant="body2">
+                {item.item_notes}
+              </Typography>
+            </Box>
           </CardContent>
         </CardActionArea>
+
         <CardActions sx={{}}>
-          <IconButton
-            onClick={decrement}
-            aria-label="delete"
-            disabled={(selected ? false : true) || quantity < 2}
-            color="primary"
-          >
-            <RemoveCircleIcon />
-          </IconButton>
-
-          <TextField
-            size={"small"}
-            InputProps={{
-              inputMode: "numeric",
-              sx: {
-                "& input": {
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                  width: 30,
-                  p: 0,
-                  m: 0,
-                },
-              },
-            }}
-            sx={{}}
-            onChange={(e) => {
-              handleQuantityChange(e);
-            }}
-            disabled={selected ? false : true}
-            value={quantity}
-            type="tel"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{}}
-          />
-
-          <IconButton
+          <Box
             sx={{
-              ml: 0,
+              display: "flex",
+              flexFlow: "column",
+              alignItems: "center",
             }}
-            onClick={increment}
-            aria-label="delete"
-            disabled={selected ? false : true}
-            color="primary"
           >
-            <AddCircleIcon />
-          </IconButton>
+            <IconButton
+              onClick={decrement}
+              aria-label="delete"
+              disabled={(selected ? false : true) || quantity < 2}
+              color="primary"
+            >
+              <RemoveCircleIcon />
+            </IconButton>
+
+            <TextField
+              size={"small"}
+              InputProps={{
+                inputMode: "numeric",
+                sx: {
+                  "& input": {
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center",
+                    width: 30,
+                    p: 0,
+                    m: 0,
+                  },
+                },
+              }}
+              sx={{}}
+              onChange={(e) => {
+                handleQuantityChange(e);
+              }}
+              disabled={selected ? false : true}
+              value={quantity}
+              type="tel"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              inputProps={{}}
+            />
+
+            <IconButton
+              sx={{
+                ml: 0,
+              }}
+              onClick={increment}
+              aria-label="delete"
+              disabled={selected ? false : true}
+              color="primary"
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Box>
         </CardActions>
       </Card>
     </>
