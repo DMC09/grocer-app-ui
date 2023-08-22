@@ -30,31 +30,25 @@ export default function CommonItemsSettings() {
 
   return (
     <>
-      <Container sx={{}}>
-        <ReactPullToRefresh
-          onRefresh={handleRefresh}
-          style={{ textAlign: "center" }}
-        >
-          <Box
-            id="edit-button-container"
-            sx={{
-              display: "flex",
-              flexFlow: "column",
-              borderColor: "primary.main",
-              backgroundColor: "background.paper",
-              borderRadius: 8,
-              border: 2,
-              p: 2,
-              mt: 2,
-              boxShadow: 5,
-            }}
-          >
-            <>
-              <AddCommonItem />
-            </>
-            {commonItemsToRender}
-          </Box>
-        </ReactPullToRefresh>
+      <Container
+        sx={{
+          display: "flex",
+          flexFlow: "column",
+          borderColor: "primary.main",
+          backgroundColor: "background.default",
+          px: 4,
+          mt: 1,
+          boxShadow: 2,
+          height: "80%",
+          overflowY: "scroll",
+          gap: 2,
+        }}
+      >
+        <>
+          <AddCommonItem />
+        </>
+
+        {commonItemsToRender}
       </Container>
     </>
   );
