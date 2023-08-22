@@ -37,7 +37,6 @@ export default function ManagedCommonItem(item: CommonItemType) {
   }
 
   async function fetchData() {
-
     await getAllCommonItems(supabase);
   }
 
@@ -47,31 +46,48 @@ export default function ManagedCommonItem(item: CommonItemType) {
     if (deletedCommonItemId) {
       await fetchData();
     }
-    setOpen(false)
+    setOpen(false);
   }
 
   return (
     <>
-      <Card raised sx={{}}>
+      <Card raised sx={{ borderRadius:3,border: 1,height:100,overflow:"visible" }}>
         {/* open dialog */}
         <CardActionArea
           onClick={() => {
             handleClickOpen();
+          }}
+          sx={{
+            p: 0,
+            m: 0,
           }}
         >
           <CardContent
             sx={{
               display: "flex",
               alignItems: "center",
+              p: 0,
             }}
           >
-            <Typography variant="h5">{item.item_name}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {item.item_notes}
-            </Typography>
+            <CardMedia
+              component="img"
+              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
+              alt={`Image of${item.item_name} `}
+              sx={{
+                height: 100,
+                width: 100,
+              }}
+            />
+            <Box sx={{ pl: 2 }}>
+              <Typography align="left" variant="h5">
+                {item.item_name}
+              </Typography>
+              <Typography align="left" variant="body2" color="text.secondary">
+                {item.item_notes}
+              </Typography>
+            </Box>
           </CardContent>
         </CardActionArea>
-        <CardActions sx={{}}></CardActions>
       </Card>
       <Dialog
         PaperProps={{
@@ -85,49 +101,41 @@ export default function ManagedCommonItem(item: CommonItemType) {
         onClose={handleClose}
       >
         <Box sx={{ display: "flex", flexFlow: "column" }}>
-          <CardMedia
-            component="img"
-            image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
-            alt={`Image of${item.item_name} `}
-            sx={{
-              objectFit: "fill",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-            }}
-          />
+       
           <Box
             sx={{
-              borderBottom: 1,
+              border: 1,
+              p:1,
               display: "flex",
               justifyContent: "space-between",
-              backgroundColor: "background.paper",
+              backgroundColor: "gray",
             }}
           >
-            <Box
-              sx={{
-                p: 1,
-                flexGrow: 2,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexFlow: "column",
-              }}
-            ></Box>
+          <IconButton
+                sx={{
+                  color: "red",
+                  flexGrow: 2,
+                }}
+                onClick={handleDelete}
+              >
+                <DeleteForeverIcon />
+              </IconButton>
 
             <Box
               sx={{
                 height: "100%",
                 display: "flex",
                 flexFlow: "column",
+
                 justifyContent: "space-around",
                 alignItems: "center",
                 flexGrow: 3,
               }}
             >
-              <Typography variant="h5" align="center">
+              <Typography color="background.default" variant="h5" align="center">
                 {item?.item_name}
               </Typography>
-              <Typography color="#071236" variant="subtitle1">
+              <Typography color="background.default"  variant="subtitle1">
                 {item.item_notes}
               </Typography>
             </Box>
@@ -139,16 +147,19 @@ export default function ManagedCommonItem(item: CommonItemType) {
               }}
             >
               <EditCommonItem {...item} />
-              <IconButton
-                sx={{
-                  color: "red",
-                }}
-                onClick={handleDelete}
-              >
-                <DeleteForeverIcon />
-              </IconButton>
+          
             </Box>
           </Box>
+          <CardMedia
+            component="img"
+            image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
+            alt={`Image of${item.item_name} `}
+            sx={{
+              objectFit: "fill",
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+            }}
+          />
         </Box>
         <DialogActions>
           <IconButton
