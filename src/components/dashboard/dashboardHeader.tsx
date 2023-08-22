@@ -31,7 +31,7 @@ export default function DashboardHeader() {
             <Typography
               sx={{ marginLeft: 3 }}
               color="primary.main"
-              variant="h2"
+              variant="h3"
             >
               Dashboard
             </Typography>
