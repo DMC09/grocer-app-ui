@@ -11,6 +11,7 @@ import {
   CardMedia,
   DialogActions,
   useMediaQuery,
+  Box,
 } from "@mui/material";
 import image from "next/image";
 import { useState } from "react";
@@ -109,6 +110,13 @@ export default function AddCommonItem() {
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
         <DialogTitle align="center">Add Common Item</DialogTitle>
+        <Box
+        sx={{
+
+        }}
+        >
+
+        
         <DialogContent>
           <TextField
             autoFocus
@@ -165,7 +173,7 @@ export default function AddCommonItem() {
             </Card>
 
             <Button
-              variant="contained"
+              variant="outlined"
               component="label"
               startIcon={<AddPhotoAlternateIcon />}
             >
@@ -174,9 +182,12 @@ export default function AddCommonItem() {
             </Button>
           </>
         </DialogContent>
-        <DialogActions>
+        </Box>
+        <DialogActions
+        sx={{mt:2}}
+        >
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button variant="contained" onClick={handleSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </>
