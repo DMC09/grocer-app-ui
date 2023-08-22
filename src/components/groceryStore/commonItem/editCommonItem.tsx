@@ -10,6 +10,8 @@ import {
   CardMedia,
   Button,
   DialogActions,
+  useMediaQuery,
+  Box,
 } from "@mui/material";
 import image from "next/image";
 import { useState } from "react";
@@ -18,6 +20,7 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
 import { handleGroceryStoreItemImageUpload } from "@/helpers/image";
+import { theme } from "@/helpers/theme";
 
 export default function EditCommonItem(item: CommonItemType) {
   const [open, setOpen] = useState(false);
@@ -26,6 +29,7 @@ export default function EditCommonItem(item: CommonItemType) {
   const [notes, setNotes] = useState<string | null>(item.item_notes);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const selectId = ProfileDataStore((state) => state.data.select_id);
   const [image, setImage] = useState({
     preview: item?.image,
@@ -36,7 +40,7 @@ export default function EditCommonItem(item: CommonItemType) {
     setOpen(true);
   };
 
-   function handleClose() {
+  function handleClose() {
     setOpen(false);
     resetData();
   }
@@ -75,9 +79,8 @@ export default function EditCommonItem(item: CommonItemType) {
 
   async function handleEdit() {
     if (image.raw && imagePath) {
-
       await handleGroceryStoreItemImageUpload(supabase, imagePath, image?.raw);
-// TODO: Add better error handling and logging
+      // TODO: Add better error handling and logging
     }
 
     const updatedCommonItem = await updateCommonItem(
@@ -101,88 +104,99 @@ export default function EditCommonItem(item: CommonItemType) {
   return (
     <>
       <IconButton
-        sx={{ color: "primary.main" }}
+        sx={{ color: "background.default" }}
         aria-label="Edit Item"
         onClick={handleClickOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Item</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Name"
-            label="Name"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-          />
-        </DialogContent>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Notes"
-            label="Notes"
-            type="email"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setNotes(e.target.value)}
-            value={notes}
-          />
-        </DialogContent>
+      <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
+        <DialogTitle>{`Edit ${item.item_name}`}</DialogTitle>
+        <Box>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+            />
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Notes"
+              label="Notes"
+              type="email"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNotes(e.target.value)}
+              value={notes}
+            />
+          </DialogContent>
 
-        <DialogContent
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
+            }}
+          >
+            {image.raw ? (
+              <Card
+                sx={{
+                  width: "100%",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={image.preview || ""}
+                  alt={`Image of `}
+                />
+              </Card>
+            ) : (
+              <Card
+                sx={{
+                  width: "100%",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
+                  alt={`Image of `}
+                />
+              </Card>
+            )}
+            <Button
+              sx={{
+                mt: 2,
+              }}
+              variant="outlined"
+              component="label"
+              startIcon={<AddPhotoAlternateIcon />}
+            >
+              Upload File
+              <input type="file" onChange={handleImageSet} hidden />
+            </Button>
+          </DialogContent>
+        </Box>
+        <DialogActions
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexFlow: "column",
+            mt: 2,
           }}
         >
-          {image.raw ? (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={image.preview || ""}
-                alt={`Image of `}
-              />
-            </Card>
-          ) : (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
-                alt={`Image of `}
-              />
-            </Card>
-          )}
-          <Button
-            variant="contained"
-            component="label"
-            startIcon={<AddPhotoAlternateIcon />}
-          >
-            Upload File
-            <input type="file" onChange={handleImageSet} hidden />
-          </Button>
-        </DialogContent>
-        <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleEdit}>Submit</Button>
+          <Button variant="contained" onClick={handleEdit}>
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </>
