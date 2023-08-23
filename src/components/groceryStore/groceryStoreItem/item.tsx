@@ -214,9 +214,9 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           <Box
             sx={{
               display: "flex",
+              p:1,
               justifyContent: "space-between",
-              backgroundColor: "black",
-              opacity: 0.4,
+              backgroundColor: "#454545",
             }}
           >
             <Box
@@ -268,6 +268,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           </Box>
           <CardMedia
             component="img"
+            height={250}
             image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
             alt={`Image of${groceryStoreItem.name} `}
             sx={{
