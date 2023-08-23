@@ -21,8 +21,8 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
-  generateGroceryStoreImagePath,
-  handleGroceryStoreImageUpload,
+  generateStoreImagePath,
+  handleStoreImageUpload,
 } from "@/helpers/image";
 import {
   addNewGroceryStore,
@@ -30,13 +30,7 @@ import {
 } from "@/helpers/groceryStore";
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
-  // hooks
-  const { supabase, session } = useSupabase();
-  const theme = useTheme();
-
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
-  //State
+  //Component State
   const [open, setOpen] = useState<boolean>(false);
   const [isInvalid, setIsInvalid] = useState<boolean | null>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -45,6 +39,21 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showImageError, setShowImageError] = useState<boolean | null>(null);
 
+  // Hooks
+  const { supabase, session } = useSupabase();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // Event Handlers
+  async function handleOpen() {
+    setOpen(true);
+  }
+
+  async function handleClose() {
+    resetComponentState();
+  }
+
+  // Validation
   async function validation() {
     if (name.trim() === "") {
       setIsInvalid(true);
@@ -66,27 +75,25 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     }
   }
 
+  // Data
   async function fetchData() {
     await getAllGroceryStoresData(supabase);
   }
 
-  async function dismissError() {
-    setImage({ preview: "", raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
-  }
-
-  async function handleOpen() {
-    setOpen(true);
-  }
-
-  async function handleClose(event: {}) {
+  // helpers
+  async function resetComponentState() {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
     setOpen(false);
     setName("");
     setErrorText(null);
     setIsInvalid(null);
+    setShowImageError(null);
+  }
+
+  async function dismissError() {
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
     setShowImageError(null);
   }
 
@@ -99,17 +106,17 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   }
 
   async function handleSetImage(event: any) {
-    const generatedImagePath = await generateGroceryStoreImagePath(select_id);
     setShowImageError(false);
     setImage({ preview: "", raw: "" });
     setImagePath(null);
 
-    console.log(event, "this is the event hwne uploaing!!");
+    const generatedImagePath = await generateStoreImagePath(select_id);
+
     if (event.target.files.length) {
       const sizeInMB = event.target.files[0].size / 1048576;
-      console.log("hey this is the isze", sizeInMB);
+      console.log("Size of image", sizeInMB);
 
-      if (sizeInMB > 10) {
+      if (sizeInMB > 50) {
         setShowImageError(true);
         setImage({ preview: "", raw: "" });
         setImagePath(null);
@@ -128,9 +135,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
     if (isValidResult) {
       if (image.raw && imagePath) {
-        // TODO: error handling
-        console.log(image.raw, "image properties");
-        await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
+        await handleStoreImageUpload(supabase, imagePath, image?.raw);
       }
 
       const newStore = await addNewGroceryStore(
@@ -144,11 +149,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         fetchData();
       }
 
-      setOpen(false);
-      setName("");
-      setImage({ preview: "", raw: "" });
-      setImagePath(null);
-      setShowImageError(null);
+      resetComponentState();
     }
   }
 
@@ -246,7 +247,9 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                   >
                     <HighlightOffIcon />
                   </IconButton>
-                  <Typography sx={{pr:1}} color={"white"}>Image too large</Typography>
+                  <Typography sx={{ pr: 1 }} color={"white"}>
+                    Image too large
+                  </Typography>
                 </Box>
               )}
             </>
