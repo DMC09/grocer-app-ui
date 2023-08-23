@@ -12,14 +12,17 @@ import {
   DialogActions,
   useMediaQuery,
   Box,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import image from "next/image";
 import { useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
-  generateGroceryStoreItemImagePath,
-  handleGroceryStoreItemImageUpload,
+  generateStoreItemImagePath,
+  handleStoreItemImageUpload,
 } from "@/helpers/image";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { supabase } from "@supabase/auth-ui-shared";
@@ -28,26 +31,31 @@ import { Category } from "@mui/icons-material";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 
 export default function AddCommonItem() {
-  const { supabase, session } = useSupabase();
+  // Component State
+
   const [newItemName, setNewItemName] = useState<string>("");
   const [notes, setNotes] = useState("");
   const [open, setOpen] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
-  const selectId = ProfileDataStore((state) => state?.data?.select_id);
+  const [showImageError, setShowImageError] = useState<boolean | null>(null);
+
   const [image, setImage] = useState({
     preview: "",
     raw: "",
   });
 
+  // Hooks
+  const { supabase, session } = useSupabase();
+  const selectId = ProfileDataStore((state) => state?.data?.select_id);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   function handleClickOpen(): void {
     setOpen(true);
   }
 
-  async function handleClose() {
-    setOpen(false);
+  async function resetComponentState() {
     setNewItemName("");
+    setShowImageError(null);
     setNotes("");
     setImagePath("");
     setImage({
@@ -55,19 +63,38 @@ export default function AddCommonItem() {
       raw: "",
     });
   }
+  async function handleClose() {
+    setOpen(false);
+    resetComponentState();
+  }
 
   async function handleSetImage(event: any) {
     if (event.target.files.length && selectId) {
-      const generatedImagePath = await generateGroceryStoreItemImagePath(
+      const generatedImagePath = await generateStoreItemImagePath(
         selectId
       );
-      setImagePath(generatedImagePath);
-      setImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        raw: event.target.files[0],
-      });
+      const sizeInMB = event.target.files[0].size / 1048576;
+      console.log("Size of image", sizeInMB);
+
+      if (sizeInMB > 10) {
+        setShowImageError(true);
+        setImage({ preview: "", raw: "" });
+        setImagePath(null);
+      } else {
+        setImagePath(generatedImagePath);
+        setImage({
+          preview: URL.createObjectURL(event.target.files[0]),
+          raw: event.target.files[0],
+        });
+      }
     }
   }
+  async function dismissError() {
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
+    setShowImageError(null);
+  }
+
 
   async function getData() {
     await getAllCommonItems(supabase);
@@ -75,7 +102,7 @@ export default function AddCommonItem() {
   async function handleSubmit() {
     if (selectId) {
       if (image.raw && imagePath) {
-        await handleGroceryStoreItemImageUpload(
+        await handleStoreItemImageUpload(
           supabase,
           imagePath,
           image?.raw
@@ -110,84 +137,105 @@ export default function AddCommonItem() {
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
         <DialogTitle align="center">Add Common Item</DialogTitle>
-        <Box
-        sx={{
+        <Box sx={{}}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Name"
+              label="Name"
+              type="search"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNewItemName(e.target.value)}
+              value={newItemName}
+            />
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Notes"
+              label="Notes"
+              type="search"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNotes(e.target.value)}
+              value={notes}
+            />
+          </DialogContent>
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
+            }}
+          >
+            <>
+              <Card sx={{ mb: 2.5, width: "100%" }}>
+                {image.preview ? (
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={image.preview}
+                    alt={`Image of `}
+                  />
+                ) : (
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={
+                      "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+                    }
+                    alt={`Image of `}
+                  />
+                )}
+              </Card>
 
-        }}
-        >
-
-        
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Name"
-            label="Name"
-            type="search"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setNewItemName(e.target.value)}
-            value={newItemName}
-          />
-        </DialogContent>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Notes"
-            label="Notes"
-            type="search"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setNotes(e.target.value)}
-            value={notes}
-          />
-        </DialogContent>
-        <DialogContent
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexFlow: "column",
-          }}
-        >
-          <>
-            <Card sx={{ mb: 2.5 }}>
-              {image.preview ? (
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={image.preview}
-                  alt={`Image of `}
-                />
-              ) : (
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={
-                    "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
-                  }
-                  alt={`Image of `}
-                />
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<AddPhotoAlternateIcon />}
+              >
+                Upload File
+                <input type="file" onChange={handleSetImage} hidden />
+              </Button>
+              {showImageError && (
+                <Box
+                  sx={{
+                    border: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mt: 2,
+                    p: 0.5,
+                    backgroundColor: "red",
+                    borderRadius: 5,
+                  }}
+                >
+                  <IconButton
+                    onClick={async () => await dismissError()}
+                    aria-label="delete"
+                    sx={{
+                      color: "white",
+                    }}
+                  >
+                    <HighlightOffIcon />
+                  </IconButton>
+                  <Typography sx={{ pr: 1 }} color={"white"}>
+                    Image too large
+                  </Typography>
+                </Box>
               )}
-            </Card>
-
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<AddPhotoAlternateIcon />}
-            >
-              Upload File
-              <input type="file" onChange={handleSetImage} hidden />
-            </Button>
-          </>
-        </DialogContent>
+            </>
+          </DialogContent>
         </Box>
-        <DialogActions
-        sx={{mt:2}}
-        >
+        <DialogActions sx={{ mt: 2 }}>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>Submit</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </>
