@@ -9,13 +9,14 @@ import {
   DialogActions,
   useMediaQuery,
   Box,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { theme } from "@/helpers/theme";
 import { useState } from "react";
-
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialog } from "@/context/DialogContext";
-
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { GroceryStoreItemType, GroceryStoreType } from "@/types";
 import {
@@ -23,16 +24,15 @@ import {
   findGroceryStoreIndex,
 } from "@/stores/GroceryDataStore";
 import {
-  generateGroceryStoreItemImagePath,
-  handleGroceryStoreImageUpload,
+  generateStoreItemImagePath,
+  handleStoreImageUpload,
 } from "@/helpers/image";
 import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
 export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   //Component State
-  const [newItemName, setNewItemName] = useState<string>();
+  const [itemName, setItemName] = useState<string>();
   const [notes, setNotes] = useState("");
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [quantity, setQuantity] = useState("");
@@ -40,51 +40,74 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     preview: "",
     raw: "",
   });
-
-  // Zustand
-  const GroceryStoreData = GroceryDataStore((state) => state.data);
-  const addItemToState = GroceryDataStore((state) => state.insertGroceryItem);
+  const [showImageError, setShowImageError] = useState<boolean | null>(null);
 
   // hooks
   const { supabase, session } = useSupabase();
   const { openAddNewItemDialog, handleAddNewItemDialogClose } = useDialog();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   //handlers
   async function resetComponentState() {
-    setNewItemName("");
-    handleAddNewItemDialogClose();
-    setNotes("");
-    setQuantity("");
     setImage({ preview: "", raw: "" });
+    setImagePath(null);
+    setQuantity("");
+    setNotes("");
+    setItemName("");
+    setShowImageError(null);
   }
 
+  function handleClose() {
+    handleAddNewItemDialogClose();
+    resetComponentState();
+  }
   async function fetchData() {
     await getAllGroceryStoresData(supabase);
   }
 
+  async function dismissError() {
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
+    setShowImageError(null);
+  }
+
   async function handleSetImage(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
-      const generatedImagePath = await generateGroceryStoreItemImagePath(
+      const generatedImagePath = await generateStoreItemImagePath(
         groceryStore?.select_id
       );
-      setImagePath(generatedImagePath);
-      setImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        raw: event.target.files[0],
-      });
+
+      setShowImageError(false);
+      setImage({ preview: "", raw: "" });
+      setImagePath(null);
+
+      const sizeInMB = event.target.files[0].size / 1048576;
+      console.log("Size of image", sizeInMB);
+
+      if (sizeInMB > 10) {
+        setShowImageError(true);
+        setImage({ preview: "", raw: "" });
+        setImagePath(null);
+      } else {
+        setImagePath(generatedImagePath);
+        setImage({
+          preview: URL.createObjectURL(event.target.files[0]),
+          raw: event.target.files[0],
+        });
+      }
     }
   }
 
   async function handleAddNewItem() {
-    if (groceryStore.select_id && newItemName) {
+    if (groceryStore.select_id && itemName) {
       if (image.raw && imagePath) {
         // TODO: error handling
-        await handleGroceryStoreImageUpload(supabase, imagePath, image?.raw);
+        await handleStoreImageUpload(supabase, imagePath, image?.raw);
       }
       const newItem = await addNewGroceryStoreItem(
         supabase,
         groceryStore.id,
-        newItemName,
+        itemName,
         notes,
         Number(quantity),
         groceryStore.select_id,
@@ -101,11 +124,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   return (
     <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
       <DialogTitle align="center">Add New Item</DialogTitle>
-      <Box
-        sx={{
-
-        }}
-      >
+      <Box sx={{}}>
         <DialogContent>
           <TextField
             autoFocus
@@ -115,8 +134,8 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
             type="search"
             fullWidth
             variant="standard"
-            onChange={(e) => setNewItemName(e.target.value)}
-            value={newItemName}
+            onChange={(e) => setItemName(e.target.value)}
+            value={itemName}
           />
         </DialogContent>
         <DialogContent>
@@ -152,14 +171,13 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           <Card
             sx={{
               mt: 4,
-              width:"100%"
+              width: "100%",
             }}
           >
             {image.preview ? (
               <CardMedia
                 component="img"
                 height="200"
-
                 image={image.preview}
                 alt={`Image of `}
               />
@@ -181,12 +199,39 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
             startIcon={<AddPhotoAlternateIcon />}
             sx={{
               color: "primary.dark",
-              mt:4
+              mt: 4,
             }}
           >
             Add Item Image?
             <input type="file" onChange={handleSetImage} hidden />
           </Button>
+          {showImageError && (
+            <Box
+              sx={{
+                border: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mt: 2,
+                p: 0.5,
+                backgroundColor: "red",
+                borderRadius: 5,
+              }}
+            >
+              <IconButton
+                onClick={async () => await dismissError()}
+                aria-label="delete"
+                sx={{
+                  color: "white",
+                }}
+              >
+                <HighlightOffIcon />
+              </IconButton>
+              <Typography sx={{ pr: 1 }} color={"white"}>
+                Image too large
+              </Typography>
+            </Box>
+          )}
         </DialogContent>
       </Box>
       <DialogActions
@@ -194,8 +239,10 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           mt: 4,
         }}
       >
-        <Button onClick={handleAddNewItemDialogClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleAddNewItem}>Submit</Button>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="contained" onClick={handleAddNewItem}>
+          Submit
+        </Button>
       </DialogActions>{" "}
     </Dialog>
   );
