@@ -1,8 +1,6 @@
-<<<<<<<< HEAD:src/helpers/groceryStore.ts
+
 import groceryStore from "@/components/grocerystore/groceryStore";
-========
-import groceryStore from "@/components/groceryStore/groceryStore";
->>>>>>>> development:src/utils/client/groceryStore.ts
+
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   Database,
@@ -166,7 +164,7 @@ export async function addNewGroceryStoreItem(
   }
 }
 
->>>>>>>> development:src/utils/client/groceryStore.ts
+
 export async function getAllGroceryStoresData(
   supabase: SupabaseClient<Database>
 ) {

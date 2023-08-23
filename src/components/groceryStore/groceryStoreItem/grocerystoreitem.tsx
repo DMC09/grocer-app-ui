@@ -20,21 +20,21 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-<<<<<<<< HEAD:src/components/groceryStore/groceryStoreItem/item.tsx
-import { theme } from "@/helpers/theme";
-import { useSupabase } from "@/components/supabase/supabase-provider";
-import EditItem from "@/components/utils/grocerystoreitems/editItem";
+
+
+
+
 import {
   GroceryDataStore,
   findGroceryStoreIndex,
 } from "@/stores/GroceryDataStore";
-import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+
 import { addToCommonItemCatalog } from "@/helpers/commonItem";
-========
+
 import { theme } from "@/utils/theme";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import EditItem from "@/components/utils/editItem";
->>>>>>>> development:src/components/groceryStore/groceryStoreItem/grocerystoreitem.tsx
+
+
 
 export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
   const { supabase, session } = useSupabase();
@@ -127,7 +127,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
     }
   };
 
-<<<<<<<< HEAD:src/components/groceryStore/groceryStoreItem/item.tsx
+
   async function handleChange(
     event: ChangeEvent<HTMLInputElement>,
     checked: boolean
@@ -140,9 +140,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
       addToCommonItemCatalog(supabase, groceryStoreItem);
     }
   }
-========
 
->>>>>>>> development:src/components/groceryStore/groceryStoreItem/grocerystoreitem.tsx
 
   return (
     <>
