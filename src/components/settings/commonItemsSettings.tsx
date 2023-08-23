@@ -34,6 +34,7 @@ export default function CommonItemsSettings() {
         sx={{
           display: "flex",
           flexFlow: "column",
+          alignItems:"center",
           borderColor: "primary.main",
           backgroundColor: "background.default",
           px: 4,
