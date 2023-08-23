@@ -88,10 +88,11 @@ export default function SupabaseListener({
         if (session?.user && session?.user && session?.user?.id) {
           getProfileData(supabase, session?.user?.id);
         }
+
         console.log(
-          ` Old Select Id ending in  ${oldValue?.slice(-6)} is now ${value?.slice(
+          ` Old Select Id ending in  ${oldValue?.slice(
             -6
-          )}`
+          )} is now ${value?.slice(-6)}`
         );
       }
     );
@@ -175,7 +176,6 @@ export default function SupabaseListener({
             table: "grocerystores",
           },
           (payload) => {
-
             if (payload && payload?.new && payload?.new?.id) {
               const currentGroceryStoreObjectIndex = GroceryStoreData.findIndex(
                 (grocerystore) => grocerystore.id == payload.new.id
@@ -240,7 +240,7 @@ export default function SupabaseListener({
             status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR ||
             status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT
           ) {
-            console.log("bad state");
+
           }
         });
 
@@ -379,19 +379,19 @@ export default function SupabaseListener({
           }
         )
         .subscribe((status, err) => {
-          console.log(status, err, "item channel");
+
           if (
             status === REALTIME_SUBSCRIBE_STATES.CLOSED ||
             status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR ||
             status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT
           ) {
-            console.log("Bad Status");
+
           }
-          console.log(status, err, "item channel");
+
         });
 
       return () => {
-        console.log(itemChannel, "item channel");
+
         supabase.removeChannel(itemChannel);
       };
     }
@@ -490,7 +490,7 @@ export default function SupabaseListener({
           getGroupData(supabase);
         }
       )
-      .subscribe((status, err) => console.log(status, err, "group channel"));
+
 
     return () => {
       supabase.removeChannel(groupChannel);
@@ -503,8 +503,17 @@ export default function SupabaseListener({
     //because of this code block I am constantly getting the profile data and setting if I make a change...
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event == "SIGNED_IN" && session && session.user) {
-        await getProfileData(supabase, session.user.id);
-        router.push("/dashboard"); // this is cuainsg constant kickbacs to the dasbhaord.
+        const profile = await getProfileData(supabase, session.user.id);
+        if (profile) {
+          router.push("/dashboard");
+          if (profile.in_group) {
+            await getGroupData(supabase);
+          }
+        } else {
+          //Need an error page or something
+          throw new Error("No Profile found");
+        }
+        //if we are in a group fetch the data
       }
     });
 
