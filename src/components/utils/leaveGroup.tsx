@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@mui/material";
-import { useSupabase } from "../../supabase/supabase-provider";
+
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useSupabase } from "../supabase/supabase-provider";
 
 export default function LeaveGroup() {
   const { supabase, session } = useSupabase();
