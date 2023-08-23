@@ -1,20 +1,20 @@
 import { Database } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export async function generateGroceryStoreImagePath(select_id: string) {
+export async function generateStoreImagePath(select_id: string) {
   //Formula is last 16 characters of select_id + Current DateTime in seconds/
   const lastPartOfSelectId = select_id?.slice(-16);
   const currentTimeStamp = new Date().getTime();
   return `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`;
 }
-export async function generateGroceryStoreItemImagePath(select_id: string) {
+export async function generateStoreItemImagePath(select_id: string) {
   //Formula is last 16 characters of select_id + Current DateTime in seconds/
   const lastPartOfSelectId = select_id?.slice(-16);
   const currentTimeStamp = new Date().getTime();
   return `grocerystoreitem_images/${lastPartOfSelectId}/${currentTimeStamp}`;
 }
 
-export async function handleGroceryStoreImageUpload(
+export async function handleStoreImageUpload(
   supabase: SupabaseClient<Database>,
   imagePath: string,
   imageRaw: string
@@ -30,7 +30,7 @@ export async function handleGroceryStoreImageUpload(
     console.log(data, "image uploaded successfully");
   }
 }
-export async function handleGroceryStoreItemImageUpload(
+export async function handleStoreItemImageUpload(
   supabase: SupabaseClient<Database>,
   imagePath: string,
   imageRaw: string
@@ -47,3 +47,6 @@ export async function handleGroceryStoreItemImageUpload(
   }
 }
 
+export function generateProfileImagePath(select_id: string) {}
+
+export function handleProfileImageUpload() {}
