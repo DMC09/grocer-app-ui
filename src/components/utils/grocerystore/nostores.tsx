@@ -10,12 +10,12 @@ export default function NoStores() {
           justifyContent: "center",
           textAlign: "center",
           backgroundColor: "white",
-          height: "100%",
+          height: "80%",
           p: 1,
         }}
       >
         <Typography variant="h4" color="primary.main">
-          No stores found, please add one!
+          No Stores added....
         </Typography>
       </Container>
     </>
