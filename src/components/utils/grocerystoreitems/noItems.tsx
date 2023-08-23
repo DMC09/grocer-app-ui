@@ -1,6 +1,7 @@
+"use client";
 import { Container, Typography } from "@mui/material";
 
-export default function NoStores() {
+export default function NoItems() {
   return (
     <>
       <Container
@@ -8,14 +9,14 @@ export default function NoStores() {
           display: "flex",
           flexFlow: "column",
           justifyContent: "center",
+          alignItems:"center",
           textAlign: "center",
-          backgroundColor: "white",
           height: "80%",
           p: 1,
         }}
       >
-        <Typography variant="h4" color="primary.main">
-          No Stores added....
+        <Typography variant="h4" color="text.secondary">
+          No items available. please add one
         </Typography>
       </Container>
     </>

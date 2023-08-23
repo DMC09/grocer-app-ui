@@ -22,6 +22,7 @@ type GroceryStoreActions = {
   deleteGroceryStore: (storeId: number) => void;
   updateGroceryStore: (updatedStoreData: GroceryStoreWithItemsType) => void;
   insertGroceryItem: (item: GroceryStoreItemType) => void;
+  insertGroceryItems: (items: GroceryStoreItemType[]) => void;
   deleteGroceryItem: (itemId: number) => void;
   updateGroceryItem: (updatedItemData: GroceryStoreItemType) => void;
 };
@@ -33,17 +34,18 @@ const initialGroceryStoreState: GroceryStoreState = {
       id: 0,
       image: "",
       name: "",
-      quantity: null,
+      quantity: 0,
       select_id: null,
       grocerystoreitems: [
         {
           created_at: null,
+          cid: null,
           id: 0,
           image: null,
           modified_at: null,
-          name: null,
+          name: "",
           notes: null,
-          quantity: null,
+          quantity: 0,
           select_id: null,
           store_id: 0,
         },
@@ -51,6 +53,7 @@ const initialGroceryStoreState: GroceryStoreState = {
     },
   ],
 };
+
 
 const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
   (set, get) => ({
@@ -67,8 +70,13 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
       set(
         produce((draft) => {
           if (newStore) {
-            console.log("Adding store");
             draft.data.push({ ...newStore, grocerystoreitems: [] });
+
+            console.log(
+              `%cState: - Adding ${newStore.name} store`,
+              "color: white; background-color: #44693D;",
+              JSON.stringify(newStore, null, 1)
+            );
           }
         }, initialGroceryStoreState)
       );
@@ -77,10 +85,13 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
       set(
         produce((draft) => {
           if (storeId) {
-            console.log("deleting store");
-            console.log(draft.data);
             const storeIndex = draft.data.findIndex(
               (item: { id: number }) => item.id === storeId
+            );
+            console.log(
+              `%cState: - Deleting ${draft.data[storeIndex].name} store`,
+              "color: white; background-color: #D23335;",
+              JSON.stringify(draft.data[storeIndex], null, 1)
             );
             draft.data.splice(storeIndex, 1);
           }
@@ -99,6 +110,11 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
             grocerystoreitems: draft.data[storeIndex].grocerystoreitems,
           };
 
+          console.log(
+            `%cState: - Update ${draft.data[storeIndex].name} store`,
+            "color: white; background-color: #FF5733;",
+            JSON.stringify(updatedStore, null, 1)
+          );
           draft.data[storeIndex] = updatedStore;
         }, initialGroceryStoreState)
       );
@@ -109,40 +125,88 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
           const storeIndex = draft.data.findIndex(
             (s) => s.id === item.store_id
           );
-
-          console.log(`adding new item to ${draft.data[storeIndex].name}`);
-
           draft.data[storeIndex].grocerystoreitems.push(item);
+
+          console.log(
+            `%cState: - Grocery Store Item ${item?.name} added to store: ${draft?.data[storeIndex]?.name}`,
+            "color: white; background-color: #44693D;",
+            JSON.stringify(item, null, 1)
+          );
+        }, initialGroceryStoreState)
+      );
+    },
+    insertGroceryItems: (items: GroceryStoreItemType[]) => {
+      set(
+        produce((draft) => {
+          const storeIndex = draft.data.findIndex(
+            (s) => s.id === items[0]?.store_id
+          );
+
+          items.forEach((item) =>
+            draft.data[storeIndex].grocerystoreitems.push(item)
+          );
+
+          console.log(
+            `%cState: - Grocery Store Items added to store: ${draft?.data[storeIndex]?.name}`,
+            "color: white; background-color: #44693D;",
+            JSON.stringify(items, null, 1)
+          );
         }, initialGroceryStoreState)
       );
     },
     deleteGroceryItem: (itemId: number) => {
       set(
         produce((draft) => {
-          const storeIndex = findGroceryStoreIndex(draft, itemId);
-          const itemIndex = findGroceryStoreItemIndexInStore(
-            draft,
+          const storeIndex = findGroceryStoreIndex(draft.data, itemId);
+          const itemIndex = getGroceryStoreItemIndex(
+            draft.data,
             itemId,
             storeIndex
           );
-          draft.data[storeIndex].grocerystoreitems.splice(itemIndex, 1);
+
+          const itemToBeDelete =
+            draft?.data[storeIndex]?.grocerystoreitems[itemIndex];
+
+          console.log(itemToBeDelete, "item to delete");
+
           console.log(
-            draft.data[storeIndex].grocerystoreitems,
-            "items for the things?"
+            `%cState: - Grocery Store Item ${itemToBeDelete?.name} deleted from store: ${draft?.data[storeIndex]?.name}`,
+            "color: white; background-color: #D23335;",
+            JSON.stringify(itemToBeDelete, null, 1)
           );
-          console.log(draft.data[storeIndex].name, "name for the items?");
+
+          draft.data[storeIndex].grocerystoreitems.splice(itemIndex, 1);
+          console.log(draft.data[storeIndex].grocerystoreitems,'item after the splice~!')
+
         }, initialGroceryStoreState)
       );
     },
     updateGroceryItem: (updatedItemData: GroceryStoreItemType) => {
       set(
         produce((draft) => {
-          const storeIndex = findGroceryStoreIndex(draft, updatedItemData.id);
+          const storeIndex = findGroceryStoreIndex(
+            draft.data,
+            updatedItemData.id
+          );
 
-          const itemIndex = findGroceryStoreItemIndexInStore(
-            draft,
+          const itemIndex = getGroceryStoreItemIndex(
+            draft.data,
             updatedItemData.id,
             storeIndex
+          );
+
+          console.log(storeIndex, "store index");
+          console.log(itemIndex, "item index");
+          const currentItem =
+            draft?.data[storeIndex]?.grocerystoreitems?.[itemIndex];
+
+          console.log(updatedItemData, "Updated item from the payload");
+          console.log(currentItem, "current item using indices");
+
+          console.log(
+            `%cState: - Grocery Store Item ${currentItem?.name} updated ing store: ${draft?.data[storeIndex]?.name}`,
+            "color: white; background-color: #FF5733;",
+            updatedItemData
           );
 
           draft.data[storeIndex].grocerystoreitems[itemIndex] = updatedItemData;
@@ -152,33 +216,42 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
   })
 );
 
+
+
 export const GroceryDataStore = create(
   devtools(persist(_GroceryDataStore, { name: "Grocery Data Cache" }))
 );
 
 if (process.env.NODE_ENV === "development") {
-  mountStoreDevtool("Grocery Store store", GroceryDataStore);
+  mountStoreDevtool("Grocery Data store", GroceryDataStore);
 }
 
 export function findGroceryStoreIndex(
-  state: GroceryStoreState,
+  data: GroceryStoreWithItemsType[],
   grocerystoreitemId: number
 ) {
-  const grocerystoreIndex = state.data.findIndex((grocerystore) => {
-    return grocerystore.grocerystoreitems.some((grocerystoreitem) => {
-      return grocerystoreitem.id === grocerystoreitemId;
+  console.log(data, "grocery store with items passed in");
+  console.log(grocerystoreitemId, "storeitemid");
+
+  const grocerystoreIndex = data.findIndex((grocerystore) => {
+    return grocerystore?.grocerystoreitems.some((grocerystoreitem) => {
+      return grocerystoreitem?.id === grocerystoreitemId;
     });
   });
 
   return grocerystoreIndex === -1 ? -1 : 0;
 }
 
-export function findGroceryStoreItemIndexInStore(
-  state: GroceryStoreState,
+export function getGroceryStoreItemIndex(
+  data: GroceryStoreWithItemsType[],
   grocerystoreitemId: number,
   storeIndex: number
 ) {
-  const grocerystore = state.data[storeIndex];
+  console.log(data, "grocery store with items passed in");
+  console.log(grocerystoreitemId, "storeitemid");
+  console.log(storeIndex, "item id");
+
+  const grocerystore = data[storeIndex];
   const grocerystoreitemIndex = grocerystore?.grocerystoreitems?.findIndex(
     (grocerystoreitem) => {
       return grocerystoreitem.id === grocerystoreitemId;

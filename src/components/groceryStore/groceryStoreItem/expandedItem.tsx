@@ -19,11 +19,11 @@ import {
   Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import EditItem from "@/components/utils/editItem";
+import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 
 
-export default function ExpandedGroceryStoreItem({
+export default function ExpandedItem({
   groceryStoreItem,
 }: GroceryStoreItemProps) {
   const { supabase, session } = useSupabase();

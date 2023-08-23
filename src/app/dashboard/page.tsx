@@ -6,15 +6,17 @@ import { GroceryStoreType } from "@/types";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import DashboardHeader from "@/components/dashboard/dashboardHeader";
-import GroceryStore from "@/components/groceryStore/groceryStore";
+import GroceryStore from "@/components/grocerystore/groceryStore";
 import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
+
+import NoStores from "@/components/utils/grocerystore/nostores";
+import useZustandStore from "@/hooks/useZustandStore";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   getAllGroceryStoresData,
   isGroceryStoreDataEmpty,
-} from "@/utils/client/groceryStore";
-import NoStores from "@/components/utils/noStores";
-import useZustandStore from "@/hooks/useZustandStore";
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
+} from "@/helpers/groceryStore";
+import { getAllCommonItems } from "@/helpers/commonItem";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);
@@ -24,19 +26,19 @@ export default function Dashboard() {
   );
   const { supabase, session } = useSupabase();
 
-  async function getData() {
+  async function fetchData() {
     await getAllGroceryStoresData(supabase);
+    await getAllCommonItems(supabase);
   }
   useEffect(() => {
     if (groceryStoreData) {
       if (isGroceryStoreDataEmpty(groceryStoreData)) {
-        console.log("no data cached or in state!");
-        getData();
+        console.log("Grocery Store Data not found!");
+        fetchData();
       } else {
-        console.log("we have cached data!");
+        console.log("Using Cache");
       }
     }
-    // getData();
   }, [groceryStoreData]);
 
   // TODO: Put this in to a componeont
@@ -48,7 +50,11 @@ export default function Dashboard() {
 
   async function handleRefresh() {
     setLoading(true);
-    await getData();
+    setLoading(true);
+    await fetchData();
+    if (groceryStoreData) {
+      setLoading(false);
+    }
     if (groceryStoreData) {
       setLoading(false);
     }

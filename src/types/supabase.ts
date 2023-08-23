@@ -9,8 +9,36 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      commonitems: {
+        Row: {
+          category: string | null
+          id: number
+          image: string | null
+          item_name: string | null
+          item_notes: string | null
+          select_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          id?: number
+          image?: string | null
+          item_name?: string | null
+          item_notes?: string | null
+          select_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          id?: number
+          image?: string | null
+          item_name?: string | null
+          item_notes?: string | null
+          select_id?: string | null
+        }
+        Relationships: []
+      }
       grocerystoreitems: {
         Row: {
+          cid: number | null
           created_at: string | null
           id: number
           image: string | null
@@ -22,6 +50,7 @@ export interface Database {
           store_id: number
         }
         Insert: {
+          cid?: number | null
           created_at?: string | null
           id?: number
           image?: string | null
@@ -33,6 +62,7 @@ export interface Database {
           store_id: number
         }
         Update: {
+          cid?: number | null
           created_at?: string | null
           id?: number
           image?: string | null
@@ -44,6 +74,12 @@ export interface Database {
           store_id?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "grocerystoreitems_cid_fkey"
+            columns: ["cid"]
+            referencedRelation: "commonitems"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "grocerystoreitems_store_id_fkey"
             columns: ["store_id"]

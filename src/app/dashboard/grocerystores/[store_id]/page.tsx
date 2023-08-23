@@ -4,14 +4,15 @@ import { Container, Skeleton, ThemeProvider } from "@mui/material";
 
 import { useParams } from "next/navigation";
 import { GroceryStoreItemType } from "@/types";
-import NoItems from "@/components/utils/noItems";
+import NoItems from "@/components/utils/grocerystoreitems/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import GroceryStoreItem from "@/components/groceryStore/groceryStoreItem/grocerystoreitem";
-import ExpandedGroceryStoreItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import Item from "@/components/grocerystore/groceryStoreItem/item";
+import ExpandedItem from "@/components/grocerystore/groceryStoreItem/expandedItem";
+
 
 // need to grab the pfiles boolean and render the differnt view.
 
@@ -25,14 +26,14 @@ export default function Page() {
     GroceryDataStore,
     (state) => state?.data
   )?.filter((grocerystore) => Number(grocerystore.id) === Number(store_id))?.[0]
-    .grocerystoreitems;
+    ?.grocerystoreitems;
 
   const groceryStoreItemsToRender = grocerystoreitems?.map(
     (item: GroceryStoreItemType) => {
       return expandedView ? (
-        <ExpandedGroceryStoreItem key={item.id} groceryStoreItem={item} />
+        <ExpandedItem key={item.id} groceryStoreItem={item} />
       ) : (
-        <GroceryStoreItem key={item.id} groceryStoreItem={item} />
+        <Item key={item.id} groceryStoreItem={item} />
       );
     }
   );
@@ -59,7 +60,6 @@ export default function Page() {
         ) : (
           <NoItems />
         )}
-
       </ThemeProvider>
     </>
   );

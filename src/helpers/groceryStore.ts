@@ -1,4 +1,5 @@
-import groceryStore from "@/components/groceryStore/groceryStore";
+
+
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   Database,
@@ -28,7 +29,11 @@ export async function addNewGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "Grocery Store added");
+      if (data) {
+        return data;
+      } else {
+        return null;
+      }
     }
   } else {
     const { data, error } = await supabase
@@ -40,7 +45,11 @@ export async function addNewGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "Grocery Store added");
+      if (data) {
+        return data;
+      } else {
+        return null;
+      }
     }
   }
 }
@@ -61,7 +70,8 @@ export async function updateGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "updated settings");
+
+      return data;
     }
   } else {
     const { data, error } = await supabase
@@ -73,7 +83,8 @@ export async function updateGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "updated settings");
+
+      return data;
     }
   }
 }
@@ -87,15 +98,18 @@ export async function deleteGroceryStore(
     .from("grocerystores")
     .delete()
     .eq("id", groceryStoreId)
-    .select();
+    .select()
+    .single();
 
-  if (data && data.length > 0) {
+  if (data) {
     router.push("/dashboard");
+    return data?.id;
   }
   if (error) {
     throw new Error(error.message);
   }
 }
+
 
 export async function addNewGroceryStoreItem(
   supabase: SupabaseClient<Database>,
@@ -148,6 +162,7 @@ export async function addNewGroceryStoreItem(
   }
 }
 
+
 export async function getAllGroceryStoresData(
   supabase: SupabaseClient<Database>
 ) {
@@ -160,7 +175,7 @@ export async function getAllGroceryStoresData(
   } else {
     GroceryDataStore.setState({
       data: data as GroceryStoreWithItemsType[],
-    }); 
+    });
   }
 }
 

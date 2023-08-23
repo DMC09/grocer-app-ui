@@ -11,41 +11,77 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      commonitems: {
+        Row: {
+          category: string | null;
+          id: number;
+          image: string | null;
+          item_name: string | null;
+          item_notes: string | null;
+          select_id: string | null;
+        };
+        Insert: {
+          category?: string | null;
+          id?: number;
+          image?: string | null;
+          item_name?: string | null;
+          item_notes?: string | null;
+          select_id?: string | null;
+        };
+        Update: {
+          category?: string | null;
+          id?: number;
+          image?: string | null;
+          item_name?: string | null;
+          item_notes?: string | null;
+          select_id?: string | null;
+        };
+        Relationships: [];
+      };
       grocerystoreitems: {
         Row: {
+          cid: number | null;
           created_at: string | null;
           id: number;
           image: string | null;
           modified_at: string | null;
-          name: string | null;
+          name: string ;
           notes: string | null;
-          quantity: number | null;
+          quantity: number ;
           select_id: string | null;
           store_id: number;
         };
         Insert: {
+          cid?: number | null;
           created_at?: string | null;
           id?: number;
           image?: string | null;
           modified_at?: string | null;
-          name?: string | null;
+          name?: string;
           notes?: string | null;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
           store_id: number;
         };
         Update: {
+          cid?: number | null;
           created_at?: string | null;
           id?: number;
           image?: string | null;
           modified_at?: string | null;
-          name?: string | null;
+          name?: string ;
           notes?: string | null;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
           store_id?: number;
         };
         Relationships: [
+          {
+            foreignKeyName: "grocerystoreitems_cid_fkey";
+            columns: ["cid"];
+            referencedRelation: "commonitems";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "grocerystoreitems_store_id_fkey";
             columns: ["store_id"];
@@ -60,7 +96,7 @@ export interface Database {
           id: number;
           image: string | null;
           name: string;
-          quantity: number | null;
+          quantity: number ;
           select_id: string | null;
         };
         Insert: {
@@ -68,7 +104,7 @@ export interface Database {
           id?: number;
           image?: string | null;
           name: string;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
         };
         Update: {
@@ -76,7 +112,7 @@ export interface Database {
           id?: number;
           image?: string | null;
           name?: string;
-          quantity?: number | null;
+          quantity?: number ;
           select_id?: string | null;
         };
         Relationships: [];
@@ -84,7 +120,7 @@ export interface Database {
       groups: {
         Row: {
           confirmation_accepted: boolean | null;
-          created_at: string | null;
+          created_at: string | null; 
           email: string | null;
           first_name: string | null;
           group_id: string | null;
@@ -234,6 +270,16 @@ export type ProfileType = Database["public"]["Tables"]["profiles"]["Row"];
 export type GroupType = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupMemberType =
   Database["public"]["Views"]["group_members_view"]["Row"];
+export type CommonItemType = Database["public"]["Tables"]["commonitems"]["Row"];
+
+export type CommonItemToAdd = {
+  uniqueItemId: number;
+  id: number;
+  name: string;
+  notes: string;
+  quantity: number;
+  image: string;
+};
 
 export type GroceryStoreProps = {
   groceryStore: GroceryStoreType;

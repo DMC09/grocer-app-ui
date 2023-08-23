@@ -4,11 +4,12 @@ import { Box, Button, Card, IconButton, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import GroceryStoreHeaderMenu from "./groceryStoreHeaderMenu";
-import { theme } from "@/utils/theme";
+
+import { theme } from "@/helpers/theme";
+
 import { ThemeProvider } from "@emotion/react";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
-
 
 export default function GroceryStoreHeader() {
   const { store_id } = useParams();
@@ -27,8 +28,8 @@ export default function GroceryStoreHeader() {
         {groceryStoreData && (
           <Card
             sx={{
-              mt:1,
-              boxShadow: 0 ,
+              mt: 1,
+              boxShadow: 0,
               display: "flex",
               alignItems: "center",
               backgroundColor: "white",
@@ -42,7 +43,7 @@ export default function GroceryStoreHeader() {
             >
               <ArrowBackIosNewIcon sx={{ fontSize: 30 }} />
             </IconButton>
-            <Typography color="primary.main" variant="h3">
+            <Typography color="primary.main" variant="h5">
               {groceryStoreData?.name}
             </Typography>
             <Box sx={{ display: "flex", marginLeft: "auto" }}>

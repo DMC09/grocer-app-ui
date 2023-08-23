@@ -1,6 +1,6 @@
 "use client";
 
-import { theme } from "@/utils/theme";
+import { theme } from "@/helpers/theme";
 import { Container, ThemeProvider } from "@mui/material";
 
 

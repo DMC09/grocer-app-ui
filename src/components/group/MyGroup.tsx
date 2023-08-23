@@ -8,8 +8,6 @@ export default function MyGroup({
 }: {
   groupMembers: GroupMemberType[] | [];
 }) {
-  console.log("GroupMembers", groupMembers);
-
   const groupMembersToRender = groupMembers?.map((member: GroupMemberType) => {
     return (
       <>
@@ -29,7 +27,7 @@ export default function MyGroup({
       }}
     >
       <Typography color="#071236" align="center" variant="h3" sx={{ my: 2 }}>
-        {groupMembers[0].group_name}
+        {groupMembers[0]?.group_name}
       </Typography>
       <Box
         sx={{
