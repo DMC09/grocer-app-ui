@@ -113,8 +113,7 @@ export async function deleteGroceryStore(
   }
 }
 
-<<<<<<<< HEAD:src/helpers/groceryStore.ts
-========
+
 export async function addNewGroceryStoreItem(
   supabase: SupabaseClient<Database>,
   storeId: number,

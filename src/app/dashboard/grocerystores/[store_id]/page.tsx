@@ -8,7 +8,7 @@ import NoItems from "@/components/utils/grocerystoreitems/noItems";
 import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/helpers/theme";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import GroceryStoreItem from "@/components/grocerystore/groceryStoreItem/item";
+
 import ExpandedGroceryStoreItem from "@/components/grocerystore/groceryStoreItem/expandedItem";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
