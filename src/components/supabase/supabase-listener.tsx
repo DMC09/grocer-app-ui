@@ -32,6 +32,7 @@ export default function SupabaseListener({
 }: {
   serverAccessToken?: string;
 }) {
+
   const { supabase, session } = useSupabase();
   const router = useRouter();
 
@@ -547,53 +548,6 @@ export default function SupabaseListener({
     resetProfileState,
     resetGroceryState,
   ]);
+  return null
 
-  // useEffect(() => {
-  //   const channelA = supabase.channel("room-1");
-
-  //   channelA
-  //     .on("presence", { event: "sync" }, () => {
-  //       const newState = channelA.presenceState();
-  //       console.log("Sync Event", newState);
-  //     })
-  //     .on("presence", { event: "join" }, ({ key, newPresences }) => {
-  //       console.log("Join Event", key, newPresences);
-  //     })
-  //     .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
-  //       console.log("Leave Event", key, leftPresences);
-  //     })
-  //     .subscribe(async (status) => {
-  //       console.log(status, "Status?");
-  //       //we need to check if we are the only ones otherwise normal trakcpfor
-  //       if (status === "SUBSCRIBED") {
-  //         setTimeout(async () => {
-  //           //so this works wee need to see the length, then determine if we need to track data.
-  //           const syncedState = channelA.presenceState();
-  //           console.log(syncedState, "state in callback!");
-
-  //           const clone = structuredClone(syncedState);
-
-  //           const length = Object.keys(clone);
-  //           console.log(length, "keys in callback!");
-  //           console.log(
-  //             JSON.stringify(syncedState),
-  //             "STRINGIGYPFOR in callback!"
-  //           );
-
-  //           if (length.length === 1) {
-  //             const presenceTrackStatus = await channelA.track({
-  //               groceryData: GroceryStoreData,
-  //               commonItemsData: CommonItemCatalog,
-  //             });
-  //           }
-  //         }, 3000);
-
-  //         // set the state from what I get from here.
-  //       }
-  //     });
-
-  //   return () => {
-  //     supabase.removeChannel(channelA);
-  //   };
-  // }, [CommonItemCatalog, GroceryStoreData, supabase]);
 }
