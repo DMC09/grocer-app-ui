@@ -47,6 +47,11 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   const { openAddNewItemDialog, handleAddNewItemDialogClose } = useDialog();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Data
+  async function fetchData() {
+    await getAllGroceryStoresData(supabase);
+  }
+
   //handlers
   async function resetComponentState() {
     setImage({ preview: "", raw: "" });
@@ -60,9 +65,6 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   function handleClose() {
     handleAddNewItemDialogClose();
     resetComponentState();
-  }
-  async function fetchData() {
-    await getAllGroceryStoresData(supabase);
   }
 
   async function dismissError() {
@@ -84,7 +86,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       const sizeInMB = event.target.files[0].size / 1048576;
       console.log("Size of image", sizeInMB);
 
-      if (sizeInMB > 10) {
+      if (sizeInMB > 50) {
         setShowImageError(true);
         setImage({ preview: "", raw: "" });
         setImagePath(null);
@@ -117,7 +119,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       if (newItem) {
         fetchData();
       }
-      resetComponentState();
+      handleClose();
     }
   }
 

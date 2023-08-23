@@ -45,15 +45,18 @@ export default function EditCommonItem(item: CommonItemType) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const selectId = ProfileDataStore((state) => state.data.select_id);
 
+  // Data
+  async function fetchData() {
+    await getAllCommonItems(supabase);
+  }
+
+  // Event Handlers
   async function dismissError() {
     setImage({ preview: item?.image, raw: "" });
     setImagePath(null);
     setShowImageError(null);
   }
 
-  async function getData() {
-    await getAllCommonItems(supabase);
-  }
   function handleClickOpen() {
     setOpen(true);
   }
@@ -78,10 +81,8 @@ export default function EditCommonItem(item: CommonItemType) {
 
       const sizeInMB = event.target.files[0].size / 1048576;
 
-      const generatedImagePath = await generateStoreItemImagePath(
-        selectId
-      );
-      if (sizeInMB > 10) {
+      const generatedImagePath = await generateStoreItemImagePath(selectId);
+      if (sizeInMB > 50) {
         setShowImageError(true);
         setImagePath(null);
         setImage({ preview: item.image, raw: "" });
@@ -110,9 +111,9 @@ export default function EditCommonItem(item: CommonItemType) {
       imagePath
     );
 
-    console.log(updatedCommonItem, "updated itme");
+    console.log(updatedCommonItem, "updated item");
     if (updatedCommonItem) {
-      await getData();
+      await fetchData();
     }
     handleClose();
   }

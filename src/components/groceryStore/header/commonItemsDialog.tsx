@@ -50,16 +50,14 @@ export default function CommonItemsDialog({
     if (commonItemsCatalog) {
       if (isCommonItemDataStoreEmpty(commonItemsCatalog)) {
         console.log("Common Item Data Not Found!");
-        getData();
+        fetchData();
       } else {
         console.log("Using Cache!");
       }
     }
   }, []);
 
-  async function getData() {
-    await getAllCommonItems(supabase);
-  }
+
 
   const mappedItems = itemsToSubmit.map((item) => ({
     cid: item.id,

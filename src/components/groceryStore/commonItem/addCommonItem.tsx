@@ -76,7 +76,7 @@ export default function AddCommonItem() {
       const sizeInMB = event.target.files[0].size / 1048576;
       console.log("Size of image", sizeInMB);
 
-      if (sizeInMB > 10) {
+      if (sizeInMB > 50) {
         setShowImageError(true);
         setImage({ preview: "", raw: "" });
         setImagePath(null);
@@ -96,7 +96,7 @@ export default function AddCommonItem() {
   }
 
 
-  async function getData() {
+  async function fetchData() {
     await getAllCommonItems(supabase);
   }
   async function handleSubmit() {
@@ -119,7 +119,7 @@ export default function AddCommonItem() {
       );
 
       if (item) {
-        getData();
+        fetchData();
       }
       handleClose();
     }

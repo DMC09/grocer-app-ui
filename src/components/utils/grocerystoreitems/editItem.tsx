@@ -32,8 +32,7 @@ import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { theme } from "@/helpers/theme";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
-  // Componenet State
-
+  // Component State
   const [open, setOpen] = useState(false);
   const [name, setName] = useState<string | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
@@ -45,7 +44,6 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     raw: "",
   });
 
-
   // Hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -53,10 +51,12 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     setOpen(true);
   };
 
+  // Data
   async function fetchData() {
     await getAllGroceryStoresData(supabase);
   }
 
+  // Event Handlers
   async function dismissError() {
     setImage({ preview: groceryStoreItem?.image, raw: "" });
     setImagePath(null);
@@ -79,8 +79,6 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     resetComponentState();
   }
 
- 
-
   async function handleImageSet(event: any) {
     if (event.target.files.length && groceryStoreItem?.select_id) {
       setShowImageError(false);
@@ -93,7 +91,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
         groceryStoreItem?.select_id
       );
 
-      if (sizeInMB > 10) {
+      if (sizeInMB > 50) {
         setShowImageError(true);
         setImagePath(null);
         setImage({ preview: groceryStoreItem.image, raw: "" });
@@ -111,11 +109,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     if (name && quantity) {
       const now = new Date().toISOString();
       if (image.raw && imagePath) {
-        await handleStoreItemImageUpload(
-          supabase,
-          imagePath,
-          image?.raw
-        );
+        await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
       }
       const updatedItem = await updateGroceryStoreItem(
         supabase,
@@ -143,7 +137,12 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       preview: groceryStoreItem.image,
       raw: "",
     });
-  }, [groceryStoreItem.image, groceryStoreItem.name, groceryStoreItem.notes, groceryStoreItem.quantity]);
+  }, [
+    groceryStoreItem.image,
+    groceryStoreItem.name,
+    groceryStoreItem.notes,
+    groceryStoreItem.quantity,
+  ]);
 
   return (
     <>

@@ -84,7 +84,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       const sizeInMB = event.target.files[0].size / 1048576;
       console.log("Size of image", sizeInMB);
 
-      if (sizeInMB > 10) {
+      if (sizeInMB > 50) {
         setShowImageError(true);
         setImagePath(null);
         setUpdatedImage({ preview: groceryStore.image, raw: "" });
