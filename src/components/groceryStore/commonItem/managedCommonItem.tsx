@@ -51,7 +51,16 @@ export default function ManagedCommonItem(item: CommonItemType) {
 
   return (
     <>
-      <Card raised sx={{ borderRadius:3,border: 1,height:100,overflow:"visible" }}>
+      <Card
+        raised
+        sx={{
+          borderRadius: 3,
+          border: 3,
+          width:"50%",
+          height: "fit-content",
+          overflow: "visible",
+        }}
+      >
         {/* open dialog */}
         <CardActionArea
           onClick={() => {
@@ -76,6 +85,8 @@ export default function ManagedCommonItem(item: CommonItemType) {
               sx={{
                 height: 100,
                 width: 100,
+                borderTopLeftRadius: 9,
+                borderBottomLeftRadius: 9,
               }}
             />
             <Box sx={{ pl: 2 }}>
@@ -101,25 +112,24 @@ export default function ManagedCommonItem(item: CommonItemType) {
         onClose={handleClose}
       >
         <Box sx={{ display: "flex", flexFlow: "column" }}>
-       
           <Box
             sx={{
               border: 1,
-              p:1,
+              p: 1,
               display: "flex",
               justifyContent: "space-between",
-              backgroundColor: "gray",
+              backgroundColor: "#454545",
             }}
           >
-          <IconButton
-                sx={{
-                  color: "red",
-                  flexGrow: 2,
-                }}
-                onClick={handleDelete}
-              >
-                <DeleteForeverIcon />
-              </IconButton>
+            <IconButton
+              sx={{
+                color: "red",
+                flexGrow: 2,
+              }}
+              onClick={handleDelete}
+            >
+              <DeleteForeverIcon />
+            </IconButton>
 
             <Box
               sx={{
@@ -132,10 +142,14 @@ export default function ManagedCommonItem(item: CommonItemType) {
                 flexGrow: 3,
               }}
             >
-              <Typography color="background.default" variant="h5" align="center">
+              <Typography
+                color="background.default"
+                variant="h5"
+                align="center"
+              >
                 {item?.item_name}
               </Typography>
-              <Typography color="background.default"  variant="subtitle1">
+              <Typography color="background.default" variant="subtitle1">
                 {item.item_notes}
               </Typography>
             </Box>
@@ -147,11 +161,11 @@ export default function ManagedCommonItem(item: CommonItemType) {
               }}
             >
               <EditCommonItem {...item} />
-          
             </Box>
           </Box>
           <CardMedia
             component="img"
+            height={250}
             image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
             alt={`Image of${item.item_name} `}
             sx={{
