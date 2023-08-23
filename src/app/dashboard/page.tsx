@@ -6,7 +6,7 @@ import { GroceryStoreType } from "@/types";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import DashboardHeader from "@/components/dashboard/dashboardHeader";
-import GroceryStore from "@/components/grocerystore/groceryStore";
+import GroceryStore from "@/components/groceryStore/groceryStore";
 import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
 
 import NoStores from "@/components/utils/grocerystore/nostores";

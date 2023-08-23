@@ -1,7 +1,6 @@
 "use client";
 
 import { Container, Skeleton, ThemeProvider } from "@mui/material";
-
 import { useParams } from "next/navigation";
 import { GroceryStoreItemType } from "@/types";
 import NoItems from "@/components/utils/grocerystoreitems/noItems";
@@ -10,8 +9,11 @@ import { theme } from "@/helpers/theme";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import Item from "@/components/grocerystore/groceryStoreItem/item";
-import ExpandedItem from "@/components/grocerystore/groceryStoreItem/expandedItem";
+import ExpandedItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
+import Item from "@/components/groceryStore/groceryStoreItem/item";
+
+
+
 
 
 // need to grab the pfiles boolean and render the differnt view.

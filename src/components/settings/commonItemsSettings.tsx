@@ -9,11 +9,11 @@ import {
 import EditProfileSettings from "./editProfileSettings";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { CommonItemType } from "@/types";
-import ManagedCommonItem from "../grocerystore/commonItem/managedCommonItem";
+import ManagedCommonItem from "../groceryStore/commonItem/managedCommonItem";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 import { getAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "../supabase/supabase-provider";
-import AddCommonItem from "../grocerystore/commonItem/addCommonItem";
+import AddCommonItem from "../groceryStore/commonItem/addCommonItem";
 
 export default function CommonItemsSettings() {
   const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
