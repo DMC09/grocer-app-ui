@@ -12,74 +12,93 @@ import {
   DialogActions,
   useMediaQuery,
   Box,
+  Typography,
 } from "@mui/material";
 import image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
-import { handleGroceryStoreItemImageUpload } from "@/helpers/image";
+import {
+  generateStoreItemImagePath,
+  handleStoreItemImageUpload,
+} from "@/helpers/image";
 import { theme } from "@/helpers/theme";
 
 export default function EditCommonItem(item: CommonItemType) {
+  // component State
   const [open, setOpen] = useState(false);
-  const { supabase, session } = useSupabase();
-  const [name, setName] = useState<string | null>(item?.item_name);
-  const [notes, setNotes] = useState<string | null>(item.item_notes);
+  const [name, setName] = useState<string | null>(null);
+  const [showImageError, setShowImageError] = useState<boolean | null>(null);
+  const [notes, setNotes] = useState<string | null>(null);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const selectId = ProfileDataStore((state) => state.data.select_id);
   const [image, setImage] = useState({
     preview: item?.image,
     raw: "",
   });
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // Hooks
+  const { supabase, session } = useSupabase();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const selectId = ProfileDataStore((state) => state.data.select_id);
 
-  function handleClose() {
-    setOpen(false);
-    resetData();
-  }
-
-  async function resetData() {
+  async function dismissError() {
+    setImage({ preview: item?.image, raw: "" });
     setImagePath(null);
-    setImage({
-      preview: item.image,
-      raw: "",
-    });
+    setShowImageError(null);
   }
 
   async function getData() {
     await getAllCommonItems(supabase);
   }
+  function handleClickOpen() {
+    setOpen(true);
+  }
 
-  async function generateImagePath(select_id: string) {
-    //Formula is last 16 characters of select_id + Current DateTime in seconds/
-    const lastPartOfSelectId = select_id?.slice(-16);
-    const currentTimeStamp = new Date().getTime();
+  function handleClose() {
+    setOpen(false);
+    resetComponentState();
+  }
 
-    setImagePath(
-      `grocerystore_images/${lastPartOfSelectId}/${currentTimeStamp}`
-    );
+  async function resetComponentState() {
+    setName(item.item_name);
+    setNotes(item.item_notes);
+    setImagePath(null);
+    setImage({ preview: item.image, raw: "" });
   }
 
   async function handleImageSet(event: any) {
     if (event.target.files.length && selectId) {
-      generateImagePath(selectId);
-      setImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        raw: event.target.files[0],
-      });
+      setShowImageError(false);
+      setImage({ preview: item.image, raw: "" });
+      setImagePath(null);
+
+      const sizeInMB = event.target.files[0].size / 1048576;
+
+      const generatedImagePath = await generateStoreItemImagePath(
+        selectId
+      );
+      if (sizeInMB > 10) {
+        setShowImageError(true);
+        setImagePath(null);
+        setImage({ preview: item.image, raw: "" });
+      } else {
+        setImagePath(generatedImagePath);
+
+        setImage({
+          preview: URL.createObjectURL(event.target.files[0]),
+          raw: event.target.files[0],
+        });
+      }
     }
   }
 
   async function handleEdit() {
     if (image.raw && imagePath) {
-      await handleGroceryStoreItemImageUpload(supabase, imagePath, image?.raw);
+      await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
       // TODO: Add better error handling and logging
     }
 
@@ -96,10 +115,13 @@ export default function EditCommonItem(item: CommonItemType) {
       await getData();
     }
     handleClose();
-    resetData();
-    // edit the item in supabase
-    // throw new Error("Function not implemented.");
   }
+
+  useEffect(() => {
+    setName(item.item_name);
+    setNotes(item.item_notes);
+    setImage({ preview: item.image, raw: "" });
+  }, [item.image, item.item_name, item.item_notes]);
 
   return (
     <>
@@ -110,7 +132,6 @@ export default function EditCommonItem(item: CommonItemType) {
       >
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
-
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
         <DialogTitle>{`Edit ${item.item_name}`}</DialogTitle>
         <Box>
@@ -186,6 +207,33 @@ export default function EditCommonItem(item: CommonItemType) {
               Upload File
               <input type="file" onChange={handleImageSet} hidden />
             </Button>
+            {showImageError && (
+              <Box
+                sx={{
+                  border: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mt: 2,
+                  p: 0.5,
+                  backgroundColor: "red",
+                  borderRadius: 5,
+                }}
+              >
+                <IconButton
+                  onClick={async () => await dismissError()}
+                  aria-label="delete"
+                  sx={{
+                    color: "white",
+                  }}
+                >
+                  <HighlightOffIcon />
+                </IconButton>
+                <Typography sx={{ pr: 1 }} color={"white"}>
+                  Image too large
+                </Typography>
+              </Box>
+            )}
           </DialogContent>
         </Box>
         <DialogActions
