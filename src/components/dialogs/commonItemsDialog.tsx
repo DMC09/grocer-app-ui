@@ -22,7 +22,9 @@ import { CommonItemType } from "@/types";
 import { theme } from "@/helpers/theme";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
-import CommonItem from "../commonItem/commonItem";
+import CommonItem from "../groceryStore/commonItem/commonItem";
+
+
 
 export default function CommonItemsDialog({
   storeId,

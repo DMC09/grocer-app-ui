@@ -8,9 +8,10 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
-import { useSupabase } from "../../supabase/supabase-provider";
+
 import { useState } from "react";
 import { ProfileType } from "@/types";
+import { useSupabase } from "../supabase/supabase-provider";
 
 export default function JoinGroup(profile: ProfileType) {
   const { supabase, session } = useSupabase();

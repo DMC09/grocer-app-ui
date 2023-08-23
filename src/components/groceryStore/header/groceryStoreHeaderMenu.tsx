@@ -32,9 +32,10 @@ import {
   getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
 import { handleChangeGroceryStoreItemView } from "@/helpers/profile";
-import AddNewItemDialog from "./addNewItemDialog";
-import CommonItemsDialog from "./commonItemsDialog";
-import EditGroceryStoreDialog from "./editGroceryStoreDialog";
+import AddNewItemDialog from "../../dialogs/addNewItemDialog";
+import CommonItemsDialog from "@/components/dialogs/commonItemsDialog";
+import EditGroceryStoreDialog from "@/components/dialogs/editGroceryStoreDialog";
+
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);

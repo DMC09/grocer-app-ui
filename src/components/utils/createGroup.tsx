@@ -11,9 +11,10 @@ import {
 } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useState } from "react";
-import { useSupabase } from "../../supabase/supabase-provider";
+
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { ProfileType } from "@/types";
+import { useSupabase } from "../supabase/supabase-provider";
 
 export default function CreateGroup(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
