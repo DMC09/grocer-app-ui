@@ -21,7 +21,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "../supabase/supabase-provider";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { theme } from "@/helpers/theme";
-import item from "../grocerystore/groceryStoreItem/item";
+
 
 export default function EditProfileSettings(profile: ProfileType | null) {
   // Component State
