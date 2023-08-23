@@ -17,85 +17,115 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { useEffect, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
   getAllGroceryStoresData,
   updateGroceryStore,
 } from "@/helpers/groceryStore";
 import {
-  generateGroceryStoreItemImagePath,
-  handleGroceryStoreImageUpload,
+  generateStoreItemImagePath,
+  handleStoreImageUpload,
 } from "@/helpers/image";
 
 export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
-  //state
-  const [updatedGroceryStoreName, setUpdatedGroceryStoreName] =
-    useState<string>(groceryStore.name);
+  //State
+  const [updatedName, setUpdatedName] = useState<string | null>(null);
   const [imagePath, setImagePath] = useState<string | null>(null);
-
   const [updatedImage, setUpdatedImage] = useState({
     preview: groceryStore?.image,
     raw: "",
   });
 
-  const GroceryStoreData = GroceryDataStore((state) => state.data);
-
-  //hooks
+  //Hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [showImageError, setShowImageError] = useState<boolean | null>(null);
   const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
     useDialog();
 
+
+    // Event Handlers
+  async function handleClose() {
+    resetComponentState();
+    handleStoreSettingsDialogClose();
+  }
   async function dismissError() {
-    setUpdatedImage({ preview: "", raw: "" });
+    setUpdatedImage({ preview: groceryStore?.image, raw: "" });
     setImagePath(null);
     setShowImageError(null);
   }
 
-  //handlers
-  async function handleImageUpdate(event: any) {
-    if (event.target.files.length && groceryStore?.select_id) {
-      const generatedImagePath = await generateGroceryStoreItemImagePath(
-        groceryStore?.select_id
-      );
-      setImagePath(generatedImagePath);
-      setUpdatedImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        raw: event.target.files[0],
-      });
-    }
-  }
-
+  // Data
   async function fetchData() {
+    console.log("fetching data");
     await getAllGroceryStoresData(supabase);
   }
 
-  async function handleUpdate() {
-    if (updatedImage.raw && imagePath) {
-      // TODO: error handling
-      await handleGroceryStoreImageUpload(
-        supabase,
-        imagePath,
-        updatedImage?.raw
-      );
-    }
-    const updatedStoreData = await updateGroceryStore(
-      supabase,
-      groceryStore.id,
-      updatedGroceryStoreName,
-      imagePath
-    );
-
-    if (updatedStoreData) {
-      fetchData();
-    }
-
-    handleStoreSettingsDialogClose();
+  //Helpers
+  async function resetComponentState() {
+    setShowImageError(true);
+    setImagePath(null);
+    setUpdatedImage({ preview: groceryStore.image, raw: "" });
+    setUpdatedName(groceryStore.name);
+    setShowImageError(null);
   }
+
+  async function handleImageSet(event: any) {
+    if (event.target.files.length && groceryStore?.select_id) {
+      setShowImageError(false);
+      setUpdatedImage({ preview: groceryStore.image, raw: "" });
+      setImagePath(null);
+
+      const generatedImagePath = await generateStoreItemImagePath(
+        groceryStore?.select_id
+      );
+
+      const sizeInMB = event.target.files[0].size / 1048576;
+      console.log("Size of image", sizeInMB);
+
+      if (sizeInMB > 10) {
+        setShowImageError(true);
+        setImagePath(null);
+        setUpdatedImage({ preview: groceryStore.image, raw: "" });
+      } else {
+        setImagePath(generatedImagePath);
+        setUpdatedImage({
+          preview: URL.createObjectURL(event.target.files[0]),
+          raw: event.target.files[0],
+        });
+      }
+    }
+  }
+
+  async function handleUpdate() {
+    if (updatedName) {
+      if (updatedImage.raw && imagePath) {
+        await handleStoreImageUpload(
+          supabase,
+          imagePath,
+          updatedImage?.raw
+        );
+      }
+      const updatedStoreData = await updateGroceryStore(
+        supabase,
+        groceryStore.id,
+        updatedName,
+        imagePath
+      );
+
+      if (updatedStoreData) {
+        handleClose();
+        fetchData();
+      }
+    }
+  }
+
+// Effects
+  useEffect(() => {
+    setUpdatedName(groceryStore.name);
+    setUpdatedImage({ preview: groceryStore.image, raw: "" });
+  }, [groceryStore.image, groceryStore.name]);
 
   return (
     <>
@@ -103,7 +133,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
         fullScreen={fullScreen}
         id="grocery-store-settings-dialog"
         open={openStoreSettingsDialog}
-        onClose={handleStoreSettingsDialogClose}
+        onClose={handleClose}
       >
         <DialogTitle align="center">{`${groceryStore.name} Settings`}</DialogTitle>
         <Box sx={{}}>
@@ -115,8 +145,8 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
               label="Name"
               fullWidth
               variant="standard"
-              onChange={(e) => setUpdatedGroceryStoreName(e.target.value)}
-              value={updatedGroceryStoreName}
+              onChange={(e) => setUpdatedName(e.target.value)}
+              value={updatedName}
             />
           </DialogContent>
           <DialogContent
@@ -143,7 +173,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
                 <CardMedia
                   component="img"
                   height="150"
-                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`} //maybe this should be normal image??
+                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`}
                   alt={`Image of `}
                 />
               )}{" "}
@@ -158,7 +188,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
               }}
             >
               Change Image?
-              <input type="file" onChange={handleImageUpdate} hidden />
+              <input type="file" onChange={handleImageSet} hidden />
             </Button>
             {showImageError && (
               <Box
@@ -188,7 +218,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
           </DialogContent>
         </Box>
         <DialogActions>
-          <Button onClick={handleStoreSettingsDialogClose}>Cancel</Button>
+          <Button onClick={handleClose}>Cancel</Button>
           <Button variant="contained" onClick={handleUpdate}>
             Save
           </Button>
