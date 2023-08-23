@@ -17,7 +17,8 @@ import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import JoinCreateActions from "../group/joinCreateActions";
 import ShareCode from "../utils/group/shareCode";
-import MyGroup from "../group/myGroup";
+import MyGroup from "../group/MyGroup";
+
 
 export default function GroupSettings(profile: ProfileType | null) {
   const { supabase, session } = useSupabase();
