@@ -11,6 +11,7 @@ import {
   DialogTitle,
   IconButton,
   TextField,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,31 +19,43 @@ import { useState } from "react";
 import { ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "../supabase/supabase-provider";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { theme } from "@/helpers/theme";
+import item from "../grocerystore/groceryStoreItem/item";
 
 export default function EditProfileSettings(profile: ProfileType | null) {
-  const { supabase } = useSupabase();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  // Component State
   const [firstName, setFirstName] = useState<string | null | undefined>(
     profile?.first_name
   );
   const [lastName, setLastName] = useState<string | null | undefined>(
     profile?.last_name
   );
-  const [phone, setPhone] = useState<string | null | undefined>(profile?.phone);
-  const [imagePath, setImagePath] = useState<string | null>(null);
   const [image, setImage] = useState({
     preview: profile?.avatar_url,
     raw: "",
   });
   const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const [phone, setPhone] = useState<string | null | undefined>(profile?.phone);
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [showImageError, setShowImageError] = useState<boolean | null>(null);
 
-  const handleClose = () => {
+  function handleOpen() {
+    setOpen(true);
+  }
+  // Hooks
+  const { supabase } = useSupabase();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  function handleClose() {
     setOpen(false);
-  };
+  }
+
+  async function dismissError() {
+    setImage({ preview: profile?.avatar_url, raw: "" });
+    setImagePath(null);
+    setShowImageError(null);
+  }
 
   async function handleImageUpload() {
     if (image.raw && imagePath) {
@@ -125,15 +138,13 @@ export default function EditProfileSettings(profile: ProfileType | null) {
       <IconButton
         sx={{ color: "primary.main" }}
         aria-label="Edit Profile Settings"
-        onClick={handleClickOpen}
+        onClick={handleOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
         <DialogTitle align="center">Edit Profile Settings</DialogTitle>
-        <Box
-        sx={{}}
-        >
+        <Box sx={{}}>
           <DialogContent>
             <TextField
               autoFocus
@@ -178,7 +189,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
             {image.raw ? (
               <Card
                 sx={{
-                  width:"100%"
+                  width: "100%",
                 }}
               >
                 <CardMedia
@@ -186,13 +197,13 @@ export default function EditProfileSettings(profile: ProfileType | null) {
                   height="200"
                   image={image.preview || ""}
                   alt={`Image of `}
-                sx={{objectFit:"fill"}}
+                  sx={{ objectFit: "fill" }}
                 />
               </Card>
             ) : (
               <Card
                 sx={{
-width:"100%"
+                  width: "100%",
                 }}
               >
                 {profile?.avatar_url && (
@@ -201,7 +212,7 @@ width:"100%"
                     height="200"
                     image={`${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`}
                     alt={`Image of `}
-                    sx={{objectFit:"fill"}}
+                    sx={{ objectFit: "fill" }}
                   />
                 )}
               </Card>
@@ -218,12 +229,38 @@ width:"100%"
               <input type="file" onChange={handleImageSet} hidden />
             </Button>
           </DialogContent>
+          {showImageError && (
+            <Box
+              sx={{
+                border: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mt: 2,
+                p: 0.5,
+                backgroundColor: "red",
+                borderRadius: 5,
+              }}
+            >
+              <IconButton
+                onClick={async () => await dismissError()}
+                aria-label="delete"
+                sx={{
+                  color: "white",
+                }}
+              >
+                <HighlightOffIcon />
+              </IconButton>
+              <Typography sx={{ pr: 1 }} color={"white"}>
+                Image too large
+              </Typography>
+            </Box>
+          )}
         </Box>
         <DialogActions
-        sx={{
-          mt:2
-        }}
-        
+          sx={{
+            mt: 2,
+          }}
         >
           <Button onClick={handleClose}>Cancel</Button>
           <Button variant="contained" onClick={handleEdit}>
