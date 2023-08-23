@@ -2,6 +2,8 @@
 
 import { CircularProgress, Container } from "@mui/material";
 import { useEffect, useState } from "react";
+import { CircularProgress, Container } from "@mui/material";
+import { useEffect, useState } from "react";
 import { GroceryStoreType } from "@/types";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useSupabase } from "@/components/supabase/supabase-provider";
@@ -13,6 +15,7 @@ import NoStores from "@/components/utils/grocerystore/nostores";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
+  getAllGroceryStoresData,
   getAllGroceryStoresData,
   isGroceryStoreDataEmpty,
 } from "@/helpers/groceryStore";
@@ -51,7 +54,11 @@ export default function Dashboard() {
 
   async function handleRefresh() {
     setLoading(true);
+    setLoading(true);
     await getData();
+    if (groceryStoreData) {
+      setLoading(false);
+    }
     if (groceryStoreData) {
       setLoading(false);
     }
@@ -70,6 +77,42 @@ export default function Dashboard() {
           backgroundColor: "white",
           overflowY: "scroll",
         }}
+      >
+        {loading ? (
+          <>
+            <GroceryStoreSkeleton />
+          </>
+        ) : (
+          <PullToRefresh
+            refreshingContent={<CircularProgress />}
+            pullingContent={""}
+            onRefresh={handleRefresh}
+          >
+            <Container
+              disableGutters
+              sx={{ height: "100%", width: "98%", overflowY: "scroll" }}
+            >
+              {groceryStoreData && groceryStoreData.length > 0 ? (
+                <Container
+                  disableGutters
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexFlow: "column",
+                    justifyContent: "flex-start",
+                    backgroundColor: "white",
+                    overflowY: "scroll",
+                  }}
+                >
+                  <ul>{groceryStoresToRender}</ul>
+                </Container>
+              ) : (
+                <NoStores />
+              )}
+            </Container>
+          </PullToRefresh>
+        )}
       >
         {loading ? (
           <>

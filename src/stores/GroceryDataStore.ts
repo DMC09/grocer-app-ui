@@ -55,6 +55,7 @@ const initialGroceryStoreState: GroceryStoreState = {
 };
 
 const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
+const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
   (set, get) => ({
     data: initialGroceryStoreState.data,
     resetStore: () => {
@@ -215,6 +216,8 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
   })
 );
 
+export const GroceryDataStore = create(
+  devtools(persist(_GroceryDataStore, { name: "Grocery Data Cache" }))
 export const GroceryDataStore = create(
   devtools(persist(_GroceryDataStore, { name: "Grocery Data Cache" }))
 );

@@ -13,6 +13,7 @@ import {
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
 
+
 import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 
@@ -24,6 +25,7 @@ import { getProfileData } from "@/helpers/profile";
 import { getGroupData } from "@/helpers/group";
 
 export default function ProfileSettings() {
+  const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
   const { supabase, session } = useSupabase();
 
@@ -48,12 +50,20 @@ export default function ProfileSettings() {
         style={{ textAlign: "center" }}
       >
         <Container sx={{}}>
+        <Container sx={{}}>
           {currentTabIndex === 0 && (
             <Box
               id="edit-button-container"
               sx={{
                 display: "flex",
                 flexFlow: "column",
+                borderColor: "primary.main",
+                backgroundColor: "background.paper",
+                borderRadius: 8,
+                border: 2,
+                p: 2,
+                mt: 2,
+                boxShadow: 5,
                 borderColor: "primary.main",
                 backgroundColor: "background.paper",
                 borderRadius: 8,
