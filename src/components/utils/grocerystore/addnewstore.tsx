@@ -198,6 +198,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
               <Card sx={{ mb: 2.5 }}>
                 {image.preview ? (
                   <CardMedia
+                  sx={{objectFit: "fill",}}
                     component="img"
                     height="200"
                     image={image.preview}
@@ -205,6 +206,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                   />
                 ) : (
                   <CardMedia
+                  sx={{objectFit: "fill",}}
                     component="img"
                     height="200"
                     image={

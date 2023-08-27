@@ -100,6 +100,7 @@ export default function ProfileSettings() {
                   >
                     {profileData?.avatar_url && (
                       <CardMedia
+                      sx={{objectFit:"cover"}}
                         component="img"
                         height={150}
                         width={150}

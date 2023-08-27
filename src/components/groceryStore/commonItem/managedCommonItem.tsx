@@ -80,10 +80,12 @@ export default function ManagedCommonItem(item: CommonItemType) {
             }}
           >
             <CardMedia
+
               component="img"
               image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
               alt={`Image of ${item.item_name} `}
               sx={{
+                objectFit:"cover",
                 height: 100,
                 width: 100,
                 borderTopLeftRadius: 9,

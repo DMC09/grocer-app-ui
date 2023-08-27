@@ -168,6 +168,7 @@ export default function AddCommonItem() {
               <Card sx={{ mb: 2.5, width: "100%" }}>
                 {image.preview ? (
                   <CardMedia
+                  sx={{objectFit:"fill"}}
                     component="img"
                     height="200"
                     image={image.preview}
@@ -175,6 +176,7 @@ export default function AddCommonItem() {
                   />
                 ) : (
                   <CardMedia
+                  sx={{objectFit:"fill"}}
                     component="img"
                     height="200"
                     image={

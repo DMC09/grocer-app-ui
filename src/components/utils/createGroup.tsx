@@ -166,6 +166,7 @@ export default function CreateGroup(profile: ProfileType | null) {
               }}
             >
               <CardMedia
+              sx={{objectFit:"fill"}}
                 component="img"
                 height="150"
                 image={image.preview}
@@ -179,6 +180,7 @@ export default function CreateGroup(profile: ProfileType | null) {
               }}
             >
               <CardMedia
+              sx={{objectFit:"fill"}}
                 component="img"
                 height="150"
                 image={

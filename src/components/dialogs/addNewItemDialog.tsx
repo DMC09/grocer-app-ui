@@ -178,6 +178,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           >
             {image.preview ? (
               <CardMedia
+              sx={{objectFit: "fill",}}
                 component="img"
                 height="200"
                 image={image.preview}
@@ -185,6 +186,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
               />
             ) : (
               <CardMedia
+              sx={{objectFit: "fill",}}
                 component="img"
                 height="200"
                 image={

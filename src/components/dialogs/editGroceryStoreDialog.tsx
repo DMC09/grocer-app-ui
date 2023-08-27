@@ -159,6 +159,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
             >
               {updatedImage.raw ? (
                 <CardMedia
+                sx={{objectFit: "fill",}}
                   component="img"
                   height="150"
                   image={updatedImage.preview || ""}
@@ -166,6 +167,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
                 />
               ) : (
                 <CardMedia
+                sx={{objectFit: "fill",}}
                   component="img"
                   height="150"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`}

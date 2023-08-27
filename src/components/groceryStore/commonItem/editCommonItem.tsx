@@ -177,6 +177,7 @@ export default function EditCommonItem(item: CommonItemType) {
                 }}
               >
                 <CardMedia
+                sx={{objectFit:"fill"}}
                   component="img"
                   height="200"
                   image={image.preview || ""}
@@ -190,6 +191,7 @@ export default function EditCommonItem(item: CommonItemType) {
                 }}
               >
                 <CardMedia
+                sx={{objectFit:"fill"}}
                   component="img"
                   height="200"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
