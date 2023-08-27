@@ -128,7 +128,7 @@ export default function EditCommonItem(item: CommonItemType) {
     <>
       <IconButton
         sx={{ color: "background.default" }}
-        aria-label="Edit Item"
+        aria-label="Edit Common Item"
         onClick={handleClickOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />
@@ -180,7 +180,7 @@ export default function EditCommonItem(item: CommonItemType) {
                   component="img"
                   height="200"
                   image={image.preview || ""}
-                  alt={`Image of `}
+                  alt={`Preview `}
                 />
               </Card>
             ) : (
@@ -193,7 +193,7 @@ export default function EditCommonItem(item: CommonItemType) {
                   component="img"
                   height="200"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
-                  alt={`Image of `}
+                  alt={`${item.item_name}`}
                 />
               </Card>
             )}
