@@ -2,13 +2,11 @@
 
 import { Box, AppBar, Toolbar, IconButton, ThemeProvider } from "@mui/material";
 
-
 import HomeIcon from "@mui/icons-material/Home";
 import { useParams, useRouter } from "next/navigation";
 import { useSupabase } from "../supabase/supabase-provider";
 import { theme } from "@/helpers/theme";
 import HeaderMenu from "./headerMenu";
-
 
 export default function Header() {
   const { supabase, session } = useSupabase();
@@ -23,6 +21,7 @@ export default function Header() {
             <>
               {session?.user && (
                 <IconButton
+                  aria-label="To Home"
                   sx={{
                     color: "primary.light",
                   }}
