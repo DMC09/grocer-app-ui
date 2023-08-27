@@ -44,8 +44,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
     useDialog();
 
-
-    // Event Handlers
+  // Event Handlers
   async function handleClose() {
     resetComponentState();
     handleStoreSettingsDialogClose();
@@ -101,11 +100,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   async function handleUpdate() {
     if (updatedName) {
       if (updatedImage.raw && imagePath) {
-        await handleStoreImageUpload(
-          supabase,
-          imagePath,
-          updatedImage?.raw
-        );
+        await handleStoreImageUpload(supabase, imagePath, updatedImage?.raw);
       }
       const updatedStoreData = await updateGroceryStore(
         supabase,
@@ -121,7 +116,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
     }
   }
 
-// Effects
+  // Effects
   useEffect(() => {
     setUpdatedName(groceryStore.name);
     setUpdatedImage({ preview: groceryStore.image, raw: "" });
@@ -167,14 +162,14 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
                   component="img"
                   height="150"
                   image={updatedImage.preview || ""}
-                  alt={`Image of `}
+                  alt={`Preview`}
                 />
               ) : (
                 <CardMedia
                   component="img"
                   height="150"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`}
-                  alt={`Image of `}
+                  alt={`${groceryStore.name}`}
                 />
               )}{" "}
             </Card>

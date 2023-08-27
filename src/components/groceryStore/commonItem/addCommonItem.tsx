@@ -1,5 +1,3 @@
-// Button to bring up a dialog to add a new common item
-
 import { theme } from "@/helpers/theme";
 import {
   Button,
@@ -70,9 +68,7 @@ export default function AddCommonItem() {
 
   async function handleSetImage(event: any) {
     if (event.target.files.length && selectId) {
-      const generatedImagePath = await generateStoreItemImagePath(
-        selectId
-      );
+      const generatedImagePath = await generateStoreItemImagePath(selectId);
       const sizeInMB = event.target.files[0].size / 1048576;
       console.log("Size of image", sizeInMB);
 
@@ -95,18 +91,13 @@ export default function AddCommonItem() {
     setShowImageError(null);
   }
 
-
   async function fetchData() {
     await getAllCommonItems(supabase);
   }
   async function handleSubmit() {
     if (selectId) {
       if (image.raw && imagePath) {
-        await handleStoreItemImageUpload(
-          supabase,
-          imagePath,
-          image?.raw
-        );
+        await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
         // TODO: Add error handling and better logging
       }
 
@@ -129,6 +120,7 @@ export default function AddCommonItem() {
     <>
       <Button
         onClick={handleClickOpen}
+        aria-label="Add New Common item"
         endIcon={<AddCircleIcon />}
         size="large"
         sx={{
@@ -179,7 +171,7 @@ export default function AddCommonItem() {
                     component="img"
                     height="200"
                     image={image.preview}
-                    alt={`Image of `}
+                    alt={`Preview`}
                   />
                 ) : (
                   <CardMedia
@@ -188,7 +180,7 @@ export default function AddCommonItem() {
                     image={
                       "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                     }
-                    alt={`Image of `}
+                    alt={`Default  `}
                   />
                 )}
               </Card>

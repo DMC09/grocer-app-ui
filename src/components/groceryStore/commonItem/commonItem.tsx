@@ -135,7 +135,6 @@ export default function CommonItem(item: CommonItemType) {
     alignItems: "center",
     borderRadius: 3,
     m: 1,
-
   };
 
   return (
@@ -179,7 +178,7 @@ export default function CommonItem(item: CommonItemType) {
           >
             <IconButton
               onClick={decrement}
-              aria-label="delete"
+              aria-label={`Decrement ${item.item_name}`}
               disabled={(selected ? false : true) || quantity < 2}
               color="primary"
             >
@@ -212,7 +211,7 @@ export default function CommonItem(item: CommonItemType) {
               InputLabelProps={{
                 shrink: true,
               }}
-              inputProps={{}}
+              inputProps={{ "aria-label": `${item.item_name}'s quantity` }}
             />
 
             <IconButton
@@ -220,7 +219,7 @@ export default function CommonItem(item: CommonItemType) {
                 ml: 0,
               }}
               onClick={increment}
-              aria-label="delete"
+              aria-label={`Increment ${item.item_name}`}
               disabled={selected ? false : true}
               color="primary"
             >

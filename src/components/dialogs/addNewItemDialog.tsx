@@ -181,7 +181,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
                 component="img"
                 height="200"
                 image={image.preview}
-                alt={`Image of `}
+                alt={`Preview  `}
               />
             ) : (
               <CardMedia
@@ -190,7 +190,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
                 image={
                   "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                 }
-                alt={`Image of `}
+                alt={`Default `}
               />
             )}
           </Card>
@@ -222,7 +222,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
             >
               <IconButton
                 onClick={async () => await dismissError()}
-                aria-label="delete"
+                aria-label="Dismiss Image Error"
                 sx={{
                   color: "white",
                 }}

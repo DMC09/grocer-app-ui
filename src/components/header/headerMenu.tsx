@@ -15,9 +15,6 @@ import { useSupabase } from "../supabase/supabase-provider";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
-
-
-
 export default function HeaderMenu() {
   const { supabase, session } = useSupabase();
   const router = useRouter();
@@ -46,6 +43,7 @@ export default function HeaderMenu() {
         aria-controls={open ? "account-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
+        aria-label="Profile Menu"
       >
         {profileData?.avatar_url && (
           <Avatar

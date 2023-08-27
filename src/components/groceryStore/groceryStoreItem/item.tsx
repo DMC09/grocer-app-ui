@@ -32,7 +32,6 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
-
 export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
   const { supabase, session } = useSupabase();
   const [open, setOpen] = useState(false);
@@ -124,7 +123,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
     }
   };
 
-
   async function handleChange(
     event: ChangeEvent<HTMLInputElement>,
     checked: boolean
@@ -197,7 +195,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             sx={{ p: 0.5, m: 0, marginLeft: "auto" }}
             color="success"
             onClick={() => handleDelete(groceryStoreItem.id.toString())}
-            aria-label="complete"
+            aria-label={`Complete ${groceryStoreItem.name}`}
           >
             <CheckCircleIcon />
           </IconButton>
@@ -218,7 +216,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           <Box
             sx={{
               display: "flex",
-              p:1,
+              p: 1,
               justifyContent: "space-between",
               backgroundColor: "#454545",
             }}
@@ -274,7 +272,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             component="img"
             height={250}
             image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
-            alt={`Image of${groceryStoreItem.name} `}
+            alt={`Image of ${groceryStoreItem.name} `}
             sx={{
               objectFit: "fill",
               borderTopLeftRadius: 10,
@@ -285,30 +283,31 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
         <DialogActions>
           <Box
             sx={{
-
-              width:"100%",
-              display:"flex"
+              width: "100%",
+              display: "flex",
             }}
           >
             {!groceryStoreItem.cid && (
               <>
-                <Box textAlign="center" sx={{ }}>
+                <Box textAlign="center" sx={{}}>
                   <Typography variant="body2">Add To Common Items</Typography>
                   <Switch
+                    aria-label="Add to Common Items Catalog"
                     checked={!!checked}
                     onChange={handleChange}
                     inputProps={{
-                      title: "controlled",
+                      title: "Add to Common Items Catalog?",
                     }}
                   />
                 </Box>
               </>
             )}
-            
+
             <IconButton
+              aria-label="Close Item Preview"
               sx={{
                 color: "primary.dark",
-                ml:"auto"
+                ml: "auto",
               }}
               onClick={handleClose}
             >

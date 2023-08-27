@@ -196,7 +196,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
                   component="img"
                   height="200"
                   image={image.preview || ""}
-                  alt={`Image of `}
+                  alt={`Preview  `}
                   sx={{ objectFit: "fill" }}
                 />
               </Card>
@@ -211,7 +211,7 @@ export default function EditProfileSettings(profile: ProfileType | null) {
                     component="img"
                     height="200"
                     image={`${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`}
-                    alt={`Image of `}
+                    alt={` ${profile.first_name} ${profile.last_name}  `}
                     sx={{ objectFit: "fill" }}
                   />
                 )}
