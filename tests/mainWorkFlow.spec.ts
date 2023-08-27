@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Normal Work Flow ", () => {
-  test.only("Main", async ({ page }) => {
+  test("Main", async ({ page }) => {
 
     await test.step("Sign In", async () => {
       await page.goto("/");
