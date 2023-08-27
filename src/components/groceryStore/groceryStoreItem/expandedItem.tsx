@@ -116,7 +116,7 @@ export default function ExpandedItem({
               component="img"
               height="150"
               image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
-              alt={`Image of${groceryStoreItem.name} `}
+              alt={`Image of ${groceryStoreItem.name} `}
               sx={{ objectFit: "fill" }}
             />
           </CardActionArea>
