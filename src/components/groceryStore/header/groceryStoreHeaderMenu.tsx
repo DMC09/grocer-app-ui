@@ -36,7 +36,6 @@ import AddNewItemDialog from "../../dialogs/addNewItemDialog";
 import CommonItemsDialog from "@/components/dialogs/commonItemsDialog";
 import EditGroceryStoreDialog from "@/components/dialogs/editGroceryStoreDialog";
 
-
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
   const { supabase, session } = useSupabase();
@@ -98,7 +97,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
       <IconButton
         sx={{ color: "primary.main" }}
         aria-label={
-          !open ? "Close grocery store menu" : "Open grocery store menu"
+          open ? "Close grocery store menu" : "Open grocery store menu"
         }
         id="long-button"
         aria-controls={open ? "long-menu" : undefined}
