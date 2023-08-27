@@ -16,17 +16,16 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-      - name: Load .env file
-        uses: xom9ikk/dotenv@v2
-        with:
-          load-mode: strict
-      - name: Some other action
-        run: |
-          echo "Variable 1: ${{ env.PLAYWRIGHT_PASSWORD }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
+        env:
+          DEV_URL: ${{ vars.DEV_URL }}
+      - name: Read a variable
+        run: echo "My Base URL is  value is ${{ vars.DEV_URL }}
+      - name: Read a variable second attempt
+        run: echo "My Base URL  is ${{ env.DEV_URL }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
