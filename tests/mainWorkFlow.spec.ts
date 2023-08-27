@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Normal Work Flow ", () => {
   test.only("Main", async ({ page }) => {
+
     await test.step("Sign In", async () => {
       await page.goto("/");
       await expect(page).toHaveURL("/login", {
@@ -9,10 +10,10 @@ test.describe("Normal Work Flow ", () => {
       });
       await page
         .getByPlaceholder("Your email address")
-        .fill("Blueisill+test@live.com", { timeout: 5000 });
+        .fill(process.env.PLAYWRIGHT_USERNAME as string, { timeout: 5000 });
       await page
         .getByPlaceholder("Your password")
-        .fill("P@ssw0rd", { timeout: 5000 });
+        .fill(process.env.PLAYWRIGHT_PASSWORD as string, { timeout: 5000 });
       await page
         .getByRole("button", { name: "Sign in", exact: true })
         .click({ delay: 500 });
