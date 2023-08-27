@@ -19,7 +19,6 @@ jobs:
       - name: Load .env file
         uses: xom9ikk/dotenv@v2
         with:
-          path: ../.env.local
           load-mode: strict
       - name: Some other action
         run: |
