@@ -57,7 +57,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
         sx={{
           borderRadius: 3,
           border: 3,
-          width:"50%",
+          width: "50%",
           height: "fit-content",
           overflow: "visible",
         }}
@@ -82,7 +82,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
             <CardMedia
               component="img"
               image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
-              alt={`Image of${item.item_name} `}
+              alt={`Image of ${item.item_name} `}
               sx={{
                 height: 100,
                 width: 100,
@@ -123,6 +123,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
             }}
           >
             <IconButton
+              aria-label="Delete Common Item"
               sx={{
                 color: "red",
                 flexGrow: 2,
@@ -168,7 +169,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
             component="img"
             height={250}
             image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${item?.image}`}
-            alt={`Image of${item.item_name} `}
+            alt={`Image of ${item.item_name} `}
             sx={{
               objectFit: "fill",
               borderTopLeftRadius: 10,
@@ -182,6 +183,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
               color: "primary.dark",
             }}
             onClick={handleClose}
+            aria-label="Close Item Preview"
           >
             <CloseIcon />
           </IconButton>
