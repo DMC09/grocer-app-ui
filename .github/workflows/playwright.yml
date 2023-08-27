@@ -17,11 +17,11 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium --with-deps
         env:
           DEV_URL: ${{ vars.DEV_URL }}
       - name: Read a variable
-        run: echo "My Base URL is  value is ${{ vars.DEV_URL }}
+        run: echo "My Base URL is value is ${{ vars.DEV_URL }}"
       - name: Read a variable second attempt
         run: echo "My Base URL  is ${{ env.DEV_URL }}
       - name: Run Playwright tests
