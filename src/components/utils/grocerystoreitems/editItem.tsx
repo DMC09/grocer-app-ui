@@ -211,7 +211,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
                   component="img"
                   height="200"
                   image={image.preview || ""}
-                  alt={`Image of `}
+                  alt={`Preview`}
                 />
               </Card>
             ) : (
@@ -220,7 +220,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
                   component="img"
                   height="200"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
-                  alt={`Image of `}
+                  alt={`Default`}
                 />
               </Card>
             )}

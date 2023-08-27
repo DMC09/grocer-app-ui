@@ -156,6 +156,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   return (
     <>
       <Button
+        aria-label="Add New Store"
         onClick={handleOpen}
         endIcon={<AddCircleIcon />}
         size="large"
@@ -200,7 +201,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                     component="img"
                     height="200"
                     image={image.preview}
-                    alt={`Image of `}
+                    alt={`Preview  `}
                   />
                 ) : (
                   <CardMedia
@@ -209,7 +210,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                     image={
                       "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                     }
-                    alt={`Image of `}
+                    alt={`Default  `}
                   />
                 )}
               </Card>

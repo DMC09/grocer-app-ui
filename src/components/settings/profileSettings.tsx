@@ -104,7 +104,7 @@ export default function ProfileSettings() {
                         height={150}
                         width={150}
                         image={`${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profileData?.avatar_url}`}
-                        alt={`Image of `}
+                        alt={`Profile Picture  `}
                       />
                     )}
                   </Card>

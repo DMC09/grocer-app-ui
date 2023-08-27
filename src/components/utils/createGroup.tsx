@@ -169,7 +169,7 @@ export default function CreateGroup(profile: ProfileType | null) {
                 component="img"
                 height="150"
                 image={image.preview}
-                alt={`Image of `}
+                alt={`Preview  `}
               />
             </Card>
           ) : (
@@ -184,7 +184,7 @@ export default function CreateGroup(profile: ProfileType | null) {
                 image={
                   "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                 }
-                alt={`Image of `}
+                alt={`Default  `}
               />
             </Card>
           )}
