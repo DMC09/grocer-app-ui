@@ -20,7 +20,6 @@ jobs:
         uses: xom9ikk/dotenv@v2
         with:
           path: ../.env.local
-          mode: development
           load-mode: strict
       - name: Some other action
         run: |
