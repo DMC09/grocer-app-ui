@@ -21,7 +21,7 @@ jobs:
         env:
           DEV_URL: ${{ vars.DEV_URL }}
       - name: Read a variable using vars.
-        run: echo "My Base URL is value is ${{ vars.DEV_URL }}
+        run: echo "My Base URL is value is ${{ vars.DEV_URL }}"
       - name: Read a variable using env.
         run: echo "My Base URL is ${{ env.DEV_URL }}"
       - name: Run Playwright tests
