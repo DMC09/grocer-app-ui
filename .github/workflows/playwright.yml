@@ -25,7 +25,6 @@ jobs:
       - name: Some other action
         run: |
           echo "Variable 1: ${{ env.PLAYWRIGHT_PASSWORD }}
-          echo "Variable 2: ${{ process.env.PLAYWRIGHT_PASSWORD }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
