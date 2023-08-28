@@ -27,7 +27,7 @@ jobs:
       - name: Read a variable using env.
         run: echo "My Base URL is ${{ env.DEV_URL }}"
       - name: Run Playwright tests
-        run: npx playwright test DEV_URL="${{ env.DEV_URL }}" PLAYWRIGHT_USERNAME="${{ env.PLAYWRIGHT_USERNAME }}" PLAYWRIGHT_PASSWORD="${{ env.PLAYWRIGHT_PASSWORD }}"
+        run: npx playwright test
       - uses: actions/upload-artifact@v3
         if: always()
         with:
