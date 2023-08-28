@@ -240,7 +240,6 @@ export default function SupabaseListener({
             getAllCommonItems(supabase);
           }
         )
-
         .subscribe((status, err) =>
           console.log(status, err, "commonItemChannel")
         );
@@ -249,7 +248,7 @@ export default function SupabaseListener({
         supabase.removeChannel(commonItemChannel);
       };
     }
-  }, []);
+  }, [selectId, supabase]);
 
   // --------------------------------------------------- Group Listeners Events ---------------------------------------------------
 
