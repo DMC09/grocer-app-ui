@@ -11,6 +11,7 @@ import {
 import { useSupabase } from "../../supabase/supabase-provider";
 import { useState } from "react";
 import { ProfileType } from "@/types";
+import { getGroupData } from "@/helpers/group";
 
 export default function JoinGroup(profile: ProfileType) {
   const { supabase, session } = useSupabase();
@@ -49,6 +50,7 @@ export default function JoinGroup(profile: ProfileType) {
       if (data) {
         // refetch Data
         return true;
+        getGroupData(supabase);
       } else {
         return false;
       }
