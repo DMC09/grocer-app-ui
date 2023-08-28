@@ -47,12 +47,13 @@ export default function JoinGroup(profile: ProfileType) {
       }
 
       if (data) {
+        // refetch Data
         return true;
       } else {
         return false;
       }
     } else {
-      throw new Error("missing information")
+      throw new Error("missing information");
     }
   }
 

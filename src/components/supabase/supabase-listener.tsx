@@ -22,6 +22,7 @@ import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { getGroupData } from "@/helpers/group";
 import { getProfileData } from "@/helpers/profile";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
+import { getAllCommonItems } from "@/helpers/commonItem";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -32,7 +33,6 @@ export default function SupabaseListener({
 }: {
   serverAccessToken?: string;
 }) {
-
   const { supabase, session } = useSupabase();
   const router = useRouter();
 
@@ -88,6 +88,9 @@ export default function SupabaseListener({
         resetGroceryState();
         if (session?.user && session?.user && session?.user?.id) {
           getProfileData(supabase, session?.user?.id);
+          // fetch Grocery Store Data and common Item Data
+          getAllGroceryStoresData(supabase);
+          getAllCommonItems(supabase);
         }
 
         console.log(
@@ -241,7 +244,6 @@ export default function SupabaseListener({
             status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR ||
             status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT
           ) {
-
           }
         });
 
@@ -380,19 +382,15 @@ export default function SupabaseListener({
           }
         )
         .subscribe((status, err) => {
-
           if (
             status === REALTIME_SUBSCRIBE_STATES.CLOSED ||
             status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR ||
             status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT
           ) {
-
           }
-
         });
 
       return () => {
-
         supabase.removeChannel(itemChannel);
       };
     }
@@ -490,8 +488,7 @@ export default function SupabaseListener({
         () => {
           getGroupData(supabase);
         }
-      )
-
+      );
 
     return () => {
       supabase.removeChannel(groupChannel);
@@ -548,6 +545,5 @@ export default function SupabaseListener({
     resetProfileState,
     resetGroceryState,
   ]);
-  return null
-
+  return null;
 }
