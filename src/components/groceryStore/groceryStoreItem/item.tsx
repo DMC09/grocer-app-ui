@@ -136,7 +136,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
 
     if (checked) {
       addToCommonItemCatalog(supabase, groceryStoreItem);
-      await getAllCommonItems(supabase);
+      getAllCommonItems(supabase);
     }
   }
 
