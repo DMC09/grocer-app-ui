@@ -454,41 +454,17 @@ export default function SupabaseListener({
   // --------------------------------------------------- Group Listeners Events ---------------------------------------------------
 
   useEffect(() => {
-    const groupChannel = supabase
-      .channel(`Group - ${selectId?.slice(-4)}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "groups",
-        },
-        () => {
-          getGroupData(supabase);
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "groups",
-        },
-        () => {
-          getGroupData(supabase);
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "groups",
-        },
-        () => {
-          getGroupData(supabase);
-        }
-      );
+    const groupChannel = supabase.channel(`Group - ${selectId?.slice(-4)}`).on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "groups",
+      },
+      () => {
+        getGroupData(supabase);
+      }
+    );
 
     return () => {
       supabase.removeChannel(groupChannel);
