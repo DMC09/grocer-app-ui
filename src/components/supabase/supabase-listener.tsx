@@ -149,91 +149,14 @@ export default function SupabaseListener({
         .on(
           "postgres_changes",
           {
-            event: "INSERT",
+            event: "*",
             schema: "public",
             table: "grocerystores",
             filter: `select_id=eq.${selectId}`,
           },
           (payload) => {
-            if (payload && payload?.new && payload?.new?.id) {
-              const addedToState = GroceryStoreData.some(
-                (groceryStore) => groceryStore.id === payload?.new?.id
-              );
-
-              if (!addedToState) {
-                console.log(
-                  `%cListener: - Adding new store ${payload.new.name} `,
-                  "color: white; background-color: #AB7D00;",
-                  payload.new
-                );
-                // ! Fetch Data Again
-                addNewGroceryStore(payload.new as GroceryStoreWithItemsType);
-              }
-            }
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "grocerystores",
-          },
-          (payload) => {
-            if (payload && payload?.new && payload?.new?.id) {
-              const currentGroceryStoreObjectIndex = GroceryStoreData.findIndex(
-                (grocerystore) => grocerystore.id == payload.new.id
-              );
-              const currentGroceryStoreObject =
-                GroceryStoreData[currentGroceryStoreObjectIndex];
-
-              const areObjectsEqual = Object.is(
-                currentGroceryStoreObject,
-                payload.new
-              );
-
-              if (!areObjectsEqual) {
-                console.log(
-                  `%cListener: - Updating Store ${currentGroceryStoreObject?.name} `,
-                  "color: white; background-color: #AB7D00;",
-                  payload.new
-                );
-                // ! Fetch Data Again
-                updatedGroceryStore(payload.new as GroceryStoreWithItemsType);
-              }
-            }
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table: "grocerystores",
-            filter: `select_id=eq.${selectId}`,
-          },
-          (payload) => {
-            if (payload && payload?.old && payload?.old.id) {
-              const storeId = Number(payload?.old?.id);
-
-              const storeToBeRemoved = GroceryStoreData.filter(
-                (store) => store.id === payload?.old.id
-              )?.[0];
-
-              const inGroceryStoreData = GroceryStoreData.some(
-                (groceryStore) => groceryStore.id === storeId
-              );
-
-              if (inGroceryStoreData) {
-                console.log(
-                  `%cListener: - Deleting store ${storeToBeRemoved.name} `,
-                  "color: white; background-color: #AB7D00;",
-                  storeToBeRemoved
-                );
-                // ! Fetch Data Again
-
-                deleteGroceryStore(storeId);
-              }
+            if (payload) {
+              getAllGroceryStoresData(supabase);
             }
           }
         )
@@ -270,114 +193,14 @@ export default function SupabaseListener({
         .on(
           "postgres_changes",
           {
-            event: "INSERT",
+            event: "*",
             schema: "public",
             table: "grocerystoreitems",
             filter: `select_id=eq.${selectId}`,
           },
           (payload) => {
-            console.log(payload, "After inserting a grocery store item");
-
-            const groceryStoreIndex = findGroceryStoreIndex(
-              GroceryStoreData,
-              payload.new.id
-            );
-
-            if (payload && payload?.new && payload?.new?.id) {
-              const itemAddedToState = GroceryStoreData[
-                groceryStoreIndex
-              ]?.grocerystoreitems?.some(
-                (item) => item?.id === payload?.new?.id
-              );
-
-              console.log(itemAddedToState, "Item Added to State?");
-
-              if (!itemAddedToState) {
-                console.log(
-                  `%cListener: - Adding new item ${payload.new.name} `,
-                  "color: white; background-color: #AB7D00;",
-                  payload.new
-                );
-                // ! Fetch Data Again
-                addNewitem(payload.new as GroceryStoreItemType);
-              }
-            }
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "grocerystoreitems",
-            filter: `select_id=eq.${selectId}`,
-          },
-          (payload) => {
-            console.log(payload, "After an update");
-
-            const groceryStoreIndex = findGroceryStoreIndex(
-              GroceryStoreData,
-              payload.old.id
-            );
-
-            const groceryStoreItemIndex = getGroceryStoreItemIndex(
-              GroceryStoreData,
-              groceryStoreIndex,
-              payload.old.id
-            );
-
-            const currentObject =
-              GroceryStoreData[groceryStoreIndex]?.grocerystoreitems[
-                groceryStoreItemIndex
-              ];
-
-            const isObjectTheSame = Object.is(currentObject, payload.new);
-
-            if (!isObjectTheSame) {
-              // ! Fetch Data Again
-              console.log("updating the item in the listner");
-              updateItem(payload.new as GroceryStoreItemType);
-            }
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table: "grocerystoreitems",
-            filter: `select_id=eq.${selectId}`,
-          },
-          (payload) => {
-            console.log(payload, "Delete item payload");
-            if (payload && payload?.old && payload?.old?.id) {
-              const storeIndex = findGroceryStoreIndex(
-                GroceryStoreData,
-                payload.old.id
-              );
-
-              const itemIndex = getGroceryStoreItemIndex(
-                GroceryStoreData,
-                storeIndex,
-                payload.old.id
-              );
-
-              // const itemToBeDeleted =
-              const isDeletedIdInState = GroceryStoreData[
-                storeIndex
-              ]?.grocerystoreitems.some((item) => item.id === payload.old.id);
-
-              console.log(isDeletedIdInState, "In the listenr!");
-              if (isDeletedIdInState) {
-                // ! Fetch Data Again
-                console.log(
-                  `%cListener: - Deleting item from store ${GroceryStoreData[storeIndex].name} `,
-                  "color: white; background-color: #AB7D00;",
-                  GroceryStoreData[storeIndex]?.grocerystoreitems[itemIndex]
-                );
-
-                deleteItem(payload.old.id);
-              }
+            if (payload) {
+              getAllGroceryStoresData(supabase);
             }
           }
         )
