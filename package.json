@@ -37,7 +37,11 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.37.1",
+    "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.0.0",
-    "encoding": "^0.1.13"
+    "@testing-library/user-event": "^14.4.3",
+    "encoding": "^0.1.13",
+    "jest": "^29.6.4",
+    "jest-environment-jsdom": "^29.6.4"
   }
 }
