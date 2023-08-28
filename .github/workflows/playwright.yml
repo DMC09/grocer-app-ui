@@ -22,10 +22,6 @@ jobs:
           DEV_URL: ${{ vars.DEV_URL }}
           PLAYWRIGHT_USERNAME: ${{ vars.PLAYWRIGHT_USERNAME }}
           PLAYWRIGHT_PASSWORD: ${{ vars.PLAYWRIGHT_PASSWORD }}
-      - name: Read a variable using vars.
-        run: echo "My Base URL is value is ${{ vars.DEV_URL }}"
-      - name: Read a variable using env.
-        run: echo "My Base URL is ${{ env.DEV_URL }}"
       - name: Run Playwright tests
         run: npx playwright test
       - uses: actions/upload-artifact@v3
@@ -36,10 +32,11 @@ jobs:
           retention-days: 30
       - name: Setup Pages
         uses: actions/configure-pages@v2
-      - name: Upload Artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
+          # Upload entire repository
           path: playwright-report/
-      - name: Deploy to Github Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
