@@ -411,36 +411,13 @@ export default function SupabaseListener({
         .channel(`Common Item: ${selectId?.slice(-4)}`)
         .on(
           "postgres_changes",
-          { event: "INSERT", schema: "public", table: "commonitems" },
+          { event: "*", schema: "public", table: "commonitems" },
           (payload) => {
-            console.log(payload, "After an insert to the commonitems tables");
-            // ! Fetch Data Again
-            addToCatalog(payload.new as CommonItemType);
-            // TODO: function
+            console.log(payload, "Event happened on commonitems tables");
+            getAllCommonItems(supabase);
           }
         )
-        .on(
-          "postgres_changes",
-          { event: "UPDATE", schema: "public", table: "commonitems" },
-          (payload) => {
-            console.log(payload, "After an update to the commonitems tables");
-            updateToCatalog(payload.new as CommonItemType);
-          }
-        )
-        .on(
-          "postgres_changes",
-          { event: "DELETE", schema: "public", table: "commonitems" },
-          (payload) => {
-            console.log(
-              payload,
-              "After a delete an item to the commonitems tables"
-            );
-            // ! Fetch Data Again
-            removeFromCatalog(payload.old.id);
 
-            // TODO: function
-          }
-        )
         .subscribe((status, err) =>
           console.log(status, err, "commonItemChannel")
         );
