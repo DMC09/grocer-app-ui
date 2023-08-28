@@ -45,14 +45,8 @@ export default function JoinGroup(profile: ProfileType) {
 
       if (error) {
         throw new Error(error.message);
-      }
-
-      if (data) {
-        // refetch Data
-        return true;
-        getGroupData(supabase);
       } else {
-        return false;
+        getGroupData(supabase);
       }
     } else {
       throw new Error("missing information");
