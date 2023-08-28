@@ -26,7 +26,10 @@ import {
   findGroceryStoreIndex,
 } from "@/stores/GroceryDataStore";
 
-import { addToCommonItemCatalog } from "@/helpers/commonItem";
+import {
+  addToCommonItemCatalog,
+  getAllCommonItems,
+} from "@/helpers/commonItem";
 import { theme } from "@/utils/theme";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
@@ -133,6 +136,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
 
     if (checked) {
       addToCommonItemCatalog(supabase, groceryStoreItem);
+      await getAllCommonItems(supabase);
     }
   }
 
