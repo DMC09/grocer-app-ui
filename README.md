@@ -21,10 +21,18 @@ Shared Lists for Groups
 
 ## Demo   
 
-<video width="320" height="240" controls>
-  <source src="./demo/group.mp4" type="video/mp4">
-</video>
+After signing in/up with your email or google account you will be able to use the Grocer App.
 
+With the main workflow you have everything you need to manage your grocery lists. In the demo below you can see me demoing the following 
+
+* Adding/Editing Stores 
+* Adding/Editing/Completing items 
+* Adding/Editing the Common Items Catalog
+
+
+If you want to share you data with a group you can create a group and generate a share code so that others can join too. When in group mode members share data including stores/items/ and common items. 
+
+In this demo you can see me showcasing some of the same features as before however all members are able share the same data without data becoming out of sync or stale. This can be useful for families to efficiently manage their grocery lists.
 
 Main Workflow 
 
