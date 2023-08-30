@@ -14,6 +14,7 @@ import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
 import { getAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCommonItem from "../groceryStore/commonItem/addCommonItem";
+import NoManagedCommonItem from "../utils/commonitems/noManagedCommonItems";
 
 export default function CommonItemsSettings() {
   const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
@@ -49,7 +50,7 @@ export default function CommonItemsSettings() {
           <AddCommonItem />
         </>
 
-        {commonItemsToRender}
+        {commonItemsCatalog.length > 0 ? commonItemsToRender : <NoManagedCommonItem />}
       </Container>
     </>
   );

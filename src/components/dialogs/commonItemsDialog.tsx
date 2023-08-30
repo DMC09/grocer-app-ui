@@ -23,8 +23,7 @@ import { theme } from "@/helpers/theme";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import CommonItem from "../groceryStore/commonItem/commonItem";
-
-
+import NoCommonItems from "../utils/commonitems/noCommonItems";
 
 export default function CommonItemsDialog({
   storeId,
@@ -58,8 +57,6 @@ export default function CommonItemsDialog({
       }
     }
   }, []);
-
-
 
   const mappedItems = itemsToSubmit.map((item) => ({
     cid: item.id,
@@ -119,11 +116,14 @@ export default function CommonItemsDialog({
         <DialogContent
           sx={{
             p: 0,
-            
           }}
         >
-          <Box sx={{  height: "90%",overflowY:"scroll",border:1 }}>
-            {commonItemsToRender}
+          <Box sx={{ height: "90%", overflowY: "scroll", border: 1 }}>
+            {commonItemsCatalog.length > 0 ? (
+              commonItemsToRender
+            ) : (
+              <NoCommonItems />
+            )}
             {/* <Box
             sx={{
               border: 1,
