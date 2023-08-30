@@ -1,10 +1,6 @@
 on:
   pull_request:
   issue_comment:
-
-env:
-  OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   pr_agent_job:
     runs-on: ubuntu-latest
@@ -14,9 +10,9 @@ jobs:
         id: pragent
         uses: Codium-ai/pr-agent@main
       - name: Read openaikey.
-        run: echo " ${{ secrets.OPENAI_KEY }} or ${{env.OPENAI_KEY}}"
+        run: echo " ${{ secrets.OPENAI_KEY }} "
       - name: Read github token.
-        run: echo " ${{ secrets.GITHUB_TOKEN }} or ${{env.GITHUB_TOKEN}}"
+        run: echo " ${{ secrets.GITHUB_TOKEN }} "
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
