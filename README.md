@@ -1,6 +1,7 @@
 
 # Grocer App
 
+![Logo](https://github.com/DMC09/grocer-app-ui/assets/43209397/5722a9fe-c4c5-4f50-8fe2-62a2297e001c)
 
 
 ## Overview
@@ -19,6 +20,25 @@ Common Item Catalog
 Shared Lists for Groups  
 
 ## Demo   
+
+<video width="320" height="240" controls>
+  <source src="./demo/group.mp4" type="video/mp4">
+</video>
+
+
+Main Workflow 
+
+https://github.com/DMC09/grocer-app-ui/assets/43209397/f3c50eb7-d209-4ce9-9d01-0ae46ff5cf5d
+
+Group Workflow
+
+https://github.com/DMC09/grocer-app-ui/assets/43209397/fbe8bbe3-46ae-4df5-9576-10c93145e468
+
+
+
+
+
+
 
 
 
