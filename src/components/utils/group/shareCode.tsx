@@ -47,7 +47,7 @@ export default function ShareCode(profile: ProfileType | null) {
             mt: 2,
           }}
         >
-          <Typography aria-label="Share Code" align="center">
+          <Typography id="shareCode" aria-label="Share Code" align="center">
             {shareCode}
           </Typography>
         </Box>
