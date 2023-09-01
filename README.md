@@ -6,6 +6,8 @@
 
 ## Overview
 The Grocer App is a full-stack application can be used to manage grocery lists. It allows users to also share their lists with other group members. Built with a simple and effective UI.
+
+
 [Live ](https://grocer-app-ui.vercel.app/)
 
 
