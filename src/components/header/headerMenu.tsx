@@ -75,7 +75,7 @@ export default function HeaderMenu() {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Sign Out
         </MenuItem>
       </Menu>
     </>
