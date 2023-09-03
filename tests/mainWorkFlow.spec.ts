@@ -2,7 +2,6 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Normal Work Flow ", () => {
   test("Main", async ({ page }) => {
-
     await test.step("Sign In", async () => {
       await page.goto("/");
       await expect(page).toHaveURL("/login", {
@@ -34,7 +33,7 @@ test.describe("Normal Work Flow ", () => {
       });
     });
 
-    await test.step("Insert Item (Cheese - Mild Cheddar)", async () => {
+    await test.step("Add Item (Cheese - Mild Cheddar) Quantity:5", async () => {
       await page.getByLabel("Open grocery store menu").click({ delay: 500 });
       await page
         .getByRole("menuitem", { name: "Add Item" })
@@ -45,7 +44,7 @@ test.describe("Normal Work Flow ", () => {
       await page.getByRole("button", { name: "Submit" }).click({ delay: 500 });
     });
 
-    await test.step("Update Store (Wally World)", async () => {
+    await test.step("Update Walmart -> Wally World", async () => {
       await page.getByLabel("Open grocery store menu").click();
       await page.getByRole("menuitem", { name: "Store Settings" }).click();
       await expect(
@@ -58,7 +57,7 @@ test.describe("Normal Work Flow ", () => {
       ).toBeVisible();
     });
 
-    await test.step("Update Item (Cheese - Sharp Cheddar)", async () => {
+    await test.step("Update Cheese Item Notes to be Sharp Cheddar", async () => {
       await page.getByRole("button", { name: "5 Cheese" }).click();
       await page.getByRole("heading", { name: "Mild Cheddar" }).click(); //assert this
       await page.getByLabel("Edit Item").click();
@@ -72,7 +71,7 @@ test.describe("Normal Work Flow ", () => {
     await test.step("Complete Item (Cheese)", async () => {
       await page.getByLabel("Complete Cheese").click();
     });
-    await test.step("Add Item To Catalog via Flag ", async () => {
+    await test.step("Add (Bread - Whole Wheat) To Common Item Catalog via Flag", async () => {
       await page.getByLabel("Open grocery store menu").click();
       await page.getByRole("menuitem", { name: "Add Item" }).click();
       await page.getByLabel("Name").fill("Bread");
@@ -86,7 +85,7 @@ test.describe("Normal Work Flow ", () => {
       await page.getByLabel("Close Item Preview").click();
     });
 
-    await test.step("Create new Common item ", async () => {
+    await test.step("Create new Common Item (Rice - Jasmine)", async () => {
       await page.getByLabel("Profile Menu").click({ delay: 2000 });
       await page.getByRole("menuitem", { name: "Settings" }).click();
       await expect(page).toHaveURL("/settings", {
@@ -98,13 +97,13 @@ test.describe("Normal Work Flow ", () => {
       await page.getByLabel("Notes").fill("Jasmine");
       await page.getByRole("button", { name: "Submit" }).click();
     });
-    await test.step("Create another new Common item ", async () => {
+    await test.step("Create new Common Item (Milk - Soy) ", async () => {
       await page.getByLabel("Add New Common item").click();
       await page.getByLabel("Name").fill("Milk");
       await page.getByLabel("Notes").fill("Soy");
       await page.getByRole("button", { name: "Submit" }).click();
     });
-    await test.step("Add multiple Items via Catalog ", async () => {
+    await test.step("Add Milk and Rice to Wally World ", async () => {
       await page.getByLabel("To Home").click();
       await page.getByRole("button", { name: "Wally World" }).click();
       await page.getByLabel("Open grocery store menu").click();
@@ -122,7 +121,7 @@ test.describe("Normal Work Flow ", () => {
       await page.getByRole("button", { name: "Add" }).click();
     });
 
-    await test.step("Updating A common Item  ", async () => {
+    await test.step("Updating common item Rice -> (Quinoa-White)  ", async () => {
       await page.getByLabel("Profile Menu").click();
       await page.getByRole("menuitem", { name: "Settings" }).click();
       await page.goto("/settings");
@@ -130,7 +129,6 @@ test.describe("Normal Work Flow ", () => {
       await page
         .getByRole("button", { name: "Image of Rice Rice Jasmine" })
         .click();
-
       await page.getByLabel("Edit Common Item").click();
       await page.getByLabel("Name").fill("Quinoa");
       await page.getByLabel("Notes").fill("White");
@@ -138,7 +136,7 @@ test.describe("Normal Work Flow ", () => {
       await page.getByLabel("Close Item Preview").click();
     });
 
-    await test.step("Add newly updating common item", async () => {
+    await test.step("Add (Quinoa - white) to Wally World", async () => {
       await page.getByLabel("To Home").click();
       await page.getByRole("button", { name: "Wally World" }).click();
       await page.getByLabel("Open grocery store menu").click();
@@ -147,7 +145,7 @@ test.describe("Normal Work Flow ", () => {
       await page.getByLabel("Increment Quinoa").click();
       await page.getByRole("button", { name: "Add" }).click();
     });
-    await test.step("Clear Items ", async () => {
+    await test.step("Clear Items in the Wally World", async () => {
       await page.getByLabel("Complete Bread").click();
       await page.getByLabel("Complete Rice").click();
       await page.getByLabel("Complete Milk").click();
@@ -173,7 +171,7 @@ test.describe("Normal Work Flow ", () => {
       await page.getByLabel("Delete Common Item").click();
     });
 
-    await test.step("Delete A Grocery Store ", async () => {
+    await test.step("Delete Wally World", async () => {
       await page.getByLabel("To Home").click();
       await page.getByRole("button", { name: "Wally World" }).click();
       await page.getByLabel("Open grocery store menu").click();
