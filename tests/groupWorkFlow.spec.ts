@@ -228,7 +228,7 @@ test.describe("Group  Work Flow ", () => {
       await firstAccount.getByRole("button", { name: "Leave Group" }).click();
     });
 
-    await test.step("FA: Sign out", async () => {
+    await test.step("FA: Sign Out", async () => {
       await firstAccount.getByLabel("Profile Menu").click();
       await firstAccount.getByRole("menuitem", { name: "Sign Out" }).click();
     });
@@ -251,7 +251,7 @@ test.describe("Group  Work Flow ", () => {
       await secondAccount.getByRole("button", { name: "Leave Group" }).click();
     });
 
-    await test.step("SA: Sign out", async () => {
+    await test.step("SA: Sign Out", async () => {
       await secondAccount.getByLabel("Profile Menu").click();
       await secondAccount.getByRole("menuitem", { name: "Sign Out" }).click();
     });
