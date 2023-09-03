@@ -85,7 +85,7 @@ export default function SupabaseListener({
     const selectIdWatcher = ProfileDataStore.subscribe(
       (state) => state.data.select_id,
       (value, oldValue) => {
-        resetGroceryState();
+        // resetGroceryState();
         if (session?.user && session?.user && session?.user?.id) {
           getProfileData(supabase, session?.user?.id);
           // fetch Grocery Store Data and common Item Data
@@ -104,7 +104,7 @@ export default function SupabaseListener({
     return () => {
       selectIdWatcher();
     };
-  }, [supabase]);
+  }, [session?.user, supabase, selectId]);
 
   // --------------------------------------------------- Polling Events ---------------------------------------------------
   useEffect(() => {
