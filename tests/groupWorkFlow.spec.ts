@@ -146,12 +146,12 @@ test.describe("Group  Work Flow ", () => {
       await secondAccount
         .getByLabel("Share Code", { exact: true })
         .click({ delay: 500 });
-      await secondAccount.pause();
+
       await secondAccount
         .getByLabel("Share Code", { exact: true })
         .fill(code as string);
       await secondAccount.getByRole("button", { name: "Submit" }).click();
-      await secondAccount.pause();
+
       await expect(secondAccount.getByText("Z Fighters")).toBeVisible({
         timeout: 20000,
       });
