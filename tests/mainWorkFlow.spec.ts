@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Normal Work Flow ", () => {
+  console.log(process.env,'in the file')
   test("Main", async ({ page }) => {
     await test.step("Sign In", async () => {
       await page.goto("/");
