@@ -5,7 +5,7 @@ import { env } from "process";
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config();
 
 const DEV_URL = process.env.DEV_URL || env.DEV_URL;
 
