@@ -7,9 +7,11 @@ test.describe("Normal Work Flow ", () => {
       await expect(page).toHaveURL("/login", {
         timeout: 120000,
       });
+      await page.getByPlaceholder("Your email address").click({ delay: 500 });
       await page
         .getByPlaceholder("Your email address")
         .fill(process.env.PLAYWRIGHT_USERNAME as string, { timeout: 5000 });
+      await page.getByPlaceholder("Your password").click({ delay: 500 });
       await page
         .getByPlaceholder("Your password")
         .fill(process.env.PLAYWRIGHT_PASSWORD as string, { timeout: 5000 });
