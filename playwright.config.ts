@@ -11,9 +11,10 @@ dotenv.config();
 
 const DEV_URL = process.env.DEV_URL;
 
-console.log(DEV_URL);
-console.log(process.env);
-console.log(env);
+
+console.log(process.env,'process');
+console.log(env,'env');
+console.log(env.vars,'varss');
 
 console.log(process.env.DEV_URL, "through process ");
 
