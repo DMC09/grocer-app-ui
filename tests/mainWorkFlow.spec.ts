@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Normal Work Flow ", () => {
-
   test("Main", async ({ page }) => {
     await test.step("Sign In", async () => {
       await page.goto("/");
@@ -182,6 +181,15 @@ test.describe("Normal Work Flow ", () => {
       await expect(page).toHaveURL("/dashboard", {
         timeout: 120000,
       });
+    });
+
+    await test.step("Sign Out", async () => {
+      await page.getByLabel("Profile Menu").click();
+      await page.getByRole("menuitem", { name: "Sign Out" }).click();
+      await expect(page).toHaveURL("/login", {
+        timeout: 120000,
+      });
+      await page.close();
     });
   });
 });

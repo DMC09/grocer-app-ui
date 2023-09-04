@@ -231,6 +231,10 @@ test.describe("Group  Work Flow ", () => {
     await test.step("FA: Sign Out", async () => {
       await firstAccount.getByLabel("Profile Menu").click();
       await firstAccount.getByRole("menuitem", { name: "Sign Out" }).click();
+      await expect(firstAccount).toHaveURL("/login", {
+        timeout: 120000,
+      });
+      await firstAccount.close();
     });
 
     await test.step("SA: Delete Common Item", async () => {
@@ -254,6 +258,10 @@ test.describe("Group  Work Flow ", () => {
     await test.step("SA: Sign Out", async () => {
       await secondAccount.getByLabel("Profile Menu").click();
       await secondAccount.getByRole("menuitem", { name: "Sign Out" }).click();
+      await expect(secondAccount).toHaveURL("/login", {
+        timeout: 120000,
+      });
+      await secondAccount.close();
     });
   });
 });
