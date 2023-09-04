@@ -1,10 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-require("dotenv").config();
 
 const DEV_URL = process.env.DEV_URL;
 
