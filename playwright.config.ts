@@ -1,5 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-import { env } from "process";
 
 /**
  * Read environment variables from file.
@@ -7,10 +6,10 @@ import { env } from "process";
  */
 require("dotenv").config();
 
-const DEV_URL = process.env.DEV_URL || env.DEV_URL;
+const DEV_URL = process.env.DEV_URL;
 
 console.log(DEV_URL);
-console.log(env.DEV_URL, "through env ");
+
 console.log(process.env.DEV_URL, "through process ");
 
 /**
@@ -35,7 +34,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: DEV_URL,
+    baseURL: process.env.DEV_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 
