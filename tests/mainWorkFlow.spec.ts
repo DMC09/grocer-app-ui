@@ -185,7 +185,9 @@ test.describe("Normal Work Flow ", () => {
 
     await test.step("Sign Out", async () => {
       await page.getByLabel("Profile Menu").click();
-      await page.getByRole("menuitem", { name: "Sign Out" }).click();
+      await page
+        .getByRole("menuitem", { name: "Sign Out" })
+        .click({ delay: 500 });
       await expect(page).toHaveURL("/login", {
         timeout: 120000,
       });
