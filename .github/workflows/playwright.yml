@@ -22,6 +22,8 @@ jobs:
           DEV_URL: ${{ vars.DEV_URL }}
           PLAYWRIGHT_USERNAME: ${{ vars.PLAYWRIGHT_USERNAME }}
           PLAYWRIGHT_PASSWORD: ${{ vars.PLAYWRIGHT_PASSWORD }}
+          PLAYWRIGHTALT_USERNAME: ${{ vars.PLAYWRIGHTALT_USERNAME }}
+          PLAYWRIGHTALT_PASSWORD: ${{ vars.PLAYWRIGHTALT_PASSWORD }}
       - name: Run Playwright tests
         run: npx playwright test
       - uses: actions/upload-artifact@v3
