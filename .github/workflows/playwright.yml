@@ -18,8 +18,6 @@ jobs:
         run: npm ci --legacy-peer-deps
       - name: Install Chromium browser
         run: npx playwright install chromium --with-deps
-      - name: Read variables
-        run: echo "My APP_ID value is ${{ vars.DEV_URL }} ${{ vars.PLAYWRIGHT_USERNAME }} ${{ vars.PLAYWRIGHT_PASSWORD }} ${{ vars.PLAYWRIGHTALT_USERNAME }} ${{ vars.PLAYWRIGHTALT_PASSWORD }}"
         env:
           DEV_URL: ${{ vars.DEV_URL }}
           PLAYWRIGHT_USERNAME: ${{ vars.PLAYWRIGHT_USERNAME }}
@@ -34,13 +32,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 3
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload entire repository
-          path: playwright-report/playwright-report
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
