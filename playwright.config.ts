@@ -9,6 +9,10 @@ require("dotenv").config({ path: "./.env" });
 
 const DEV_URL = process.env.DEV_URL || env.DEV_URL;
 
+console.log(DEV_URL);
+console.log(env.DEV_URL, "through env ");
+console.log(process.env.DEV_URL, "through process ");
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
