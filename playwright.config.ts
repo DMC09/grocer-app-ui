@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as dotenv from "dotenv";
+import { env } from "process";
 
-import dotenv from "dotenv";
 dotenv.config();
 
 /**
@@ -11,6 +12,8 @@ dotenv.config();
 const DEV_URL = process.env.DEV_URL;
 
 console.log(DEV_URL);
+console.log(process.env);
+console.log(env);
 
 console.log(process.env.DEV_URL, "through process ");
 
