@@ -18,14 +18,14 @@ jobs:
         run: npm ci --legacy-peer-deps
       - name: Install Chromium browser
         run: npx playwright install chromium --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test
         env:
           DEV_URL: ${{ vars.DEV_URL }}
           PLAYWRIGHT_USERNAME: ${{ vars.PLAYWRIGHT_USERNAME }}
           PLAYWRIGHT_PASSWORD: ${{ vars.PLAYWRIGHT_PASSWORD }}
           PLAYWRIGHTALT_USERNAME: ${{ vars.PLAYWRIGHTALT_USERNAME }}
           PLAYWRIGHTALT_PASSWORD: ${{ vars.PLAYWRIGHTALT_PASSWORD }}
-      - name: Run Playwright tests
-        run: npx playwright test
       - uses: actions/upload-artifact@v3
         if: always()
         with:
