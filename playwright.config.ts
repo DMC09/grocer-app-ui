@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import * as dotenv from "dotenv";
 import { env } from "process";
 
-dotenv.config();
+require("dotenv").config();
 
 /**
  * Read environment variables from file.
@@ -11,10 +11,9 @@ dotenv.config();
 
 const DEV_URL = process.env.DEV_URL;
 
-
-console.log(process.env,'process');
-console.log(env,'env');
-console.log(env.vars,'varss');
+console.log(process.env, "process");
+console.log(env, "env");
+console.log(env.vars, "varss");
 
 console.log(process.env.DEV_URL, "through process ");
 
