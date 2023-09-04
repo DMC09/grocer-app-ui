@@ -9,13 +9,7 @@ require("dotenv").config();
  * https://github.com/motdotla/dotenv
  */
 
-const DEV_URL = process.env.DEV_URL;
-
-console.log(process.env, "process");
-console.log(env, "env");
-console.log(env.vars, "varss");
-
-console.log(process.env.DEV_URL, "through process ");
+process.env.DEV_URL;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
