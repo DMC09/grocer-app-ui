@@ -302,3 +302,10 @@ export interface MinimalGroceryStoreProps {
   groceryStore: GroceryStoreType;
   router: AppRouterInstance;
 }
+
+export enum ImageType {
+  item = "item",
+  store = "store",
+  profile = "profile",
+  group = "group",
+}
