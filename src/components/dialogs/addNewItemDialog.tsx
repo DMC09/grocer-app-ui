@@ -18,8 +18,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialog } from "@/context/DialogContext";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import { GroceryStoreType, ImageType } from "@/types";
-import { generateImagePath, handleStoreImageUpload } from "@/helpers/image";
+import { BucketType, GroceryStoreType, ImageType } from "@/types";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
@@ -98,7 +98,13 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     if (groceryStore.select_id && itemName) {
       if (image.raw && imagePath) {
         // TODO: error handling
-        await handleStoreImageUpload(supabase, imagePath, image?.raw);
+
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Store
+        );
       }
       const newItem = await addNewGroceryStoreItem(
         supabase,
