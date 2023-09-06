@@ -110,18 +110,22 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
 
-    const generatedImagePath = await generateStoreImagePath(select_id);
+    const generatedPath = await generateImagePath(
+      select_id,
+      ImageType.store
+    );
+
 
     if (event.target.files.length) {
       const sizeInMB = event.target.files[0].size / 1048576;
-      console.log("Size of image", sizeInMB);
+      console.log(`Image Size:${sizeInMB}` );
 
       if (sizeInMB > 50) {
         setShowImageError(true);
         setImage({ preview: "", raw: "" });
         setImagePath(null);
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
         setImage({
           preview: URL.createObjectURL(event.target.files[0]),
           raw: event.target.files[0],
