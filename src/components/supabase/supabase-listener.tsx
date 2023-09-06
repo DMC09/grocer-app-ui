@@ -253,7 +253,6 @@ export default function SupabaseListener({
   // --------------------------------------------------- Group Listeners Events ---------------------------------------------------
 
   useEffect(() => {
-    console.log(supabase, "supabase??");
     const groupChannel = supabase
       .channel(`Group - ${selectId?.slice(-4)}`)
       .on(

@@ -23,7 +23,6 @@ export default function CommonItem(item: CommonItemType) {
   const [uniqueId, setUniqueId] = useState<number | null>(null);
   const itemsToSubmit = CommonItemsDataStore((state) => state.itemsToSubmit);
 
-  // not working again1!!
 
   const addItemToSubmit = CommonItemsDataStore(
     (state) => state.addItemToSubmit
@@ -36,9 +35,6 @@ export default function CommonItem(item: CommonItemType) {
     (state) => state.removeItemToSubmit
   );
 
-  useEffect(() => {
-    console.log(itemsToSubmit, "Items To Submit?");
-  }, [itemsToSubmit]);
 
   const memoizedItemToAdd = useMemo(() => {
     const itemToAdd = {
