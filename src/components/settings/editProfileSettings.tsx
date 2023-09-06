@@ -16,36 +16,37 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
-import { ProfileType } from "@/types";
+import { BucketType, ImageType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "../supabase/supabase-provider";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { theme } from "@/helpers/theme";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
+import { editProfileData } from "@/helpers/profile";
 
-
-export default function EditProfileSettings(profile: ProfileType | null) {
+export default function EditProfileSettings(profile: ProfileType) {
   // Component State
-  const [firstName, setFirstName] = useState<string | null | undefined>(
+  const [firstName, setFirstName] = useState<string | null>(
     profile?.first_name
   );
-  const [lastName, setLastName] = useState<string | null | undefined>(
-    profile?.last_name
-  );
+  const [lastName, setLastName] = useState<string | null>(profile?.last_name);
   const [image, setImage] = useState({
     preview: profile?.avatar_url,
     raw: "",
   });
   const [open, setOpen] = useState(false);
-  const [phone, setPhone] = useState<string | null | undefined>(profile?.phone);
+  const [phone, setPhone] = useState<string | null>(profile?.phone);
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showImageError, setShowImageError] = useState<boolean | null>(null);
 
-  function handleOpen() {
-    setOpen(true);
-  }
   // Hooks
   const { supabase } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // Event Handlers
+  function handleOpen() {
+    setOpen(true);
+  }
 
   function handleClose() {
     setOpen(false);
@@ -57,79 +58,55 @@ export default function EditProfileSettings(profile: ProfileType | null) {
     setShowImageError(null);
   }
 
-  async function handleImageUpload() {
-    if (image.raw && imagePath) {
-      // TODO: error handling
-      const { data, error } = await supabase.storage
-        .from("profile")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
-        .upload(imagePath, image.raw);
-      if (error) {
-        throw new Error(`Error uploading image ${error.message}`);
+  async function handleImageSet(event: any) {
+    if (event.target.files.length && profile?.select_id) {
+      const generatedPath = await generateImagePath(
+        profile?.select_id,
+        ImageType.Profile
+      );
+
+      const sizeInMB = event.target.files[0].size / 1048576;
+
+      if (sizeInMB > 50) {
+        setShowImageError(true);
+        setImagePath(null);
+        setImage({ preview: profile?.avatar_url, raw: "" });
       } else {
-        console.log(data, "image uploaded successfully");
+        setImagePath(generatedPath);
+        setImage({
+          preview: URL.createObjectURL(event.target.files[0]),
+          raw: event.target.files[0],
+        });
       }
     }
   }
 
   async function handleEdit() {
-    // do the update on this one I guess
+    const timeStamp = new Date().toISOString();
 
-    const now = new Date().toISOString();
-    if (image.raw) {
-      await handleImageUpload();
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          first_name: firstName,
-          last_name: lastName,
-          updated_at: now,
-          avatar_url: imagePath,
-          phone,
-        })
-        .eq("id", profile?.id)
-        .select();
+    if (image.raw && imagePath) {
+      await handleImageUpload(
+        supabase,
+        imagePath,
+        image?.raw,
+        BucketType.Profile
+      );
 
-      if (data) {
+      const newProfileData = await editProfileData(
+        supabase,
+        firstName,
+        lastName,
+        timeStamp,
+        imagePath,
+        phone,
+        profile?.id
+      );
+
+      if (newProfileData) {
         setOpen(false);
-      } else if (error) {
-        throw new Error(error.message);
+      } else {
+        throw new Error("Unable to update profile");
       }
-    } else {
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          first_name: firstName,
-          last_name: lastName,
-          updated_at: now,
-          phone,
-        })
-        .eq("id", profile?.id)
-        .select();
-
-      if (data) {
-        setOpen(false);
-      } else if (error) {
-        throw new Error(error.message);
-      }
-    }
-  }
-  async function generateImagePath(select_id: string) {
-    //Formula is last 16 characters of select_id + Current DateTime in seconds/
-    const lastPartOfSelectId = select_id?.slice(-16);
-    const currentTimeStamp = new Date().getTime();
-
-    setImagePath(`profiles/${lastPartOfSelectId}/${currentTimeStamp}`);
-  }
-
-  async function handleImageSet(event: any) {
-    if (event.target.files.length && profile?.select_id) {
-      generateImagePath(profile?.select_id);
-      setImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        raw: event.target.files[0],
-      });
     }
   }
 
