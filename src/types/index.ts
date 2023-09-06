@@ -304,8 +304,8 @@ export interface MinimalGroceryStoreProps {
 }
 
 export enum ImageType {
-  item = "item",
-  store = "store",
-  profile = "profile",
-  group = "group",
+  Item = "item",
+  Store = "store",
+  Profile = "profile",
+  Group = "group",
 }

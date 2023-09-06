@@ -113,7 +113,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
     const generatedPath = await generateImagePath(
       select_id,
-      ImageType.store
+      ImageType.Store
     );
 
 

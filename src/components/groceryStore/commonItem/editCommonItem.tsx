@@ -1,4 +1,4 @@
-import { CommonItemType } from "@/types";
+import { CommonItemType, ImageType } from "@/types";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   IconButton,
@@ -21,10 +21,7 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
-import {
-  generateStoreItemImagePath,
-  handleStoreItemImageUpload,
-} from "@/helpers/image";
+import { generateImagePath, handleStoreItemImageUpload } from "@/helpers/image";
 import { theme } from "@/helpers/theme";
 
 export default function EditCommonItem(item: CommonItemType) {
@@ -81,13 +78,14 @@ export default function EditCommonItem(item: CommonItemType) {
 
       const sizeInMB = event.target.files[0].size / 1048576;
 
-      const generatedImagePath = await generateStoreItemImagePath(selectId);
+      const generatedPath = await generateImagePath(selectId, ImageType.Item);
+
       if (sizeInMB > 50) {
         setShowImageError(true);
         setImagePath(null);
         setImage({ preview: item.image, raw: "" });
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
 
         setImage({
           preview: URL.createObjectURL(event.target.files[0]),
@@ -177,7 +175,7 @@ export default function EditCommonItem(item: CommonItemType) {
                 }}
               >
                 <CardMedia
-                sx={{objectFit:"fill"}}
+                  sx={{ objectFit: "fill" }}
                   component="img"
                   height="200"
                   image={image.preview || ""}
@@ -191,7 +189,7 @@ export default function EditCommonItem(item: CommonItemType) {
                 }}
               >
                 <CardMedia
-                sx={{objectFit:"fill"}}
+                  sx={{ objectFit: "fill" }}
                   component="img"
                   height="200"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}

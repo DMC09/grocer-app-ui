@@ -15,7 +15,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../../supabase/supabase-provider";
-import { GroceryStoreItemType } from "@/types";
+import { GroceryStoreItemType, ImageType } from "@/types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import {
@@ -23,10 +23,7 @@ import {
   findGroceryStoreIndex,
   getGroceryStoreItemIndex,
 } from "@/stores/GroceryDataStore";
-import {
-  generateStoreItemImagePath,
-  handleStoreItemImageUpload,
-} from "@/helpers/image";
+import { generateImagePath, handleStoreItemImageUpload } from "@/helpers/image";
 import { updateGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { theme } from "@/helpers/theme";
@@ -87,8 +84,9 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
       const sizeInMB = event.target.files[0].size / 1048576;
 
-      const generatedImagePath = await generateStoreItemImagePath(
-        groceryStoreItem?.select_id
+      const generatedPath = await generateImagePath(
+        groceryStoreItem?.select_id,
+        ImageType.Item
       );
 
       if (sizeInMB > 50) {
@@ -96,7 +94,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
         setImagePath(null);
         setImage({ preview: groceryStoreItem.image, raw: "" });
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
         setImage({
           preview: URL.createObjectURL(event.target.files[0]),
           raw: event.target.files[0],
@@ -208,7 +206,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
                 }}
               >
                 <CardMedia
-                sx={{objectFit: "fill",}}
+                  sx={{ objectFit: "fill" }}
                   component="img"
                   height="200"
                   image={image.preview || ""}
@@ -218,7 +216,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
             ) : (
               <Card sx={{ width: "100%" }}>
                 <CardMedia
-                sx={{objectFit: "fill",}}
+                  sx={{ objectFit: "fill" }}
                   component="img"
                   height="200"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}

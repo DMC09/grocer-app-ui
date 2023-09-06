@@ -19,7 +19,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
-  generateStoreItemImagePath,
+  generateImagePath,
   handleStoreItemImageUpload,
 } from "@/helpers/image";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
@@ -27,6 +27,8 @@ import { supabase } from "@supabase/auth-ui-shared";
 import { addCommonItem, getAllCommonItems } from "@/helpers/commonItem";
 import { Category } from "@mui/icons-material";
 import { useSupabase } from "@/components/supabase/supabase-provider";
+import { ImageType } from "@/types";
+import groceryStore from "../groceryStore";
 
 export default function AddCommonItem() {
   // Component State
@@ -68,7 +70,8 @@ export default function AddCommonItem() {
 
   async function handleSetImage(event: any) {
     if (event.target.files.length && selectId) {
-      const generatedImagePath = await generateStoreItemImagePath(selectId);
+      const generatedPath = await generateImagePath(selectId, ImageType.Item);
+
       const sizeInMB = event.target.files[0].size / 1048576;
       console.log("Size of image", sizeInMB);
 
@@ -77,7 +80,7 @@ export default function AddCommonItem() {
         setImage({ preview: "", raw: "" });
         setImagePath(null);
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
         setImage({
           preview: URL.createObjectURL(event.target.files[0]),
           raw: event.target.files[0],
@@ -168,7 +171,7 @@ export default function AddCommonItem() {
               <Card sx={{ mb: 2.5, width: "100%" }}>
                 {image.preview ? (
                   <CardMedia
-                  sx={{objectFit:"fill"}}
+                    sx={{ objectFit: "fill" }}
                     component="img"
                     height="200"
                     image={image.preview}
@@ -176,7 +179,7 @@ export default function AddCommonItem() {
                   />
                 ) : (
                   <CardMedia
-                  sx={{objectFit:"fill"}}
+                    sx={{ objectFit: "fill" }}
                     component="img"
                     height="200"
                     image={

@@ -1,7 +1,11 @@
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { useDialog } from "@/context/DialogContext";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { GroceryStoreType, GroceryStoreWithItemsType } from "@/types";
+import {
+  GroceryStoreType,
+  GroceryStoreWithItemsType,
+  ImageType,
+} from "@/types";
 import { theme } from "@/helpers/theme";
 import {
   Dialog,
@@ -24,7 +28,7 @@ import {
   updateGroceryStore,
 } from "@/helpers/groceryStore";
 import {
-  generateStoreItemImagePath,
+  generateImagePath,
   handleStoreImageUpload,
 } from "@/helpers/image";
 
@@ -76,8 +80,9 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       setUpdatedImage({ preview: groceryStore.image, raw: "" });
       setImagePath(null);
 
-      const generatedImagePath = await generateStoreItemImagePath(
-        groceryStore?.select_id
+      const generatedPath = await generateImagePath(
+        groceryStore?.select_id,
+        ImageType.Store
       );
 
       const sizeInMB = event.target.files[0].size / 1048576;
@@ -88,7 +93,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
         setImagePath(null);
         setUpdatedImage({ preview: groceryStore.image, raw: "" });
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
         setUpdatedImage({
           preview: URL.createObjectURL(event.target.files[0]),
           raw: event.target.files[0],
@@ -159,7 +164,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
             >
               {updatedImage.raw ? (
                 <CardMedia
-                sx={{objectFit: "fill",}}
+                  sx={{ objectFit: "fill" }}
                   component="img"
                   height="150"
                   image={updatedImage.preview || ""}
@@ -167,7 +172,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
                 />
               ) : (
                 <CardMedia
-                sx={{objectFit: "fill",}}
+                  sx={{ objectFit: "fill" }}
                   component="img"
                   height="150"
                   image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`}

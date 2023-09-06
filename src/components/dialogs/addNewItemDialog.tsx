@@ -18,15 +18,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialog } from "@/context/DialogContext";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import { GroceryStoreItemType, GroceryStoreType } from "@/types";
-import {
-  GroceryDataStore,
-  findGroceryStoreIndex,
-} from "@/stores/GroceryDataStore";
-import {
-  generateStoreItemImagePath,
-  handleStoreImageUpload,
-} from "@/helpers/image";
+import { GroceryStoreType, ImageType } from "@/types";
+import { generateImagePath, handleStoreImageUpload } from "@/helpers/image";
 import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 
@@ -75,8 +68,9 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
 
   async function handleSetImage(event: any) {
     if (event.target.files.length && groceryStore?.select_id) {
-      const generatedImagePath = await generateStoreItemImagePath(
-        groceryStore?.select_id
+      const generatedPath = await generateImagePath(
+        groceryStore?.select_id,
+        ImageType.Item
       );
 
       setShowImageError(false);
@@ -91,7 +85,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         setImage({ preview: "", raw: "" });
         setImagePath(null);
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
         setImage({
           preview: URL.createObjectURL(event.target.files[0]),
           raw: event.target.files[0],
@@ -178,7 +172,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           >
             {image.preview ? (
               <CardMedia
-              sx={{objectFit: "fill",}}
+                sx={{ objectFit: "fill" }}
                 component="img"
                 height="200"
                 image={image.preview}
@@ -186,7 +180,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
               />
             ) : (
               <CardMedia
-              sx={{objectFit: "fill",}}
+                sx={{ objectFit: "fill" }}
                 component="img"
                 height="200"
                 image={
