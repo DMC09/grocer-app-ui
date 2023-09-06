@@ -2,6 +2,7 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import { useDialog } from "@/context/DialogContext";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import {
+  BucketType,
   GroceryStoreType,
   GroceryStoreWithItemsType,
   ImageType,
@@ -29,7 +30,7 @@ import {
 } from "@/helpers/groceryStore";
 import {
   generateImagePath,
-  handleStoreImageUpload,
+  handleImageUpload,
 } from "@/helpers/image";
 
 export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
@@ -105,7 +106,13 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   async function handleUpdate() {
     if (updatedName) {
       if (updatedImage.raw && imagePath) {
-        await handleStoreImageUpload(supabase, imagePath, updatedImage?.raw);
+
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          updatedImage?.raw,
+          BucketType.Store
+        );
       }
       const updatedStoreData = await updateGroceryStore(
         supabase,

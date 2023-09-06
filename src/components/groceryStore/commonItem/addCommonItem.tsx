@@ -18,16 +18,13 @@ import { useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import {
-  generateImagePath,
-  handleStoreItemImageUpload,
-} from "@/helpers/image";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { supabase } from "@supabase/auth-ui-shared";
 import { addCommonItem, getAllCommonItems } from "@/helpers/commonItem";
 import { Category } from "@mui/icons-material";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import { ImageType } from "@/types";
+import { BucketType, ImageType } from "@/types";
 import groceryStore from "../groceryStore";
 
 export default function AddCommonItem() {
@@ -100,8 +97,12 @@ export default function AddCommonItem() {
   async function handleSubmit() {
     if (selectId) {
       if (image.raw && imagePath) {
-        await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
-        // TODO: Add error handling and better logging
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Store
+        );
       }
 
       const item = await addCommonItem(

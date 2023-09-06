@@ -19,15 +19,12 @@ import { useSupabase } from "../../supabase/supabase-provider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import {
-  generateImagePath,
-  handleStoreImageUpload,
-} from "@/helpers/image";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import {
   addNewGroceryStore,
   getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
-import { ImageType } from "@/types";
+import { BucketType, ImageType } from "@/types";
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
   //Component State
@@ -111,15 +108,11 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
 
-    const generatedPath = await generateImagePath(
-      select_id,
-      ImageType.Store
-    );
-
+    const generatedPath = await generateImagePath(select_id, ImageType.Store);
 
     if (event.target.files.length) {
       const sizeInMB = event.target.files[0].size / 1048576;
-      console.log(`Image Size:${sizeInMB}` );
+      console.log(`Image Size:${sizeInMB}`);
 
       if (sizeInMB > 50) {
         setShowImageError(true);
@@ -140,7 +133,12 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
     if (isValidResult) {
       if (image.raw && imagePath) {
-        await handleStoreImageUpload(supabase, imagePath, image?.raw);
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Store
+        );
       }
 
       const newStore = await addNewGroceryStore(

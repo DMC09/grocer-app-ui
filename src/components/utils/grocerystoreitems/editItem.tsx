@@ -15,15 +15,10 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../../supabase/supabase-provider";
-import { GroceryStoreItemType, ImageType } from "@/types";
+import { BucketType, GroceryStoreItemType, ImageType } from "@/types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import {
-  GroceryDataStore,
-  findGroceryStoreIndex,
-  getGroceryStoreItemIndex,
-} from "@/stores/GroceryDataStore";
-import { generateImagePath, handleStoreItemImageUpload } from "@/helpers/image";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { updateGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { theme } from "@/helpers/theme";
@@ -107,7 +102,12 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     if (name && quantity) {
       const now = new Date().toISOString();
       if (image.raw && imagePath) {
-        await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Store
+        );
       }
       const updatedItem = await updateGroceryStoreItem(
         supabase,

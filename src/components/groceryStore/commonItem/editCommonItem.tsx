@@ -1,4 +1,4 @@
-import { CommonItemType, ImageType } from "@/types";
+import { BucketType, CommonItemType, ImageType } from "@/types";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   IconButton,
@@ -21,7 +21,7 @@ import { useSupabase } from "@/components/supabase/supabase-provider";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
-import { generateImagePath, handleStoreItemImageUpload } from "@/helpers/image";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { theme } from "@/helpers/theme";
 
 export default function EditCommonItem(item: CommonItemType) {
@@ -97,7 +97,12 @@ export default function EditCommonItem(item: CommonItemType) {
 
   async function handleEdit() {
     if (image.raw && imagePath) {
-      await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
+      await handleImageUpload(
+        supabase,
+        imagePath,
+        image?.raw,
+        BucketType.Store
+      );
       // TODO: Add better error handling and logging
     }
 
