@@ -6,7 +6,7 @@ import { theme } from "@/helpers/theme";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
-import AddNewStore from "../utils/grocerystore/addNewStoreDialog";
+import AddNewStore from "../dialogs/addNewStoreDialog";
 
 export default function DashboardHeader() {
   const selectId = useZustandStore(

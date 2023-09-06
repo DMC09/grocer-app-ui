@@ -14,15 +14,13 @@ import {
   Switch,
 } from "@mui/material";
 import { useState } from "react";
-
 import { CommonItemType } from "@/types";
-import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import CloseIcon from "@mui/icons-material/Close";
 
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { deleteCommonItem, getAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import EditCommonItem from "./editCommonItem";
+import EditCommonItem from "../../dialogs/editCommonItemDialog";
 
 export default function ManagedCommonItem(item: CommonItemType) {
   const [uniqueId, setUniqueId] = useState<number | null>(null);

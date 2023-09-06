@@ -1,118 +1,76 @@
-"use client";
+import { theme } from "@/helpers/theme";
 import {
+  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   TextField,
-  DialogActions,
-  Button,
   Card,
   CardMedia,
+  DialogActions,
   useMediaQuery,
-  useTheme,
   Box,
-  Typography,
   IconButton,
+  Typography,
 } from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useSupabase } from "../../supabase/supabase-provider";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import image from "next/image";
+import { useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
-import {
-  addNewGroceryStore,
-  getAllGroceryStoresData,
-} from "@/helpers/groceryStore";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import { supabase } from "@supabase/auth-ui-shared";
+import { addCommonItem, getAllCommonItems } from "@/helpers/commonItem";
+import { Category } from "@mui/icons-material";
+import { useSupabase } from "@/components/supabase/supabase-provider";
 import { BucketType, ImageType } from "@/types";
+import groceryStore from "../groceryStore/groceryStore";
 
-export default function AddNewStore({ select_id }: { select_id: string }) {
-  //Component State
+export default function AddCommonItem() {
+  // Component State
+
+  const [newItemName, setNewItemName] = useState<string>("");
+  const [notes, setNotes] = useState("");
   const [open, setOpen] = useState<boolean>(false);
-  const [isInvalid, setIsInvalid] = useState<boolean | null>(null);
-  const [errorText, setErrorText] = useState<string | null>(null);
-  const [image, setImage] = useState({ preview: "", raw: "" });
-  const [name, setName] = useState<string>("");
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showImageError, setShowImageError] = useState<boolean | null>(null);
 
+  const [image, setImage] = useState({
+    preview: "",
+    raw: "",
+  });
+
   // Hooks
   const { supabase, session } = useSupabase();
-  const theme = useTheme();
+  const selectId = ProfileDataStore((state) => state?.data?.select_id);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Event Handlers
-  async function handleOpen() {
+  function handleClickOpen(): void {
     setOpen(true);
   }
 
+  async function resetComponentState() {
+    setNewItemName("");
+    setShowImageError(null);
+    setNotes("");
+    setImagePath("");
+    setImage({
+      preview: "",
+      raw: "",
+    });
+  }
   async function handleClose() {
+    setOpen(false);
     resetComponentState();
   }
 
-  // Validation
-  async function validation() {
-    if (name.trim() === "") {
-      setIsInvalid(true);
-      setErrorText("Please enter a name");
-      return false;
-    }
-
-    // Check if the text is valid alphanumeric
-    const regExp = /^[a-zA-Z0-9 _\-!\$]+$/i;
-
-    if (!regExp.test(name)) {
-      setErrorText("Please only use letters and number");
-      setIsInvalid(true);
-      console.log("%cValidation failed for Store Name", "color:red");
-      return false;
-    } else {
-      setIsInvalid(false);
-      console.log("%cValidation successful for Store Name", "color:green");
-      return true;
-    }
-  }
-
-  // Data
-  async function fetchData() {
-    await getAllGroceryStoresData(supabase);
-  }
-
-  // helpers
-  async function resetComponentState() {
-    setImage({ preview: "", raw: "" });
-    setImagePath(null);
-    setOpen(false);
-    setName("");
-    setErrorText(null);
-    setIsInvalid(null);
-    setShowImageError(null);
-  }
-
-  async function dismissError() {
-    setImage({ preview: "", raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
-  }
-
-  async function handleChange(
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    setName(event.target.value);
-    setErrorText(null);
-    setIsInvalid(null);
-  }
-
   async function handleSetImage(event: any) {
-    setShowImageError(false);
-    setImage({ preview: "", raw: "" });
-    setImagePath(null);
+    if (event.target.files.length && selectId) {
+      const generatedPath = await generateImagePath(selectId, ImageType.Item);
 
-    const generatedPath = await generateImagePath(select_id, ImageType.Store);
-
-    if (event.target.files.length) {
       const sizeInMB = event.target.files[0].size / 1048576;
-      console.log(`Image Size:${sizeInMB}`);
+      console.log("Size of image", sizeInMB);
 
       if (sizeInMB > 50) {
         setShowImageError(true);
@@ -127,11 +85,17 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
       }
     }
   }
+  async function dismissError() {
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
+    setShowImageError(null);
+  }
 
+  async function fetchData() {
+    await getAllCommonItems(supabase);
+  }
   async function handleSubmit() {
-    const isValidResult = await validation();
-
-    if (isValidResult) {
+    if (selectId) {
       if (image.raw && imagePath) {
         await handleImageUpload(
           supabase,
@@ -141,26 +105,26 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         );
       }
 
-      const newStore = await addNewGroceryStore(
+      const item = await addCommonItem(
         supabase,
-        name,
-        select_id,
+        newItemName,
+        notes,
+        selectId,
         imagePath
       );
 
-      if (newStore) {
+      if (item) {
         fetchData();
       }
-
-      resetComponentState();
+      handleClose();
     }
   }
 
   return (
     <>
       <Button
-        aria-label="Add New Store"
-        onClick={handleOpen}
+        onClick={handleClickOpen}
+        aria-label="Add New Common item"
         endIcon={<AddCircleIcon />}
         size="large"
         sx={{
@@ -168,16 +132,10 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         }}
       />
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
-        <DialogTitle align="center">Add New Store</DialogTitle>
-        <Box
-          sx={{
-            height: "50%",
-          }}
-        >
+        <DialogTitle align="center">Add Common Item</DialogTitle>
+        <Box sx={{}}>
           <DialogContent>
             <TextField
-              error={isInvalid || undefined}
-              helperText={isInvalid && errorText}
               autoFocus
               margin="dense"
               id="Name"
@@ -185,8 +143,21 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
               type="search"
               fullWidth
               variant="standard"
-              onChange={handleChange}
-              value={name}
+              onChange={(e) => setNewItemName(e.target.value)}
+              value={newItemName}
+            />
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="Notes"
+              label="Notes"
+              type="search"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNotes(e.target.value)}
+              value={notes}
             />
           </DialogContent>
           <DialogContent
@@ -198,14 +169,14 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
             }}
           >
             <>
-              <Card sx={{ mb: 2.5 }}>
+              <Card sx={{ mb: 2.5, width: "100%" }}>
                 {image.preview ? (
                   <CardMedia
                     sx={{ objectFit: "fill" }}
                     component="img"
                     height="200"
                     image={image.preview}
-                    alt={`Preview  `}
+                    alt={`Preview`}
                   />
                 ) : (
                   <CardMedia
@@ -224,11 +195,8 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                 variant="outlined"
                 component="label"
                 startIcon={<AddPhotoAlternateIcon />}
-                sx={{
-                  color: "primary.dark",
-                }}
               >
-                Add Store Image?
+                Upload File
                 <input type="file" onChange={handleSetImage} hidden />
               </Button>
               {showImageError && (
@@ -261,11 +229,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
             </>
           </DialogContent>
         </Box>
-        <DialogActions
-          sx={{
-            mt: 8,
-          }}
-        >
+        <DialogActions sx={{ mt: 2 }}>
           <Button onClick={handleClose}>Cancel</Button>
           <Button variant="contained" onClick={handleSubmit}>
             Submit
