@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Dialog,
   DialogTitle,
@@ -21,13 +20,14 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
-  generateStoreImagePath,
+  generateImagePath,
   handleStoreImageUpload,
 } from "@/helpers/image";
 import {
   addNewGroceryStore,
   getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
+import { ImageType } from "@/types";
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
   //Component State
@@ -63,6 +63,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
     // Check if the text is valid alphanumeric
     const regExp = /^[a-zA-Z0-9 _\-!\$]+$/i;
+
     if (!regExp.test(name)) {
       setErrorText("Please only use letters and number");
       setIsInvalid(true);
@@ -202,7 +203,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
               <Card sx={{ mb: 2.5 }}>
                 {image.preview ? (
                   <CardMedia
-                  sx={{objectFit: "fill",}}
+                    sx={{ objectFit: "fill" }}
                     component="img"
                     height="200"
                     image={image.preview}
@@ -210,7 +211,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                   />
                 ) : (
                   <CardMedia
-                  sx={{objectFit: "fill",}}
+                    sx={{ objectFit: "fill" }}
                     component="img"
                     height="200"
                     image={
