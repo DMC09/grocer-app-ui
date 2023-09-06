@@ -45,9 +45,9 @@ export interface Database {
           id: number;
           image: string | null;
           modified_at: string | null;
-          name: string ;
+          name: string;
           notes: string | null;
-          quantity: number ;
+          quantity: number;
           select_id: string | null;
           store_id: number;
         };
@@ -59,7 +59,7 @@ export interface Database {
           modified_at?: string | null;
           name?: string;
           notes?: string | null;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
           store_id: number;
         };
@@ -69,9 +69,9 @@ export interface Database {
           id?: number;
           image?: string | null;
           modified_at?: string | null;
-          name?: string ;
+          name?: string;
           notes?: string | null;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
           store_id?: number;
         };
@@ -96,7 +96,7 @@ export interface Database {
           id: number;
           image: string | null;
           name: string;
-          quantity: number ;
+          quantity: number;
           select_id: string | null;
         };
         Insert: {
@@ -104,7 +104,7 @@ export interface Database {
           id?: number;
           image?: string | null;
           name: string;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
         };
         Update: {
@@ -112,7 +112,7 @@ export interface Database {
           id?: number;
           image?: string | null;
           name?: string;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
         };
         Relationships: [];
@@ -120,7 +120,7 @@ export interface Database {
       groups: {
         Row: {
           confirmation_accepted: boolean | null;
-          created_at: string | null; 
+          created_at: string | null;
           email: string | null;
           first_name: string | null;
           group_id: string | null;
@@ -308,4 +308,8 @@ export enum ImageType {
   Store = "store",
   Profile = "profile",
   Group = "group",
+}
+export enum BucketType {
+  Store = "grocerystore",
+  Profile = "profile",
 }
