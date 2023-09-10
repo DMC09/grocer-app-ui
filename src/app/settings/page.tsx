@@ -7,6 +7,7 @@ import ProfileSettings from "@/components/settings/profileSettings";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import CommonItemsSettings from "@/components/settings/commonItemsSettings";
+import SettingsSkeleton from "@/components/skeletons/settingsSkeleton";
 
 export default function Settings() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
