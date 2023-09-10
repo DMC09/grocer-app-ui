@@ -21,6 +21,8 @@ import {
   Box,
   IconButton,
   Typography,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -28,15 +30,16 @@ import {
   getAllGroceryStoresData,
   updateGroceryStore,
 } from "@/helpers/groceryStore";
-import {
-  generateImagePath,
-  handleImageUpload,
-} from "@/helpers/image";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
+import { useForm, Controller, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { mixed } from "yup";
 
 export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   //State
-  const [updatedName, setUpdatedName] = useState<string | null>(null);
   const [imagePath, setImagePath] = useState<string | null>(null);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
   const [updatedImage, setUpdatedImage] = useState({
     preview: groceryStore?.image,
     raw: "",
@@ -45,68 +48,52 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   //Hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [showImageError, setShowImageError] = useState<boolean | null>(null);
   const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
     useDialog();
 
-  // Event Handlers
-  async function handleClose() {
-    resetComponentState();
-    handleStoreSettingsDialogClose();
-  }
-  async function dismissError() {
-    setUpdatedImage({ preview: groceryStore?.image, raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
-  }
+  const validationSchema = Yup.object().shape({
+    storeName: Yup.string()
+      .required("Must have a store name")
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+    file: mixed()
+      .notRequired()
+      .test("fileSize", "The file is too large", (value: any) => {
+        if (value && value[0]) {
+          const sizeInMega = value[0].size / 1048576;
+          return sizeInMega < 50;
+        }
+        return true;
+      }),
+  });
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      storeName: groceryStore.name,
+    },
+  });
 
   // Data
   async function fetchData() {
-    console.log("fetching data");
     await getAllGroceryStoresData(supabase);
   }
 
-  //Helpers
-  async function resetComponentState() {
-    setShowImageError(true);
-    setImagePath(null);
-    setUpdatedImage({ preview: groceryStore.image, raw: "" });
-    setUpdatedName(groceryStore.name);
-    setShowImageError(null);
+  // Handlers
+  async function handleClose() {
+    await setUpdatedImage({ preview: groceryStore.image, raw: "" });
+    await reset({
+      storeName: groceryStore.name,
+    });
+    await handleStoreSettingsDialogClose();
   }
 
-  async function handleImageSet(event: any) {
-    if (event.target.files.length && groceryStore?.select_id) {
-      setShowImageError(false);
-      setUpdatedImage({ preview: groceryStore.image, raw: "" });
-      setImagePath(null);
-
-      const generatedPath = await generateImagePath(
-        groceryStore?.select_id,
-        ImageType.Store
-      );
-
-      const sizeInMB = event.target.files[0].size / 1048576;
-      console.log("Size of image", sizeInMB);
-
-      if (sizeInMB > 50) {
-        setShowImageError(true);
-        setImagePath(null);
-        setUpdatedImage({ preview: groceryStore.image, raw: "" });
-      } else {
-        setImagePath(generatedPath);
-        setUpdatedImage({
-          preview: URL.createObjectURL(event.target.files[0]),
-          raw: event.target.files[0],
-        });
-      }
-    }
-  }
-
-  async function handleUpdate() {
-    if (updatedName) {
+  async function onSubmit(data: any) {
+    try {
       if (updatedImage.raw && imagePath) {
-
         await handleImageUpload(
           supabase,
           imagePath,
@@ -117,22 +104,42 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       const updatedStoreData = await updateGroceryStore(
         supabase,
         groceryStore.id,
-        updatedName,
+        data.storeName,
         imagePath
       );
 
       if (updatedStoreData) {
-        handleClose();
-        fetchData();
+        await fetchData();
       }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await handleStoreSettingsDialogClose();
+    }
+  }
+
+  //Helpers
+  async function handleSetImage(event: any) {
+    if (event.target.files.length && groceryStore?.select_id) {
+      const generatedPath = await generateImagePath(
+        groceryStore?.select_id,
+        ImageType.Store
+      );
+
+      setImagePath(generatedPath);
+      setUpdatedImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
     }
   }
 
   // Effects
   useEffect(() => {
-    setUpdatedName(groceryStore.name);
-    setUpdatedImage({ preview: groceryStore.image, raw: "" });
-  }, [groceryStore.image, groceryStore.name]);
+    reset({
+      storeName: groceryStore.name,
+    });
+  }, [groceryStore.name, reset]);
 
   return (
     <>
@@ -142,19 +149,28 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
         open={openStoreSettingsDialog}
         onClose={handleClose}
       >
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={showLoader}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <DialogTitle align="center">{`${groceryStore.name} Settings`}</DialogTitle>
         <Box sx={{}}>
           <DialogContent>
             <TextField
               autoFocus
+              error={errors.storeName ? true : false}
               margin="dense"
-              id="Name"
-              label="Name"
+              id="storeName"
+              label="Store Name"
               fullWidth
               variant="standard"
-              onChange={(e) => setUpdatedName(e.target.value)}
-              value={updatedName}
+              {...register("storeName")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.storeName?.message}
+            </Typography>
           </DialogContent>
           <DialogContent
             sx={{
@@ -197,38 +213,22 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
               }}
             >
               Change Image?
-              <input type="file" onChange={handleImageSet} hidden />
+              <input
+                type="file"
+                {...register("file", {
+                  onChange: handleSetImage,
+                })}
+                hidden
+              />
             </Button>
-            {showImageError && (
-              <Box
-                sx={{
-                  border: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mt: 1,
-                  p: 0.5,
-                  backgroundColor: "red",
-                  borderRadius: 5,
-                }}
-              >
-                <IconButton
-                  onClick={async () => await dismissError()}
-                  aria-label="delete"
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  <HighlightOffIcon />
-                </IconButton>
-                <Typography color={"white"}>Image too large</Typography>
-              </Box>
-            )}
+            <Typography sx={{ mt: 1 }} variant="inherit" color="red">
+              {errors?.file?.message}
+            </Typography>
           </DialogContent>
         </Box>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleUpdate}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Save
           </Button>
         </DialogActions>
