@@ -1,4 +1,5 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { string } from "yup";
 
 export type Json =
   | string
@@ -313,3 +314,18 @@ export enum BucketType {
   Store = "grocerystore",
   Profile = "profile",
 }
+export enum AlertType {
+  Success = "success",
+  Fail = "Failure",
+}
+
+export enum AlertMsgType {
+  AddNewStoreSuccess = "New Store Added",
+  AddNewStoreFail = "Unable to add store.. ",
+}
+
+export type SnackBarPropsType = {
+  msg: AlertMsgType | null;
+  type: AlertType | null;
+  color: string | null;
+};
