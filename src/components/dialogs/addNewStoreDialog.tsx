@@ -22,8 +22,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import {
   addNewGroceryStore,
@@ -41,8 +39,7 @@ import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
-import { TransitionProps } from "@mui/material/transitions";
-import { isNullOrUndefined } from "util";
+
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
   //Component State
@@ -72,7 +69,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
       .test("fileSize", "The file is too large", (value: any) => {
         if (value && value[0]) {
           const sizeInMega = value[0].size / 1048576;
-          return sizeInMega < 10;
+          return sizeInMega < 50;
         }
         return true;
       }),
