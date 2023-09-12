@@ -17,7 +17,7 @@ export interface Database {
           category: string | null;
           id: number;
           image: string | null;
-          item_name: string | null;
+          item_name: string ;
           item_notes: string | null;
           select_id: string | null;
         };
@@ -25,7 +25,7 @@ export interface Database {
           category?: string | null;
           id?: number;
           image?: string | null;
-          item_name?: string | null;
+          item_name?: string ;
           item_notes?: string | null;
           select_id?: string | null;
         };
@@ -33,7 +33,7 @@ export interface Database {
           category?: string | null;
           id?: number;
           image?: string | null;
-          item_name?: string | null;
+          item_name?: string ;
           item_notes?: string | null;
           select_id?: string | null;
         };
