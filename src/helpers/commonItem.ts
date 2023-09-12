@@ -100,7 +100,7 @@ export function isCommonItemDataStoreEmpty(
 export async function updateCommonItem(
   supabase: SupabaseClient<Database>,
   id: number,
-  name: string | null,
+  name: string ,
   notes: string | null,
   imagePath: string | null
 ) {
