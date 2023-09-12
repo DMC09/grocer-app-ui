@@ -98,7 +98,7 @@ export interface Database {
           image: string | null;
           name: string;
           quantity: number;
-          select_id: string | null;
+          select_id: string ;
         };
         Insert: {
           created_at?: string | null;
@@ -114,7 +114,7 @@ export interface Database {
           image?: string | null;
           name?: string;
           quantity?: number;
-          select_id?: string | null;
+          select_id?: string ;
         };
         Relationships: [];
       };
@@ -320,8 +320,10 @@ export enum AlertType {
 }
 
 export enum AlertMsgType {
-  AddNewStoreSuccess = "New Store Added",
+  AddNewStoreSuccess = "Store added",
   AddNewStoreFail = "Unable to add store.. ",
+  AddNewItemSuccess = "Item added",
+  AddNewItemFail = "Unable to add item"
 }
 
 export type SnackBarPropsType = {
