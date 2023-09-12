@@ -93,6 +93,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
 
   async function onSubmit(data: any) {
     try {
+      setShowLoader(true);
       if (updatedImage.raw && imagePath) {
         await handleImageUpload(
           supabase,
@@ -114,6 +115,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
     } catch (error) {
       console.log(error);
     } finally {
+      setShowLoader(false);
       await handleStoreSettingsDialogClose();
     }
   }
@@ -165,7 +167,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
               id="storeName"
               label="Store Name"
               fullWidth
-              variant="standard"
+              variant="outlined"
               {...register("storeName")}
             />
             <Typography variant="inherit" color="red">
@@ -185,23 +187,16 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
                 width: "100%",
               }}
             >
-              {updatedImage.raw ? (
-                <CardMedia
-                  sx={{ objectFit: "fill" }}
-                  component="img"
-                  height="150"
-                  image={updatedImage.preview || ""}
-                  alt={`Preview`}
-                />
-              ) : (
-                <CardMedia
-                  sx={{ objectFit: "fill" }}
-                  component="img"
-                  height="150"
-                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${updatedImage.preview}`}
-                  alt={`${groceryStore.name}`}
-                />
-              )}{" "}
+              <CardMedia
+                sx={{ objectFit: "fill" }}
+                component="img"
+                height="150"
+                image={
+                  updatedImage?.preview ||
+                  `${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStore.image}`
+                }
+                alt={`Preview`}
+              />
             </Card>
 
             <Button

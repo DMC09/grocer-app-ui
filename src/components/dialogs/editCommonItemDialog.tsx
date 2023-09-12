@@ -173,35 +173,22 @@ export default function EditCommonItem(item: CommonItemType) {
               flexFlow: "column",
             }}
           >
-            {image.raw ? (
-              <Card
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <CardMedia
-                  sx={{ objectFit: "fill" }}
-                  component="img"
-                  height="200"
-                  image={image.preview || ""}
-                  alt={`Preview `}
-                />
-              </Card>
-            ) : (
-              <Card
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <CardMedia
-                  sx={{ objectFit: "fill" }}
-                  component="img"
-                  height="200"
-                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
-                  alt={`${item.item_name}`}
-                />
-              </Card>
-            )}
+            <Card
+              sx={{
+                width: "100%",
+              }}
+            >
+              <CardMedia
+                sx={{ objectFit: "fill" }}
+                component="img"
+                height="200"
+                image={
+                  (image.raw && image.preview) ||
+                  `${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`
+                }
+                alt={`Preview `}
+              />
+            </Card>
             <Button
               sx={{
                 mt: 2,

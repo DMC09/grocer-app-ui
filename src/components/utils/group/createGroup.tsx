@@ -157,35 +157,21 @@ export default function CreateGroup(profile: ProfileType | null) {
             flexFlow: "column",
           }}
         >
-          {image.preview ? (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={image.preview}
-                alt={`Preview`}
-              />
-            </Card>
-          ) : (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={
-                  "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
-                }
-                alt={`Default`}
-              />
-            </Card>
-          )}
+          <Card
+            sx={{
+              maxWidth: 150,
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="150"
+              image={
+                (image.raw && image.preview) ||
+                "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+              }
+              alt={`Default`}
+            />
+          </Card>
           <Button
             variant="contained"
             component="label"

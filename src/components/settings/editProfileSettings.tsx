@@ -163,37 +163,22 @@ export default function EditProfileSettings(profile: ProfileType) {
               flexFlow: "column",
             }}
           >
-            {image.raw ? (
-              <Card
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={image.preview || ""}
-                  alt={`Preview  `}
-                  sx={{ objectFit: "fill" }}
-                />
-              </Card>
-            ) : (
-              <Card
-                sx={{
-                  width: "100%",
-                }}
-              >
-                {profile?.avatar_url && (
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={`${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`}
-                    alt={` ${profile.first_name} ${profile.last_name}  `}
-                    sx={{ objectFit: "fill" }}
-                  />
-                )}
-              </Card>
-            )}
+            <Card
+              sx={{
+                width: "100%",
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="200"
+                image={
+                  (image.raw && image.preview) ||
+                  `${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`
+                }
+                alt={`Preview  `}
+                sx={{ objectFit: "fill" }}
+              />
+            </Card>
             <Button
               sx={{
                 mt: 2,

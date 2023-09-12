@@ -170,25 +170,16 @@ export default function AddCommonItem() {
           >
             <>
               <Card sx={{ mb: 2.5, width: "100%" }}>
-                {image.preview ? (
-                  <CardMedia
-                    sx={{ objectFit: "fill" }}
-                    component="img"
-                    height="200"
-                    image={image.preview}
-                    alt={`Preview`}
-                  />
-                ) : (
-                  <CardMedia
-                    sx={{ objectFit: "fill" }}
-                    component="img"
-                    height="200"
-                    image={
-                      "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
-                    }
-                    alt={`Default  `}
-                  />
-                )}
+                <CardMedia
+                  sx={{ objectFit: "fill" }}
+                  component="img"
+                  height="200"
+                  image={
+                    (image.raw && image.preview) ||
+                    "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
+                  }
+                  alt={`Default  `}
+                />
               </Card>
 
               <Button
