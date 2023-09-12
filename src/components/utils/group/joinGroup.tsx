@@ -75,7 +75,7 @@ export default function JoinGroup(profile: ProfileType) {
             label="Share Code"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
             onChange={(e) => setShareCode(e.target.value.toLocaleUpperCase())}
             value={shareCode}
           />

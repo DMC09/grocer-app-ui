@@ -1,4 +1,5 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { string } from "yup";
 
 export type Json =
   | string
@@ -16,7 +17,7 @@ export interface Database {
           category: string | null;
           id: number;
           image: string | null;
-          item_name: string | null;
+          item_name: string ;
           item_notes: string | null;
           select_id: string | null;
         };
@@ -24,7 +25,7 @@ export interface Database {
           category?: string | null;
           id?: number;
           image?: string | null;
-          item_name?: string | null;
+          item_name?: string ;
           item_notes?: string | null;
           select_id?: string | null;
         };
@@ -32,7 +33,7 @@ export interface Database {
           category?: string | null;
           id?: number;
           image?: string | null;
-          item_name?: string | null;
+          item_name?: string ;
           item_notes?: string | null;
           select_id?: string | null;
         };
@@ -45,9 +46,9 @@ export interface Database {
           id: number;
           image: string | null;
           modified_at: string | null;
-          name: string ;
+          name: string;
           notes: string | null;
-          quantity: number ;
+          quantity: number;
           select_id: string | null;
           store_id: number;
         };
@@ -59,7 +60,7 @@ export interface Database {
           modified_at?: string | null;
           name?: string;
           notes?: string | null;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
           store_id: number;
         };
@@ -69,9 +70,9 @@ export interface Database {
           id?: number;
           image?: string | null;
           modified_at?: string | null;
-          name?: string ;
+          name?: string;
           notes?: string | null;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
           store_id?: number;
         };
@@ -96,15 +97,15 @@ export interface Database {
           id: number;
           image: string | null;
           name: string;
-          quantity: number ;
-          select_id: string | null;
+          quantity: number;
+          select_id: string ;
         };
         Insert: {
           created_at?: string | null;
           id?: number;
           image?: string | null;
           name: string;
-          quantity?: number ;
+          quantity?: number;
           select_id?: string | null;
         };
         Update: {
@@ -112,15 +113,15 @@ export interface Database {
           id?: number;
           image?: string | null;
           name?: string;
-          quantity?: number ;
-          select_id?: string | null;
+          quantity?: number;
+          select_id?: string ;
         };
         Relationships: [];
       };
       groups: {
         Row: {
           confirmation_accepted: boolean | null;
-          created_at: string | null; 
+          created_at: string | null;
           email: string | null;
           first_name: string | null;
           group_id: string | null;
@@ -182,10 +183,10 @@ export interface Database {
           email: string;
           expanded_dashboard: boolean;
           expanded_groceryitem: boolean;
-          first_name: string | null;
+          first_name: string ;
           id: string;
           in_group: boolean | null;
-          last_name: string | null;
+          last_name: string ;
           phone: string | null;
           select_id: string | null;
           updated_at: string;
@@ -196,10 +197,10 @@ export interface Database {
           email: string;
           expanded_dashboard?: boolean;
           expanded_groceryitem?: boolean;
-          first_name?: string | null;
+          first_name?: string ;
           id: string;
           in_group?: boolean | null;
-          last_name?: string | null;
+          last_name?: string ;
           phone?: string | null;
           select_id?: string | null;
           updated_at?: string;
@@ -210,10 +211,10 @@ export interface Database {
           email?: string;
           expanded_dashboard?: boolean;
           expanded_groceryitem?: boolean;
-          first_name?: string | null;
+          first_name?: string ;
           id?: string;
           in_group?: boolean | null;
-          last_name?: string | null;
+          last_name?: string ;
           phone?: string | null;
           select_id?: string | null;
           updated_at?: string;
@@ -302,3 +303,31 @@ export interface MinimalGroceryStoreProps {
   groceryStore: GroceryStoreType;
   router: AppRouterInstance;
 }
+
+export enum ImageType {
+  Item = "item",
+  Store = "store",
+  Profile = "profile",
+  Group = "group",
+}
+export enum BucketType {
+  Store = "grocerystore",
+  Profile = "profile",
+}
+export enum AlertType {
+  Success = "success",
+  Fail = "Failure",
+}
+
+export enum AlertMsgType {
+  AddNewStoreSuccess = "Store added",
+  AddNewStoreFail = "Unable to add store.. ",
+  AddNewItemSuccess = "Item added",
+  AddNewItemFail = "Unable to add item"
+}
+
+export type SnackBarPropsType = {
+  msg: AlertMsgType | null;
+  type: AlertType | null;
+  color: string | null;
+};

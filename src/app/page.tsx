@@ -21,6 +21,6 @@ export default function HomePage() {
 
     sessionData?.user ? router.push("/dashboard") : router.push("/login");
   }, []);
-// TODO: Add a simple landing page
+
   return <></>;
 }

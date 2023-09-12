@@ -1,56 +1,55 @@
-"use client";
-
+import { BucketType, CommonItemType, ImageType } from "@/types";
+import EditIcon from "@mui/icons-material/Edit";
 import {
-  Backdrop,
-  Box,
-  Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
   Card,
   CardMedia,
-  CircularProgress,
-  Dialog,
+  Button,
   DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Typography,
   useMediaQuery,
+  Box,
+  Typography,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { useState } from "react";
-import { BucketType, ImageType, ProfileType } from "@/types";
+import { useEffect, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useSupabase } from "../supabase/supabase-provider";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { theme } from "@/helpers/theme";
+import { useSupabase } from "@/components/supabase/supabase-provider";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
-import { editProfileData, getProfileData } from "@/helpers/profile";
+import { theme } from "@/helpers/theme";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
-import "yup-phone-lite";
-
-export default function EditProfileSettings(profile: ProfileType) {
-  // Component State
-  const [image, setImage] = useState({
-    preview: profile?.avatar_url,
-    raw: "",
-  });
+export default function EditCommonItem(item: CommonItemType) {
+  // component State
   const [open, setOpen] = useState(false);
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
+  const [image, setImage] = useState({
+    preview: item?.image,
+    raw: "",
+  });
+
+  // Hooks
+  const { supabase, session } = useSupabase();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const selectId = ProfileDataStore((state) => state.data.select_id);
+
   const validationSchema = Yup.object().shape({
-    firstName: Yup.string().matches(
-      /^[a-zA-Z0-9 _\-!\$]+$/i,
-      "Please only use letters and numbers"
-    ), // only space and letters
-    lastName: Yup.string().matches(
-      /^[a-zA-Z0-9 _\-!\$]+$/i,
-      "Please only use letters and numbers"
-    ), // only space and letters
-    phone: Yup.string().phone("US", "Please enter a valid phone number"),
+    itemName: Yup.string()
+      .required("Item name is required")
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+    itemNotes: Yup.string()
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers")
+      .notRequired(),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -61,7 +60,6 @@ export default function EditProfileSettings(profile: ProfileType) {
         return true;
       }),
   });
-
   const {
     register,
     reset,
@@ -70,47 +68,43 @@ export default function EditProfileSettings(profile: ProfileType) {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      firstName: profile.first_name,
-      lastName: profile.last_name,
-      phone: profile.phone ? profile.phone : undefined,
+      itemName: item.item_name,
+      itemNotes: item.item_notes,
     },
   });
 
-  // Hooks
-  const { supabase, session } = useSupabase();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  // Data
+  async function fetchData() {
+    await getAllCommonItems(supabase);
+  }
 
-  // Event Handlers
-  function handleOpen() {
+  function handleClickOpen() {
     setOpen(true);
   }
 
-  function handleClose() {
-    setImagePath(null);
-    setImage({ preview: profile?.avatar_url, raw: "" });
+  async function handleClose() {
     reset({
-      firstName: profile.first_name,
-      lastName: profile.last_name,
-      phone: profile.phone ? profile.phone : "",
+      itemName: item.item_name,
+      itemNotes: item.item_notes,
     });
     setOpen(false);
+    resetComponentState();
   }
 
-  async function getData() {
-    await getProfileData(supabase, session?.user.id);
+  async function resetComponentState() {
+    setImagePath(null);
+    setImage({ preview: item.image, raw: "" });
   }
 
   async function handleSetImage(event: any) {
-    setImagePath(null);
-    setImage({ preview: profile?.avatar_url, raw: "" });
+    if (event.target.files.length && selectId) {
+      setImage({ preview: item.image, raw: "" });
+      setImagePath(null);
 
-    if (event.target.files.length && profile?.select_id) {
-      const generatedPath = await generateImagePath(
-        profile?.select_id,
-        ImageType.Profile
-      );
+      const generatedPath = await generateImagePath(selectId, ImageType.Item);
 
       setImagePath(generatedPath);
+
       setImage({
         preview: URL.createObjectURL(event.target.files[0]),
         raw: event.target.files[0],
@@ -120,47 +114,42 @@ export default function EditProfileSettings(profile: ProfileType) {
 
   async function onSubmit(data: any) {
     try {
-      console.log("submitting!");
       setShowLoader(true);
-      const timeStamp = new Date().toISOString();
       if (image.raw && imagePath) {
         await handleImageUpload(
           supabase,
           imagePath,
           image?.raw,
-          BucketType.Profile
+          BucketType.Store
         );
       }
-      const newProfileData = await editProfileData(
+
+      const updatedCommonItem = await updateCommonItem(
         supabase,
-        data.firstName,
-        data.lastName,
-        timeStamp,
-        imagePath,
-        data.phone,
-        profile?.id
+        item.id,
+        data.itemName,
+        data.itemNotes,
+        imagePath
       );
 
-      if (newProfileData) {
-        console.log(newProfileData, "new data!");
-        await getData();
-      } else {
-        console.log("could not get data?r");
+      console.log(updatedCommonItem, "updated item");
+      if (updatedCommonItem) {
+        await fetchData();
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setShowLoader(false);
-      setOpen(false);
+      await handleClose();
     }
   }
+
 
   return (
     <>
       <IconButton
-        sx={{ color: "primary.main" }}
-        aria-label="Edit Profile Settings"
-        onClick={handleOpen}
+        sx={{ color: "background.default" }}
+        aria-label="Edit Common Item"
+        onClick={handleClickOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
@@ -171,47 +160,39 @@ export default function EditProfileSettings(profile: ProfileType) {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <DialogTitle align="center">Edit Profile Settings</DialogTitle>
-        <Box sx={{}}>
+        <DialogTitle>{`Edit ${item.item_name}`}</DialogTitle>
+        <Box>
           <DialogContent>
             <TextField
               autoFocus
+              error={errors.itemName ? true : false}
               margin="dense"
-              label="First Name"
+              id="Name"
+              label="Name"
               fullWidth
               variant="outlined"
-              {...register("firstName")}
+              {...register("itemName")}
             />
             <Typography variant="inherit" color="red">
-              {errors.firstName?.message}
+              {errors.itemName?.message}
             </Typography>
           </DialogContent>
           <DialogContent>
             <TextField
-              autoFocus
+              error={errors.itemNotes ? true : false}
               margin="dense"
-              label="Last Name"
+              id="Notes"
+              label="Notes"
+              type="email"
               fullWidth
               variant="outlined"
-              {...register("lastName")}
+              {...register("itemNotes")}
             />
             <Typography variant="inherit" color="red">
-              {errors.lastName?.message}
+              {errors.itemNotes?.message}
             </Typography>
           </DialogContent>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Phone"
-              fullWidth
-              variant="outlined"
-              {...register("phone")}
-            />
-            <Typography variant="inherit" color="red">
-              {errors.phone?.message}
-            </Typography>
-          </DialogContent>
+
           <DialogContent
             sx={{
               display: "flex",
@@ -226,14 +207,14 @@ export default function EditProfileSettings(profile: ProfileType) {
               }}
             >
               <CardMedia
+                sx={{ objectFit: "fill" }}
                 component="img"
                 height="200"
                 image={
                   (image.raw && image.preview) ||
-                  `${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`
+                  `${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`
                 }
-                alt={`Preview  `}
-                sx={{ objectFit: "fill" }}
+                alt={`Preview `}
               />
             </Card>
             <Button
@@ -244,7 +225,7 @@ export default function EditProfileSettings(profile: ProfileType) {
               component="label"
               startIcon={<AddPhotoAlternateIcon />}
             >
-              Upload Profile Picture
+              Upload File
               <input
                 type="file"
                 {...register("file", {

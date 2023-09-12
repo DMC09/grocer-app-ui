@@ -38,4 +38,5 @@ playwright-report
 test-results
 
 
+.env
 

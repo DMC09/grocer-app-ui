@@ -1,4 +1,3 @@
-
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { Database, ProfileType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
@@ -19,6 +18,52 @@ export async function getProfileData(
     return profileData;
   }
 }
+export async function editProfileData(
+  supabase: SupabaseClient<Database>,
+  firstName: string,
+  lastName: string,
+  timeStamp: string,
+  imagePath: string | null,
+  phone: string | null,
+  profileId: string
+) {
+  if (imagePath) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({
+        first_name: firstName,
+        last_name: lastName,
+        updated_at: timeStamp,
+        avatar_url: imagePath,
+        phone,
+      })
+      .eq("id", profileId)
+      .select();
+
+    if (data) {
+      return data;
+    } else if (error) {
+      throw new Error(error.message);
+    }
+  } else {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({
+        first_name: firstName,
+        last_name: lastName,
+        updated_at: timeStamp,
+        phone,
+      })
+      .eq("id", profileId)
+      .select();
+
+    if (data) {
+      return data;
+    } else if (error) {
+      throw new Error(error.message);
+    }
+  }
+}
 
 export async function handleChangeGroceryStoreItemView(
   supabase: SupabaseClient<Database>,
@@ -37,19 +82,4 @@ export async function handleChangeGroceryStoreItemView(
   } else {
     console.log(data, "after changing view");
   }
-}
-
-export async function getSelectId(
-  supabase: SupabaseClient<Database>,
-  userId: string
-) {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("select_id")
-    .eq("id", userId)
-    .single();
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data.select_id;
 }

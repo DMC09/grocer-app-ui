@@ -1,8 +1,10 @@
 import {
+  Backdrop,
   Box,
   Button,
   Card,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,30 +17,23 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../../supabase/supabase-provider";
-import { GroceryStoreItemType } from "@/types";
+import { BucketType, GroceryStoreItemType, ImageType } from "@/types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import {
-  GroceryDataStore,
-  findGroceryStoreIndex,
-  getGroceryStoreItemIndex,
-} from "@/stores/GroceryDataStore";
-import {
-  generateStoreItemImagePath,
-  handleStoreItemImageUpload,
-} from "@/helpers/image";
+import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { updateGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { useForm, Controller, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { mixed } from "yup";
 import { theme } from "@/helpers/theme";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   // Component State
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState<string | null>(null);
-  const [notes, setNotes] = useState<string | null>(null);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
-  const [showImageError, setShowImageError] = useState<boolean | null>(null);
-  const [quantity, setQuantity] = useState<number | null>(null);
   const [image, setImage] = useState({
     preview: groceryStoreItem?.image,
     raw: "",
@@ -51,22 +46,46 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     setOpen(true);
   };
 
+  const validationSchema = Yup.object().shape({
+    itemName: Yup.string()
+      .required("Item name is required")
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+    itemNotes: Yup.string()
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers")
+      .notRequired(),
+    itemQuantity: Yup.number()
+      .required("Quantity is required")
+      .min(1, "must have at least 1 "),
+    file: mixed()
+      .notRequired()
+      .test("fileSize", "The file is too large", (value: any) => {
+        if (value && value[0]) {
+          const sizeInMega = value[0].size / 1048576;
+          return sizeInMega < 10;
+        }
+        return true;
+      }),
+  });
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      itemName: groceryStoreItem.name,
+      itemNotes: groceryStoreItem.notes,
+      itemQuantity: groceryStoreItem.quantity,
+    },
+  });
+
   // Data
   async function fetchData() {
     await getAllGroceryStoresData(supabase);
   }
 
-  // Event Handlers
-  async function dismissError() {
-    setImage({ preview: groceryStoreItem?.image, raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
-  }
-
   async function resetComponentState() {
-    setName(groceryStoreItem?.name);
-    setNotes(groceryStoreItem?.notes);
-    setQuantity(groceryStoreItem?.quantity);
     setImagePath(null);
     setImage({
       preview: groceryStoreItem.image,
@@ -74,29 +93,33 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     });
   }
 
-  function handleClose() {
+  async function handleClose() {
+    reset({
+      itemName: groceryStoreItem.name,
+      itemNotes: groceryStoreItem.notes,
+      itemQuantity: Number(groceryStoreItem?.quantity),
+    });
     setOpen(false);
-    resetComponentState();
+    await resetComponentState();
   }
 
-  async function handleImageSet(event: any) {
+  async function handleSetImage(event: any) {
     if (event.target.files.length && groceryStoreItem?.select_id) {
-      setShowImageError(false);
       setImage({ preview: groceryStoreItem.image, raw: "" });
       setImagePath(null);
 
       const sizeInMB = event.target.files[0].size / 1048576;
 
-      const generatedImagePath = await generateStoreItemImagePath(
-        groceryStoreItem?.select_id
+      const generatedPath = await generateImagePath(
+        groceryStoreItem?.select_id,
+        ImageType.Item
       );
 
       if (sizeInMB > 50) {
-        setShowImageError(true);
         setImagePath(null);
         setImage({ preview: groceryStoreItem.image, raw: "" });
       } else {
-        setImagePath(generatedImagePath);
+        setImagePath(generatedPath);
         setImage({
           preview: URL.createObjectURL(event.target.files[0]),
           raw: event.target.files[0],
@@ -105,43 +128,51 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     }
   }
 
-  async function handleEdit() {
-    if (name && quantity) {
+  async function onSubmit(data: any) {
+    try {
+      setShowLoader(true)
       const now = new Date().toISOString();
       if (image.raw && imagePath) {
-        await handleStoreItemImageUpload(supabase, imagePath, image?.raw);
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Store
+        );
       }
       const updatedItem = await updateGroceryStoreItem(
         supabase,
         groceryStoreItem.id,
-        name,
-        notes,
-        quantity,
+        data.itemName,
+        data.itemNotes,
+        data.itemQuantity,
         now,
         imagePath
       );
 
       if (updatedItem) {
-        fetchData();
+        await fetchData();
       }
-
-      handleClose();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setShowLoader(false)
+      await handleClose();
     }
   }
 
+  // Effects
   useEffect(() => {
-    setName(groceryStoreItem.name);
-    setNotes(groceryStoreItem.notes);
-    setQuantity(groceryStoreItem.quantity);
-    setImage({
-      preview: groceryStoreItem.image,
-      raw: "",
+    reset({
+      itemName: groceryStoreItem.name,
+      itemNotes: groceryStoreItem.notes,
+      itemQuantity: Number(groceryStoreItem?.quantity),
     });
   }, [
-    groceryStoreItem.image,
     groceryStoreItem.name,
     groceryStoreItem.notes,
-    groceryStoreItem.quantity,
+    groceryStoreItem?.quantity,
+    reset,
   ]);
 
   return (
@@ -155,43 +186,57 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       </IconButton>
 
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={showLoader}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <DialogTitle>{`Edit ${groceryStoreItem?.name}`}</DialogTitle>
         <Box sx={{}}>
           <DialogContent>
             <TextField
+              error={errors.itemName ? true : false}
               autoFocus
               margin="dense"
               id="Name"
               label="Name"
               fullWidth
-              variant="standard"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
+              variant="outlined"
+              {...register("itemName")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.itemName?.message}
+            </Typography>
           </DialogContent>
           <DialogContent>
             <TextField
-              autoFocus
+              error={errors.itemNotes ? true : false}
               margin="dense"
               id="Notes"
               label="Notes"
               type="email"
               fullWidth
-              variant="standard"
-              onChange={(e) => setNotes(e.target.value)}
-              value={notes}
+              variant="outlined"
+              {...register("itemNotes")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.itemNotes?.message}
+            </Typography>
           </DialogContent>
           <DialogContent>
             <TextField
               type="tel"
               fullWidth
+              error={errors.itemQuantity ? true : false}
               id="outlined-basic"
               label="Quantity"
               variant="outlined"
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              value={quantity}
+              {...register("itemQuantity")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.itemQuantity?.message}
+            </Typography>
           </DialogContent>
           <DialogContent
             sx={{
@@ -201,31 +246,18 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
               flexFlow: "column",
             }}
           >
-            {image.raw ? (
-              <Card
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <CardMedia
-                sx={{objectFit: "fill",}}
-                  component="img"
-                  height="200"
-                  image={image.preview || ""}
-                  alt={`Preview`}
-                />
-              </Card>
-            ) : (
-              <Card sx={{ width: "100%" }}>
-                <CardMedia
-                sx={{objectFit: "fill",}}
-                  component="img"
-                  height="200"
-                  image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${image.preview}`}
-                  alt={`Default`}
-                />
-              </Card>
-            )}
+            <Card sx={{ width: "100%" }}>
+              <CardMedia
+                sx={{ objectFit: "fill" }}
+                component="img"
+                height="200"
+                image={
+                  (image.raw && image.preview) ||
+                  `${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem.image}`
+                }
+                alt={`Default`}
+              />
+            </Card>
             <Button
               sx={{ mt: 2 }}
               variant="outlined"
@@ -233,35 +265,17 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
               startIcon={<AddPhotoAlternateIcon />}
             >
               Add Image?
-              <input type="file" onChange={handleImageSet} hidden />
+              <input
+                type="file"
+                {...register("file", {
+                  onChange: handleSetImage,
+                })}
+                hidden
+              />
             </Button>
-            {showImageError && (
-              <Box
-                sx={{
-                  border: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mt: 2,
-                  p: 0.5,
-                  backgroundColor: "red",
-                  borderRadius: 5,
-                }}
-              >
-                <IconButton
-                  onClick={async () => await dismissError()}
-                  aria-label="delete"
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  <HighlightOffIcon />
-                </IconButton>
-                <Typography sx={{ pr: 1 }} color={"white"}>
-                  Image too large
-                </Typography>
-              </Box>
-            )}
+            <Typography sx={{ mt: 1 }} variant="inherit" color="red">
+              {errors?.file?.message}
+            </Typography>
           </DialogContent>
         </Box>
         <DialogActions
@@ -270,7 +284,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
           }}
         >
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleEdit}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Submit
           </Button>
         </DialogActions>
