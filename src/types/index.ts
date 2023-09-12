@@ -183,10 +183,10 @@ export interface Database {
           email: string;
           expanded_dashboard: boolean;
           expanded_groceryitem: boolean;
-          first_name: string | null;
+          first_name: string ;
           id: string;
           in_group: boolean | null;
-          last_name: string | null;
+          last_name: string ;
           phone: string | null;
           select_id: string | null;
           updated_at: string;
@@ -197,10 +197,10 @@ export interface Database {
           email: string;
           expanded_dashboard?: boolean;
           expanded_groceryitem?: boolean;
-          first_name?: string | null;
+          first_name?: string ;
           id: string;
           in_group?: boolean | null;
-          last_name?: string | null;
+          last_name?: string ;
           phone?: string | null;
           select_id?: string | null;
           updated_at?: string;
@@ -211,10 +211,10 @@ export interface Database {
           email?: string;
           expanded_dashboard?: boolean;
           expanded_groceryitem?: boolean;
-          first_name?: string | null;
+          first_name?: string ;
           id?: string;
           in_group?: boolean | null;
-          last_name?: string | null;
+          last_name?: string ;
           phone?: string | null;
           select_id?: string | null;
           updated_at?: string;
