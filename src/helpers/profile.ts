@@ -20,10 +20,10 @@ export async function getProfileData(
 }
 export async function editProfileData(
   supabase: SupabaseClient<Database>,
-  firstName: string | null,
-  lastName: string | null,
+  firstName: string,
+  lastName: string,
   timeStamp: string,
-  imagePath: string,
+  imagePath: string | null,
   phone: string | null,
   profileId: string
 ) {
