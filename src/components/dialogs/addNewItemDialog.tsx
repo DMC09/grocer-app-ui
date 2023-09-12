@@ -11,6 +11,10 @@ import {
   Box,
   IconButton,
   Typography,
+  Backdrop,
+  CircularProgress,
+  Slide,
+  Snackbar,
 } from "@mui/material";
 import { theme } from "@/helpers/theme";
 import { useState } from "react";
@@ -18,22 +22,71 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialog } from "@/context/DialogContext";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useSupabase } from "@/components/supabase/supabase-provider";
-import { BucketType, GroceryStoreType, ImageType } from "@/types";
+import {
+  AlertMsgType,
+  AlertType,
+  BucketType,
+  GroceryStoreType,
+  ImageType,
+  SnackBarPropsType,
+} from "@/types";
+
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { useForm, Controller, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { mixed } from "yup";
 
 export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   //Component State
-  const [itemName, setItemName] = useState<string>();
-  const [notes, setNotes] = useState("");
   const [imagePath, setImagePath] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState("");
+  const [showLoader, setShowLoader] = useState<boolean>(false);
+  const [alert, setAlert] = useState<boolean>(false);
+  const [snackbar, setsnackbar] = useState<SnackBarPropsType>({
+    msg: null,
+    type: null,
+    color: "",
+  });
   const [image, setImage] = useState({
     preview: "",
     raw: "",
   });
-  const [showImageError, setShowImageError] = useState<boolean | null>(null);
+
+  const validationSchema = Yup.object().shape({
+    itemName: Yup.string()
+      .required("Item name is required")
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+    itemNotes: Yup.string()
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers")
+      .notRequired(),
+    itemQuantity: Yup.number()
+      .required("Quantity is required")
+      .min(1, "must have at least 1 "),
+    file: mixed()
+      .notRequired()
+      .test("fileSize", "The file is too large", (value: any) => {
+        if (value && value[0]) {
+          const sizeInMega = value[0].size / 1048576;
+          return sizeInMega < 10;
+        }
+        return true;
+      }),
+  });
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      itemName: "",
+      itemNotes: " ",
+      itemQuantity: 1,
+    },
+  });
 
   // hooks
   const { supabase, session } = useSupabase();
@@ -45,25 +98,21 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     await getAllGroceryStoresData(supabase);
   }
 
-  //handlers
-  async function resetComponentState() {
-    setImage({ preview: "", raw: "" });
-    setImagePath(null);
-    setQuantity("");
-    setNotes("");
-    setItemName("");
-    setShowImageError(null);
+  //Handlers
+
+  async function handleAlert() {
+    setAlert(false);
   }
 
   function handleClose() {
+    reset({
+      itemName: "",
+      itemNotes: " ",
+      itemQuantity: 1,
+    });
+
     handleAddNewItemDialogClose();
     resetComponentState();
-  }
-
-  async function dismissError() {
-    setImage({ preview: "", raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
   }
 
   async function handleSetImage(event: any) {
@@ -73,32 +122,24 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         ImageType.Item
       );
 
-      setShowImageError(false);
       setImage({ preview: "", raw: "" });
       setImagePath(null);
 
+      setImagePath(generatedPath);
+      setImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
+
       const sizeInMB = event.target.files[0].size / 1048576;
       console.log("Size of image", sizeInMB);
-
-      if (sizeInMB > 50) {
-        setShowImageError(true);
-        setImage({ preview: "", raw: "" });
-        setImagePath(null);
-      } else {
-        setImagePath(generatedPath);
-        setImage({
-          preview: URL.createObjectURL(event.target.files[0]),
-          raw: event.target.files[0],
-        });
-      }
     }
   }
 
-  async function handleAddNewItem() {
-    if (groceryStore.select_id && itemName) {
+  async function onSubmit(data: any, selectId: string) {
+    try {
+      setShowLoader(true);
       if (image.raw && imagePath) {
-        // TODO: error handling
-
         await handleImageUpload(
           supabase,
           imagePath,
@@ -109,145 +150,183 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       const newItem = await addNewGroceryStoreItem(
         supabase,
         groceryStore.id,
-        itemName,
-        notes,
-        Number(quantity),
-        groceryStore.select_id,
+        data.itemName,
+        data.itemNotes.trim(),
+        Number(data.itemQuantity),
+        selectId,
         imagePath
       );
 
       if (newItem) {
         fetchData();
+        setsnackbar({
+          msg: AlertMsgType.AddNewItemSuccess,
+          type: AlertType.Success,
+          color: "green",
+        });
       }
+    } catch (error) {
+      console.error(error);
+      setsnackbar({
+        msg: AlertMsgType.AddNewItemFail,
+        type: AlertType.Fail,
+        color: "red",
+      });
+    } finally {
+      setShowLoader(false);
+      setAlert(true);
       handleClose();
     }
   }
 
+  // Helpers
+  async function resetComponentState() {
+    setImage({ preview: "", raw: "" });
+    setImagePath(null);
+  }
+
   return (
-    <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
-      <DialogTitle align="center">Add New Item</DialogTitle>
-      <Box sx={{}}>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Name"
-            label="Name"
-            type="search"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setItemName(e.target.value)}
-            value={itemName}
-          />
-        </DialogContent>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="Notes"
-            label="Notes"
-            type="search"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setNotes(e.target.value)}
-            value={notes}
-          />
-        </DialogContent>
-        <DialogContent
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexFlow: "column",
-          }}
-        >
-          <TextField
-            fullWidth
-            type="tel"
-            id="outlined-basic"
-            label="Quantity"
-            variant="outlined"
-            onChange={(e) => setQuantity(e.target.value)}
-            value={quantity}
-          />
-          <Card
+    <>
+      {alert ? (
+        <>
+          <Snackbar
+            TransitionComponent={(props) => (
+              <Slide {...props} in appear direction="down" />
+            )}
             sx={{
-              mt: 4,
-              width: "100%",
+              textAlign: "center",
+            }}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={alert}
+            ContentProps={{
+              sx: {
+                color: "white",
+                backgroundColor: snackbar.color,
+              },
+            }}
+            autoHideDuration={2000}
+            onClose={handleAlert}
+            message={snackbar.msg}
+          />
+        </>
+      ) : null}
+
+      <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={showLoader}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <DialogTitle align="center">Add New Item</DialogTitle>
+        <Box sx={{}}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              fullWidth
+              required
+              error={errors.itemName ? true : false}
+              margin="dense"
+              id="itemName"
+              label="Name"
+              type="search"
+              variant="outlined"
+              {...register("itemName")}
+            />
+            <Typography variant="inherit" color="red">
+              {errors.itemName?.message}
+            </Typography>
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              error={errors.itemNotes ? true : false}
+              margin="dense"
+              id="Notes"
+              label="Notes"
+              type="search"
+              fullWidth
+              variant="outlined"
+              {...register("itemNotes")}
+            />
+            <Typography variant="inherit" color="red">
+              {errors.itemNotes?.message}
+            </Typography>
+          </DialogContent>
+          <DialogContent
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column",
             }}
           >
-            {image.preview ? (
-              <CardMedia
-                sx={{ objectFit: "fill" }}
-                component="img"
-                height="200"
-                image={image.preview}
-                alt={`Preview  `}
-              />
-            ) : (
+            <TextField
+              fullWidth
+              error={errors.itemQuantity ? true : false}
+              type="tel"
+              id="outlined-basic"
+              label="Quantity"
+              variant="outlined"
+              {...register("itemQuantity")}
+            />
+            <Typography variant="inherit" color="red">
+              {errors.itemQuantity?.message}
+            </Typography>
+            <Card
+              sx={{
+                mt: 4,
+                width: "100%",
+              }}
+            >
               <CardMedia
                 sx={{ objectFit: "fill" }}
                 component="img"
                 height="200"
                 image={
+                  image.preview ||
                   "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                 }
-                alt={`Default `}
+                alt={`Preview  `}
               />
-            )}
-          </Card>
+            </Card>
 
-          <Button
-            variant="outlined"
-            component="label"
-            startIcon={<AddPhotoAlternateIcon />}
-            sx={{
-              color: "primary.dark",
-              mt: 4,
-            }}
-          >
-            Add Item Image?
-            <input type="file" onChange={handleSetImage} hidden />
-          </Button>
-          {showImageError && (
-            <Box
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<AddPhotoAlternateIcon />}
               sx={{
-                border: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mt: 2,
-                p: 0.5,
-                backgroundColor: "red",
-                borderRadius: 5,
+                color: "primary.dark",
+                mt: 4,
               }}
             >
-              <IconButton
-                onClick={async () => await dismissError()}
-                aria-label="Dismiss Image Error"
-                sx={{
-                  color: "white",
-                }}
-              >
-                <HighlightOffIcon />
-              </IconButton>
-              <Typography sx={{ pr: 1 }} color={"white"}>
-                Image too large
-              </Typography>
-            </Box>
-          )}
-        </DialogContent>
-      </Box>
-      <DialogActions
-        sx={{
-          mt: 4,
-        }}
-      >
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleAddNewItem}>
-          Submit
-        </Button>
-      </DialogActions>{" "}
-    </Dialog>
+              Add Item Image?
+              <input
+                type="file"
+                {...register("file", {
+                  onChange: handleSetImage,
+                })}
+                hidden
+              />
+            </Button>
+            <Typography sx={{ mt: 1 }} variant="inherit" color="red">
+              {errors?.file?.message}
+            </Typography>
+          </DialogContent>
+        </Box>
+        <DialogActions
+          sx={{
+            mt: 4,
+          }}
+        >
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={handleSubmit((d) => onSubmit(d, groceryStore?.select_id))}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
