@@ -130,6 +130,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
   async function onSubmit(data: any) {
     try {
+      setShowLoader(true)
       const now = new Date().toISOString();
       if (image.raw && imagePath) {
         await handleImageUpload(
@@ -155,6 +156,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     } catch (error) {
       console.error(error);
     } finally {
+      setShowLoader(false)
       await handleClose();
     }
   }
