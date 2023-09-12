@@ -192,7 +192,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
                 component="img"
                 height="150"
                 image={
-                  updatedImage?.preview ||
+                  updatedImage?.raw && updatedImage?.preview ||
                   `${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStore.image}`
                 }
                 alt={`Preview`}
