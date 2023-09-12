@@ -23,7 +23,6 @@ import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { theme } from "@/helpers/theme";
-
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -235,6 +234,9 @@ export default function EditCommonItem(item: CommonItemType) {
                 hidden
               />
             </Button>
+            <Typography variant="inherit" color="red">
+              {errors.file?.message}
+            </Typography>
           </DialogContent>
         </Box>
         <DialogActions
