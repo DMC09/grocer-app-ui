@@ -44,7 +44,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [alert, setAlert] = useState<boolean>(false);
-  const [snackbar, setsnackbar] = useState<SnackBarPropsType>({
+  const [snackbar, setSnackbar] = useState<SnackBarPropsType>({
     msg: null,
     type: null,
     color: "",
@@ -99,7 +99,6 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   }
 
   //Handlers
-
   async function handleAlert() {
     setAlert(false);
   }
@@ -159,7 +158,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
 
       if (newItem) {
         fetchData();
-        setsnackbar({
+        setSnackbar({
           msg: AlertMsgType.AddNewItemSuccess,
           type: AlertType.Success,
           color: "green",
@@ -167,7 +166,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       }
     } catch (error) {
       console.error(error);
-      setsnackbar({
+      setSnackbar({
         msg: AlertMsgType.AddNewItemFail,
         type: AlertType.Fail,
         color: "red",

@@ -48,7 +48,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   const [alert, setAlert] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
-  const [snackbar, setsnackbar] = useState<SnackBarPropsType>({
+  const [snackbar, setSnackbar] = useState<SnackBarPropsType>({
     msg: null,
     type: null,
     color: "",
@@ -147,7 +147,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
       if (newStore) {
         await fetchData();
-        setsnackbar({
+        setSnackbar({
           msg: AlertMsgType.AddNewStoreSuccess,
           type: AlertType.Success,
           color: "green",
@@ -158,7 +158,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     } catch (error) {
       // Show the error Snack Bar alert
       console.error(error);
-      setsnackbar({
+      setSnackbar({
         msg: AlertMsgType.AddNewStoreFail,
         type: AlertType.Fail,
         color: "red",
