@@ -1,10 +1,12 @@
 "use client";
 
 import {
+  Backdrop,
   Box,
   Button,
   Card,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,25 +24,60 @@ import { useSupabase } from "../supabase/supabase-provider";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { theme } from "@/helpers/theme";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
-import { editProfileData } from "@/helpers/profile";
+import { editProfileData, getProfileData } from "@/helpers/profile";
+import { useForm, Controller, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { mixed } from "yup";
+import "yup-phone-lite";
 
 export default function EditProfileSettings(profile: ProfileType) {
   // Component State
-  const [firstName, setFirstName] = useState<string | null>(
-    profile?.first_name
-  );
-  const [lastName, setLastName] = useState<string | null>(profile?.last_name);
   const [image, setImage] = useState({
     preview: profile?.avatar_url,
     raw: "",
   });
   const [open, setOpen] = useState(false);
-  const [phone, setPhone] = useState<string | null>(profile?.phone);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
-  const [showImageError, setShowImageError] = useState<boolean | null>(null);
+
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().matches(
+      /^[a-zA-Z0-9 _\-!\$]+$/i,
+      "Please only use letters and numbers"
+    ), // only space and letters
+    lastName: Yup.string().matches(
+      /^[a-zA-Z0-9 _\-!\$]+$/i,
+      "Please only use letters and numbers"
+    ), // only space and letters
+    phone: Yup.string().phone("US", "Please enter a valid phone number"),
+    file: mixed()
+      .notRequired()
+      .test("fileSize", "The file is too large", (value: any) => {
+        if (value && value[0]) {
+          const sizeInMega = value[0].size / 1048576;
+          return sizeInMega < 10;
+        }
+        return true;
+      }),
+  });
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      phone: profile.phone ? profile.phone : undefined,
+    },
+  });
 
   // Hooks
-  const { supabase } = useSupabase();
+  const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Event Handlers
@@ -49,64 +86,72 @@ export default function EditProfileSettings(profile: ProfileType) {
   }
 
   function handleClose() {
+    setImagePath(null);
+    setImage({ preview: profile?.avatar_url, raw: "" });
+    reset({
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      phone: profile.phone ? profile.phone : "",
+    });
     setOpen(false);
   }
 
-  async function dismissError() {
-    setImage({ preview: profile?.avatar_url, raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
+  async function getData() {
+    await getProfileData(supabase, session?.user.id);
   }
 
-  async function handleImageSet(event: any) {
+  async function handleSetImage(event: any) {
+    setImagePath(null);
+    setImage({ preview: profile?.avatar_url, raw: "" });
+
     if (event.target.files.length && profile?.select_id) {
       const generatedPath = await generateImagePath(
         profile?.select_id,
         ImageType.Profile
       );
 
-      const sizeInMB = event.target.files[0].size / 1048576;
-
-      if (sizeInMB > 50) {
-        setShowImageError(true);
-        setImagePath(null);
-        setImage({ preview: profile?.avatar_url, raw: "" });
-      } else {
-        setImagePath(generatedPath);
-        setImage({
-          preview: URL.createObjectURL(event.target.files[0]),
-          raw: event.target.files[0],
-        });
-      }
+      setImagePath(generatedPath);
+      setImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
     }
   }
 
-  async function handleEdit() {
-    const timeStamp = new Date().toISOString();
-
-    if (image.raw && imagePath) {
-      await handleImageUpload(
-        supabase,
-        imagePath,
-        image?.raw,
-        BucketType.Profile
-      );
-
+  async function onSubmit(data: any) {
+    try {
+      console.log("submitting!");
+      setShowLoader(true);
+      const timeStamp = new Date().toISOString();
+      if (image.raw && imagePath) {
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Profile
+        );
+      }
       const newProfileData = await editProfileData(
         supabase,
-        firstName,
-        lastName,
+        data.firstName,
+        data.lastName,
         timeStamp,
         imagePath,
-        phone,
+        data.phone,
         profile?.id
       );
 
       if (newProfileData) {
-        setOpen(false);
+        console.log(newProfileData, "new data!");
+        await getData();
       } else {
-        throw new Error("Unable to update profile");
+        console.log("could not get data?r");
       }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setShowLoader(false);
+      setOpen(false);
     }
   }
 
@@ -120,6 +165,12 @@ export default function EditProfileSettings(profile: ProfileType) {
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={showLoader}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <DialogTitle align="center">Edit Profile Settings</DialogTitle>
         <Box sx={{}}>
           <DialogContent>
@@ -129,9 +180,11 @@ export default function EditProfileSettings(profile: ProfileType) {
               label="First Name"
               fullWidth
               variant="outlined"
-              onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
+              {...register("firstName")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.firstName?.message}
+            </Typography>
           </DialogContent>
           <DialogContent>
             <TextField
@@ -140,9 +193,11 @@ export default function EditProfileSettings(profile: ProfileType) {
               label="Last Name"
               fullWidth
               variant="outlined"
-              onChange={(e) => setLastName(e.target.value)}
-              value={lastName}
+              {...register("lastName")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.lastName?.message}
+            </Typography>
           </DialogContent>
           <DialogContent>
             <TextField
@@ -151,9 +206,11 @@ export default function EditProfileSettings(profile: ProfileType) {
               label="Phone"
               fullWidth
               variant="outlined"
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
+              {...register("phone")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.phone?.message}
+            </Typography>
           </DialogContent>
           <DialogContent
             sx={{
@@ -188,36 +245,18 @@ export default function EditProfileSettings(profile: ProfileType) {
               startIcon={<AddPhotoAlternateIcon />}
             >
               Upload Profile Picture
-              <input type="file" onChange={handleImageSet} hidden />
+              <input
+                type="file"
+                {...register("file", {
+                  onChange: handleSetImage,
+                })}
+                hidden
+              />
             </Button>
+            <Typography variant="inherit" color="red">
+              {errors.file?.message}
+            </Typography>
           </DialogContent>
-          {showImageError && (
-            <Box
-              sx={{
-                border: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mt: 2,
-                p: 0.5,
-                backgroundColor: "red",
-                borderRadius: 5,
-              }}
-            >
-              <IconButton
-                onClick={async () => await dismissError()}
-                aria-label="delete"
-                sx={{
-                  color: "white",
-                }}
-              >
-                <HighlightOffIcon />
-              </IconButton>
-              <Typography sx={{ pr: 1 }} color={"white"}>
-                Image too large
-              </Typography>
-            </Box>
-          )}
         </Box>
         <DialogActions
           sx={{
@@ -225,7 +264,7 @@ export default function EditProfileSettings(profile: ProfileType) {
           }}
         >
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleEdit}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Submit
           </Button>
         </DialogActions>
