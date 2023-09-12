@@ -145,7 +145,7 @@ export default function CreateGroup(profile: ProfileType | null) {
             label="Group Name"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
             onChange={(e) => setGroupName(e.target.value)}
             value={groupName}
           />
@@ -159,8 +159,7 @@ export default function CreateGroup(profile: ProfileType | null) {
             flexFlow: "column",
           }}
         >
-          {image.preview ? (
-            <Card
+         <Card
               sx={{
                 maxWidth: 150,
               }}
@@ -169,27 +168,12 @@ export default function CreateGroup(profile: ProfileType | null) {
               sx={{objectFit:"fill"}}
                 component="img"
                 height="150"
-                image={image.preview}
-                alt={`Preview  `}
-              />
-            </Card>
-          ) : (
-            <Card
-              sx={{
-                maxWidth: 150,
-              }}
-            >
-              <CardMedia
-              sx={{objectFit:"fill"}}
-                component="img"
-                height="150"
-                image={
+                image={ image.raw && image.preview ||
                   "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"
                 }
                 alt={`Default  `}
               />
             </Card>
-          )}
           <Button
             variant="contained"
             component="label"

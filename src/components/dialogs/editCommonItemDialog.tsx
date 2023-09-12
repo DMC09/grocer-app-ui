@@ -146,7 +146,7 @@ export default function EditCommonItem(item: CommonItemType) {
               id="Name"
               label="Name"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setName(e.target.value)}
               value={name}
             />
@@ -159,7 +159,7 @@ export default function EditCommonItem(item: CommonItemType) {
               label="Notes"
               type="email"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setNotes(e.target.value)}
               value={notes}
             />

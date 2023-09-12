@@ -143,7 +143,7 @@ export default function CreateGroup(profile: ProfileType | null) {
             label="Group Name"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
             onChange={(e) => setGroupName(e.target.value)}
             value={groupName}
           />

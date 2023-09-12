@@ -128,7 +128,7 @@ export default function EditProfileSettings(profile: ProfileType) {
               margin="dense"
               label="First Name"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setFirstName(e.target.value)}
               value={firstName}
             />
@@ -139,7 +139,7 @@ export default function EditProfileSettings(profile: ProfileType) {
               margin="dense"
               label="Last Name"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setLastName(e.target.value)}
               value={lastName}
             />
@@ -150,7 +150,7 @@ export default function EditProfileSettings(profile: ProfileType) {
               margin="dense"
               label="Phone"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setPhone(e.target.value)}
               value={phone}
             />
