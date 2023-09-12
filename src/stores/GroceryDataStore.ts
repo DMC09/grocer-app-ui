@@ -35,7 +35,7 @@ const initialGroceryStoreState: GroceryStoreState = {
       image: "",
       name: "",
       quantity: 0,
-      select_id: null,
+      select_id: "",
       grocerystoreitems: [
         {
           created_at: null,
@@ -53,7 +53,6 @@ const initialGroceryStoreState: GroceryStoreState = {
     },
   ],
 };
-
 
 const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
   (set, get) => ({
@@ -176,8 +175,10 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
           );
 
           draft.data[storeIndex].grocerystoreitems.splice(itemIndex, 1);
-          console.log(draft.data[storeIndex].grocerystoreitems,'item after the splice~!')
-
+          console.log(
+            draft.data[storeIndex].grocerystoreitems,
+            "item after the splice~!"
+          );
         }, initialGroceryStoreState)
       );
     },
@@ -215,8 +216,6 @@ const _GroceryDataStore = immer<GroceryStoreState & GroceryStoreActions>(
     },
   })
 );
-
-
 
 export const GroceryDataStore = create(
   devtools(persist(_GroceryDataStore, { name: "Grocery Data Cache" }))
