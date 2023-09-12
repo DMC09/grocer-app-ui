@@ -40,7 +40,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
 
-
 export default function AddNewStore({ select_id }: { select_id: string }) {
   //Component State
   const [open, setOpen] = useState<boolean>(false);
@@ -63,7 +62,10 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   const validationSchema = Yup.object().shape({
     storeName: Yup.string()
       .required("Store Name is required")
-      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+      .matches(
+        /^$|^[a-zA-Z0-9 _\-!\$]+$/i,
+        "Please only use letters and numbers"
+      ),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -219,15 +221,16 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         >
           <DialogContent>
             <TextField
+              autoFocus
+              fullWidth
               required
               error={errors.storeName ? true : false}
               margin="dense"
               id="storeName"
               label="Store Name"
-              {...register("storeName")}
               type="search"
-              fullWidth
-              variant="standard"
+              variant="outlined"
+              {...register("storeName")}
             />
             <Typography variant="inherit" color="red">
               {errors.storeName?.message}
