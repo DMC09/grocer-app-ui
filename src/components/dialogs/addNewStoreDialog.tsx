@@ -152,18 +152,14 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
           type: AlertType.Success,
           color: "green",
         });
-        // Show the success Snack Bar alert
-        // (alert.Success,alertMsg.newStoreSuccess,)
       }
     } catch (error) {
-      // Show the error Snack Bar alert
       console.error(error);
       setSnackbar({
         msg: AlertMsgType.AddNewStoreFail,
         type: AlertType.Fail,
         color: "red",
       });
-      // (alert.Fail,alertMsg.newStoreFailure,)
     } finally {
       setShowLoader(false);
       setAlert(true);
@@ -185,9 +181,6 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
       {alert ? (
         <>
           <Snackbar
-            TransitionComponent={(props) => (
-              <Slide {...props} in appear direction="down" />
-            )}
             sx={{
               textAlign: "center",
             }}

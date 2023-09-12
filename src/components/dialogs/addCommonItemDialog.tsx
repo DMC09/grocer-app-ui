@@ -202,9 +202,6 @@ export default function AddCommonItem() {
       {alert ? (
         <>
           <Snackbar
-            TransitionComponent={(props) => (
-              <Slide {...props} in appear direction="down" />
-            )}
             sx={{
               textAlign: "center",
             }}

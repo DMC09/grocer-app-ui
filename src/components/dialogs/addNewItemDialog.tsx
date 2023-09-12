@@ -103,7 +103,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     setAlert(false);
   }
 
-  function handleClose() {
+  async function handleClose() {
     reset({
       itemName: "",
       itemNotes: " ",
@@ -172,9 +172,9 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
         color: "red",
       });
     } finally {
+      await handleClose();
       setShowLoader(false);
       setAlert(true);
-      handleClose();
     }
   }
 
@@ -189,9 +189,6 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       {alert ? (
         <>
           <Snackbar
-            TransitionComponent={(props) => (
-              <Slide {...props} in appear direction="down" />
-            )}
             sx={{
               textAlign: "center",
             }}
@@ -209,7 +206,6 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           />
         </>
       ) : null}
-
       <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
