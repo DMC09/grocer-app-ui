@@ -13,23 +13,25 @@ import {
   useMediaQuery,
   Box,
   Typography,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
-import image from "next/image";
 import { useEffect, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { theme } from "@/helpers/theme";
 
+import { useForm, Controller, useFormState } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { mixed } from "yup";
 export default function EditCommonItem(item: CommonItemType) {
   // component State
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState<string | null>(null);
-  const [showImageError, setShowImageError] = useState<boolean | null>(null);
-  const [notes, setNotes] = useState<string | null>(null);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
   const [image, setImage] = useState({
@@ -42,88 +44,107 @@ export default function EditCommonItem(item: CommonItemType) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const selectId = ProfileDataStore((state) => state.data.select_id);
 
+  const validationSchema = Yup.object().shape({
+    itemName: Yup.string()
+      .required("Item name is required")
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+    itemNotes: Yup.string()
+      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers")
+      .notRequired(),
+    file: mixed()
+      .notRequired()
+      .test("fileSize", "The file is too large", (value: any) => {
+        if (value && value[0]) {
+          const sizeInMega = value[0].size / 1048576;
+          return sizeInMega < 10;
+        }
+        return true;
+      }),
+  });
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      itemName: item.item_name,
+      itemNotes: item.item_notes,
+    },
+  });
+
   // Data
   async function fetchData() {
     await getAllCommonItems(supabase);
-  }
-
-  // Event Handlers
-  async function dismissError() {
-    setImage({ preview: item?.image, raw: "" });
-    setImagePath(null);
-    setShowImageError(null);
   }
 
   function handleClickOpen() {
     setOpen(true);
   }
 
-  function handleClose() {
+  async function handleClose() {
+    reset({
+      itemName: item.item_name,
+      itemNotes: item.item_notes,
+    });
     setOpen(false);
     resetComponentState();
   }
 
   async function resetComponentState() {
-    setName(item.item_name);
-    setNotes(item.item_notes);
     setImagePath(null);
     setImage({ preview: item.image, raw: "" });
   }
 
-  async function handleImageSet(event: any) {
+  async function handleSetImage(event: any) {
     if (event.target.files.length && selectId) {
-      setShowImageError(false);
       setImage({ preview: item.image, raw: "" });
       setImagePath(null);
 
-      const sizeInMB = event.target.files[0].size / 1048576;
-
       const generatedPath = await generateImagePath(selectId, ImageType.Item);
 
-      if (sizeInMB > 50) {
-        setShowImageError(true);
-        setImagePath(null);
-        setImage({ preview: item.image, raw: "" });
-      } else {
-        setImagePath(generatedPath);
+      setImagePath(generatedPath);
 
-        setImage({
-          preview: URL.createObjectURL(event.target.files[0]),
-          raw: event.target.files[0],
-        });
-      }
+      setImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
     }
   }
 
-  async function handleEdit() {
-    if (image.raw && imagePath) {
-      await handleImageUpload(
+  async function onSubmit(data: any) {
+    try {
+      setShowLoader(true);
+      if (image.raw && imagePath) {
+        await handleImageUpload(
+          supabase,
+          imagePath,
+          image?.raw,
+          BucketType.Store
+        );
+      }
+
+      const updatedCommonItem = await updateCommonItem(
         supabase,
-        imagePath,
-        image?.raw,
-        BucketType.Store
+        item.id,
+        data.itemName,
+        data.itemNotes,
+        imagePath
       );
-      // TODO: Add better error handling and logging
-    }
 
-    const updatedCommonItem = await updateCommonItem(
-      supabase,
-      item.id,
-      name,
-      notes,
-      imagePath
-    );
-
-    console.log(updatedCommonItem, "updated item");
-    if (updatedCommonItem) {
-      await fetchData();
+      console.log(updatedCommonItem, "updated item");
+      if (updatedCommonItem) {
+        await fetchData();
+      }
+    } catch (error) {
+    } finally {
+      setShowLoader(false);
+      await handleClose();
     }
-    handleClose();
   }
 
   useEffect(() => {
-    setName(item.item_name);
-    setNotes(item.item_notes);
     setImage({ preview: item.image, raw: "" });
   }, [item.image, item.item_name, item.item_notes]);
 
@@ -137,32 +158,43 @@ export default function EditCommonItem(item: CommonItemType) {
         <EditIcon sx={{ fontSize: 25 }} />
       </IconButton>
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={showLoader}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <DialogTitle>{`Edit ${item.item_name}`}</DialogTitle>
         <Box>
           <DialogContent>
             <TextField
               autoFocus
+              error={errors.itemName ? true : false}
               margin="dense"
               id="Name"
               label="Name"
               fullWidth
               variant="outlined"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
+              {...register("itemName")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.itemName?.message}
+            </Typography>
           </DialogContent>
           <DialogContent>
             <TextField
-              autoFocus
+              error={errors.itemNotes ? true : false}
               margin="dense"
               id="Notes"
               label="Notes"
               type="email"
               fullWidth
               variant="outlined"
-              onChange={(e) => setNotes(e.target.value)}
-              value={notes}
+              {...register("itemNotes")}
             />
+            <Typography variant="inherit" color="red">
+              {errors.itemNotes?.message}
+            </Typography>
           </DialogContent>
 
           <DialogContent
@@ -198,35 +230,14 @@ export default function EditCommonItem(item: CommonItemType) {
               startIcon={<AddPhotoAlternateIcon />}
             >
               Upload File
-              <input type="file" onChange={handleImageSet} hidden />
+              <input
+                type="file"
+                {...register("file", {
+                  onChange: handleSetImage,
+                })}
+                hidden
+              />
             </Button>
-            {showImageError && (
-              <Box
-                sx={{
-                  border: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mt: 2,
-                  p: 0.5,
-                  backgroundColor: "red",
-                  borderRadius: 5,
-                }}
-              >
-                <IconButton
-                  onClick={async () => await dismissError()}
-                  aria-label="delete"
-                  sx={{
-                    color: "white",
-                  }}
-                >
-                  <HighlightOffIcon />
-                </IconButton>
-                <Typography sx={{ pr: 1 }} color={"white"}>
-                  Image too large
-                </Typography>
-              </Box>
-            )}
           </DialogContent>
         </Box>
         <DialogActions
@@ -235,7 +246,7 @@ export default function EditCommonItem(item: CommonItemType) {
           }}
         >
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleEdit}>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
             Submit
           </Button>
         </DialogActions>
