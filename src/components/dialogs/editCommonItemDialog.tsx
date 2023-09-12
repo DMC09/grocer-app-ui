@@ -144,9 +144,6 @@ export default function EditCommonItem(item: CommonItemType) {
     }
   }
 
-  useEffect(() => {
-    setImage({ preview: item.image, raw: "" });
-  }, [item.image, item.item_name, item.item_notes]);
 
   return (
     <>
