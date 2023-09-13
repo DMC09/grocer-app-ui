@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Normal Work Flow ", () => {
-  test("Main", async ({ page }) => {
+test.describe("Single User Scenarios", () => {
+  test("Main Workflow", async ({ page }) => {
     await test.step("Sign In", async () => {
       await page.goto("/");
       await expect(page).toHaveURL("/login", {
@@ -126,7 +126,9 @@ test.describe("Normal Work Flow ", () => {
     await test.step("Updating common item Rice -> (Quinoa-White)  ", async () => {
       await page.getByLabel("Profile Menu").click();
       await page.getByRole("menuitem", { name: "Settings" }).click();
-      await page.goto("/settings");
+      await expect(page).toHaveURL("/settings", {
+        timeout: 120000,
+      });
       await page.getByRole("tab", { name: "Common Items" }).click();
       await page
         .getByRole("button", { name: "Image of Rice Rice Jasmine" })
@@ -157,7 +159,9 @@ test.describe("Normal Work Flow ", () => {
     await test.step("Delete all Common Items ", async () => {
       await page.getByLabel("Profile Menu").click();
       await page.getByRole("menuitem", { name: "Settings" }).click();
-      await page.goto("/settings");
+      await expect(page).toHaveURL("/settings", {
+        timeout: 120000,
+      });
       await page.getByRole("tab", { name: "Common Items" }).click();
       await page
         .getByRole("button", { name: "Image of Bread Bread Whole Wheat" })
@@ -185,9 +189,7 @@ test.describe("Normal Work Flow ", () => {
 
     await test.step("Sign Out", async () => {
       await page.getByLabel("Profile Menu").click();
-      await page
-        .getByRole("menuitem", { name: "Sign Out" })
-        .click({ delay: 500 });
+      await page.getByRole("menuitem", { name: "Sign Out" }).click();
       await expect(page).toHaveURL("/login", {
         timeout: 120000,
       });

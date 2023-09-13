@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Group  Work Flow ", () => {
-  test("Main", async ({ browser }) => {
+test.describe("Multi User Scenarios", () => {
+  test("Group  Work Flow", async ({ browser }) => {
     const firstContext = await browser.newContext();
     const firstAccount = await firstContext.newPage();
 
