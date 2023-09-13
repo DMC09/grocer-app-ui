@@ -192,7 +192,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
             sx={{
               textAlign: "center",
             }}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={alert}
             ContentProps={{
               sx: {

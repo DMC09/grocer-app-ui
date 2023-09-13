@@ -184,7 +184,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
             sx={{
               textAlign: "center",
             }}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={alert}
             ContentProps={{
               sx: {

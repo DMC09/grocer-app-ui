@@ -205,7 +205,7 @@ export default function AddCommonItem() {
             sx={{
               textAlign: "center",
             }}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={alert}
             ContentProps={{
               sx: {
