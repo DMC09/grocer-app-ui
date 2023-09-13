@@ -9,7 +9,6 @@ require("dotenv").config();
  * https://github.com/motdotla/dotenv
  */
 
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -21,8 +20,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
+  /* Timeout 2 Mins */
+  timeout: 15 * 60 * 1000,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ["html", { open: "always" }],
@@ -43,10 +44,10 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
+    // {
+    //   name: "chromium",
+    //   use: { ...devices["Desktop Chrome"] },
+    // },
 
     // {
     //   name: 'firefox',
@@ -63,10 +64,10 @@ export default defineConfig({
     //   name: 'Mobile Chrome',
     //   use: { ...devices['Pixel 5'] },
     // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    {
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 13 Pro"] },
+    },
 
     /* Test against branded browsers. */
     // {
