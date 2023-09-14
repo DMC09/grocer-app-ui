@@ -4,12 +4,15 @@
 ![Logo](https://github.com/DMC09/grocer-app-ui/assets/43209397/5722a9fe-c4c5-4f50-8fe2-62a2297e001c)
 
 
+
+
 ## Overview
 The Grocer App is a full-stack application can be used to manage grocery lists. It allows users to also share their lists with other group members. Built with a simple and effective UI.
 
 
 [Live ](https://grocer-app-ui.vercel.app/)
 
+![Playwright](https://github.com/DMC09/grocer-app-ui/actions/workflows/playwright.yml/badge.svg)
 
 ## Motivation
 
