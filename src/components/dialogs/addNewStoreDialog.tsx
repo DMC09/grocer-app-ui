@@ -61,7 +61,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
   const validationSchema = Yup.object().shape({
     storeName: Yup.string()
-      .required("Store Name is required")
+      .required("Store name is required")
       .matches(
         /^$|^[a-zA-Z0-9 _\-!\$]+$/i,
         "Please only use letters and numbers"
@@ -206,7 +206,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <DialogTitle align="center">Add New Store</DialogTitle>
+        <DialogTitle align="center">Add new store</DialogTitle>
         <Box
           sx={{
             height: "50%",
@@ -220,7 +220,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
               error={errors.storeName ? true : false}
               margin="dense"
               id="storeName"
-              label="Store Name"
+              label="Store name"
               type="search"
               variant="outlined"
               {...register("storeName")}

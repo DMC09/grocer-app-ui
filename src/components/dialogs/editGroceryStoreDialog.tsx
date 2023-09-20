@@ -165,7 +165,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
               error={errors.storeName ? true : false}
               margin="dense"
               id="storeName"
-              label="Store Name"
+              label="Store name"
               fullWidth
               variant="outlined"
               {...register("storeName")}

@@ -15,7 +15,7 @@ export default function NoStores() {
         }}
       >
         <Typography variant="h4" color="primary.main">
-          No Stores added....
+          No stores added....
         </Typography>
       </Container>
     </>
