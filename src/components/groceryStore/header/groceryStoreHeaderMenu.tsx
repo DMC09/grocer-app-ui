@@ -78,7 +78,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     );
 
     if (deletedStoreId) {
-      fetchData();
+    await  fetchData();
     }
   }
 

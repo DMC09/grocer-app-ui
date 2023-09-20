@@ -122,7 +122,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
       throw new Error(error?.message);
     } else {
       if (data && data.id) {
-        fetchData();
+       await fetchData();
       }
     }
   };

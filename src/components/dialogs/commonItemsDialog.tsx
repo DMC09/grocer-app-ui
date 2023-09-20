@@ -81,7 +81,7 @@ export default function CommonItemsDialog({
     if (error) {
       throw new Error(error.message);
     } else {
-      fetchData();
+      await fetchData();
       clearItemsToSubmit();
       handleCommonItemsDialogClose();
     }
