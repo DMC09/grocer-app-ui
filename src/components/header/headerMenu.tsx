@@ -47,7 +47,7 @@ export default function HeaderMenu() {
       >
         {profileData?.avatar_url && (
           <Avatar
-            sx={{ width: 32, height: 32 }}
+            sx={{ width: 32, height: 32,border:2,borderColor:"primary.light" }}
             src={
               `${process.env.NEXT_PUBLIC_SUPABASE_PROFILE}/${profileData?.avatar_url}` ||
               ""
