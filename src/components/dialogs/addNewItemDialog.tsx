@@ -157,7 +157,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       );
 
       if (newItem) {
-        fetchData();
+       await fetchData();
         setSnackbar({
           msg: AlertMsgType.AddNewItemSuccess,
           type: AlertType.Success,
