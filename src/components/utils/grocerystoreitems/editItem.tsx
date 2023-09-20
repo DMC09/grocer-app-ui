@@ -104,27 +104,18 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   }
 
   async function handleSetImage(event: any) {
+    setImagePath(null);
+    setImage({ preview: groceryStoreItem.image, raw: "" });
     if (event.target.files.length && groceryStoreItem?.select_id) {
-      setImage({ preview: groceryStoreItem.image, raw: "" });
-      setImagePath(null);
-
-      const sizeInMB = event.target.files[0].size / 1048576;
-
       const generatedPath = await generateImagePath(
         groceryStoreItem?.select_id,
         ImageType.Item
       );
-
-      if (sizeInMB > 50) {
-        setImagePath(null);
-        setImage({ preview: groceryStoreItem.image, raw: "" });
-      } else {
-        setImagePath(generatedPath);
-        setImage({
-          preview: URL.createObjectURL(event.target.files[0]),
-          raw: event.target.files[0],
-        });
-      }
+      setImagePath(generatedPath);
+      setImage({
+        preview: URL.createObjectURL(event.target.files[0]),
+        raw: event.target.files[0],
+      });
     }
   }
 
@@ -156,8 +147,8 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     } catch (error) {
       console.error(error);
     } finally {
-      setShowLoader(false)
       await handleClose();
+      setShowLoader(false)
     }
   }
 
