@@ -96,6 +96,7 @@ export default function ProfileSettings() {
                       height: 125,
                       width: 125,
                       borderRadius: 15,
+                      border:2
                     }}
                   >
                     {profileData?.avatar_url && (
