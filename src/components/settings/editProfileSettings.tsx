@@ -222,18 +222,22 @@ export default function EditProfileSettings(profile: ProfileType) {
           >
             <Card
               sx={{
-                width: "100%",
+                height: 200,
+                width: 200,
+                borderRadius: 25,
+                border:2
               }}
             >
               <CardMedia
                 component="img"
-                height="200"
+                height={250}
+                width={250}
                 image={
                   (image.raw && image.preview) ||
                   `${process?.env?.NEXT_PUBLIC_SUPABASE_PROFILE}/${profile?.avatar_url}`
                 }
                 alt={`Preview  `}
-                sx={{ objectFit: "fill" }}
+                sx={{ objectFit: "cover"}}
               />
             </Card>
             <Button
