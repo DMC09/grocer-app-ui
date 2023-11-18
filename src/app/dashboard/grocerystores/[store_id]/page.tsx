@@ -48,8 +48,6 @@ export default function Page() {
             disableGutters
             sx={{
               mt: 2,
-              height: "100%",
-              width: "95%",
               display: "flex",
               flexFlow: "column",
               alignItems: "center",
