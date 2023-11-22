@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from "react";
 
 type DialogContext = {
-  openCommonItemsDialog: boolean;
+  openCommonItemsDialog: boolean ;
   handleCommonItemsDialogOpen: () => void;
   handleCommonItemsDialogClose: () => void;
   openAddNewItemDialog: boolean;
@@ -16,6 +16,7 @@ type DialogContext = {
   handleStoreSettingsDialogOpen: () => void;
   handleStoreSettingsDialogClose: () => void;
 };
+
 
 const Context = createContext<DialogContext | undefined>(undefined);
 
@@ -68,12 +69,12 @@ export function DialogContextProvider({
         openAddNewItemDialog,
         handleAddNewItemDialogOpen,
         handleAddNewItemDialogClose,
-        openStoreSettingsDialog,
-        handleStoreSettingsDialogOpen,
-        handleStoreSettingsDialogClose,
         openNewStoreDialog,
         handleNewStoreDialogOpen,
         handleNewStoreDialogClose,
+        openStoreSettingsDialog,
+        handleStoreSettingsDialogOpen,
+        handleStoreSettingsDialogClose,
       }}
     >
       {children}
