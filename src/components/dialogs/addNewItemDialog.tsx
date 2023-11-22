@@ -90,7 +90,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
 
   // hooks
   const { supabase, session } = useSupabase();
-  const { openAddNewItemDialog, handleAddNewItemDialogClose } = useDialog();
+  const { showNewItemDialog, closeNewItemDialog } = useDialog();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Data
@@ -110,7 +110,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
       itemQuantity: 1,
     });
 
-    handleAddNewItemDialogClose();
+    closeNewItemDialog();
     resetComponentState();
   }
 
@@ -206,7 +206,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           />
         </>
       ) : null}
-      <Dialog fullScreen={fullScreen} open={openAddNewItemDialog}>
+      <Dialog fullScreen={fullScreen} open={showNewItemDialog}>
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={showLoader}

@@ -56,7 +56,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   });
 
   // Hooks
-  const { openNewStoreDialog, handleNewStoreDialogClose } = useDialog();
+  const { showNewStoreDialog, closeNewStoreDialog } = useDialog();
   const { supabase, session } = useSupabase();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -101,7 +101,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     reset({
       storeName: "",
     });
-    handleNewStoreDialogClose();
+    closeNewStoreDialog();
     resetComponentState();
   }
 
@@ -194,7 +194,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
       <Dialog
         fullScreen={fullScreen}
-        open={openNewStoreDialog}
+        open={showNewStoreDialog}
         onClose={handleClose}
       >
         <Backdrop

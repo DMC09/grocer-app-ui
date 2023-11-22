@@ -47,7 +47,7 @@ export default function DashboardHeaderMenu() {
 
   const GroceryStoreData = GroceryDataStore((state) => state.data);
 
-  const { handleNewStoreDialogOpen } = useDialog();
+  const { openNewStoreDialog } = useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -120,7 +120,7 @@ export default function DashboardHeaderMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleNewStoreDialogOpen}>
+        <MenuItem onClick={openNewStoreDialog}>
           <ListItemIcon>
             <ControlPointIcon fontSize="small" />
           </ListItemIcon>

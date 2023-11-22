@@ -48,7 +48,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   //Hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const { openStoreSettingsDialog, handleStoreSettingsDialogClose } =
+  const { showStoreSettingsDialog, closeStoreSettingsDialog } =
     useDialog();
 
   const validationSchema = Yup.object().shape({
@@ -88,7 +88,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
     await reset({
       storeName: groceryStore.name,
     });
-    await handleStoreSettingsDialogClose();
+    await closeStoreSettingsDialog();
   }
 
   async function onSubmit(data: any) {
@@ -116,7 +116,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       console.log(error);
     } finally {
       setShowLoader(false);
-      await handleStoreSettingsDialogClose();
+      await closeStoreSettingsDialog();
     }
   }
 
@@ -148,7 +148,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
       <Dialog
         fullScreen={fullScreen}
         id="grocery-store-settings-dialog"
-        open={openStoreSettingsDialog}
+        open={showStoreSettingsDialog}
         onClose={handleClose}
       >
         <Backdrop

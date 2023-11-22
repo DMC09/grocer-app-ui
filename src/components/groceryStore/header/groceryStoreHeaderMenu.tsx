@@ -50,9 +50,9 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
 
 
   const {
-    handleCommonItemsDialogOpen,
-    handleAddNewItemDialogOpen,
-    handleStoreSettingsDialogOpen,
+    openCommonItemsDialog,
+    openNewItemDialog,
+    openStoreSettingsDialog,
   } = useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
@@ -138,13 +138,13 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleAddNewItemDialogOpen}>
+        <MenuItem onClick={openNewItemDialog}>
           <ListItemIcon>
             <ControlPointIcon fontSize="small" />
           </ListItemIcon>
           Add Item
         </MenuItem>
-        <MenuItem onClick={handleStoreSettingsDialogOpen}>
+        <MenuItem onClick={openStoreSettingsDialog}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
@@ -157,7 +157,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           Change View
         </MenuItem> */}
 
-        <MenuItem onClick={handleCommonItemsDialogOpen}>
+        <MenuItem onClick={openCommonItemsDialog}>
           <ListItemIcon>
             <ListAltIcon fontSize="small" />
           </ListItemIcon>

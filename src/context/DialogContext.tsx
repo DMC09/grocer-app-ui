@@ -3,20 +3,19 @@
 import { createContext, useContext, useState } from "react";
 
 type DialogContext = {
-  openCommonItemsDialog: boolean ;
-  handleCommonItemsDialogOpen: () => void;
-  handleCommonItemsDialogClose: () => void;
-  openAddNewItemDialog: boolean;
-  handleAddNewItemDialogOpen: () => void;
-  handleAddNewItemDialogClose: () => void;
-  openNewStoreDialog: boolean;
-  handleNewStoreDialogOpen: () => void;
-  handleNewStoreDialogClose: () => void;
-  openStoreSettingsDialog: boolean;
-  handleStoreSettingsDialogOpen: () => void;
-  handleStoreSettingsDialogClose: () => void;
+  showCommonItemsDialog: boolean;
+  openCommonItemsDialog: () => void;
+  closeCommonItemsDialog: () => void;
+  showNewItemDialog: boolean;
+  openNewItemDialog: () => void;
+  closeNewItemDialog: () => void;
+  showNewStoreDialog: boolean;
+  openNewStoreDialog: () => void;
+  closeNewStoreDialog: () => void;
+  showStoreSettingsDialog: boolean;
+  openStoreSettingsDialog: () => void;
+  closeStoreSettingsDialog: () => void;
 };
-
 
 const Context = createContext<DialogContext | undefined>(undefined);
 
@@ -25,56 +24,56 @@ export function DialogContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [openCommonItemsDialog, setOpenCommonItemsDialog] = useState(false);
+  const [showCommonItemsDialog, setShowCommonItemsDialog] = useState(false);
 
-  async function handleCommonItemsDialogOpen() {
-    setOpenCommonItemsDialog(true);
+  async function openCommonItemsDialog() {
+    setShowCommonItemsDialog(true);
   }
-  async function handleCommonItemsDialogClose() {
-    setOpenCommonItemsDialog(false);
-  }
-
-  const [openAddNewItemDialog, setOpenAddNewItemDialog] = useState(false);
-
-  async function handleAddNewItemDialogOpen() {
-    setOpenAddNewItemDialog(true);
-  }
-  async function handleAddNewItemDialogClose() {
-    setOpenAddNewItemDialog(false);
+  async function closeCommonItemsDialog() {
+    setShowCommonItemsDialog(false);
   }
 
-  const [openNewStoreDialog, setOpenNewStoreDialog] = useState(false);
+  const [showNewItemDialog, setshowNewItemDialog] = useState(false);
 
-  async function handleNewStoreDialogOpen() {
-    setOpenNewStoreDialog(true);
+  async function openNewItemDialog() {
+    setshowNewItemDialog(true);
   }
-  async function handleNewStoreDialogClose() {
-    setOpenNewStoreDialog(false);
+  async function closeNewItemDialog() {
+    setshowNewItemDialog(false);
   }
-  const [openStoreSettingsDialog, setOpenStoreSettingsDialog] = useState(false);
 
-  async function handleStoreSettingsDialogOpen() {
-    setOpenStoreSettingsDialog(true);
+  const [showNewStoreDialog, setShowNewStoreDialog] = useState(false);
+
+  async function openNewStoreDialog() {
+    setShowNewStoreDialog(true);
   }
-  async function handleStoreSettingsDialogClose() {
-    setOpenStoreSettingsDialog(false);
+  async function closeNewStoreDialog() {
+    setShowNewStoreDialog(false);
+  }
+  const [showStoreSettingsDialog, setShowStoreSettingsDialog] = useState(false);
+
+  async function openStoreSettingsDialog() {
+    setShowStoreSettingsDialog(true);
+  }
+  async function closeStoreSettingsDialog() {
+    setShowStoreSettingsDialog(false);
   }
 
   return (
     <Context.Provider
       value={{
+        showCommonItemsDialog,
         openCommonItemsDialog,
-        handleCommonItemsDialogOpen,
-        handleCommonItemsDialogClose,
-        openAddNewItemDialog,
-        handleAddNewItemDialogOpen,
-        handleAddNewItemDialogClose,
+        closeCommonItemsDialog,
+        showNewItemDialog,
+        openNewItemDialog,
+        closeNewItemDialog,
+        showNewStoreDialog,
         openNewStoreDialog,
-        handleNewStoreDialogOpen,
-        handleNewStoreDialogClose,
+        closeNewStoreDialog,
+        showStoreSettingsDialog,
         openStoreSettingsDialog,
-        handleStoreSettingsDialogOpen,
-        handleStoreSettingsDialogClose,
+        closeStoreSettingsDialog,
       }}
     >
       {children}

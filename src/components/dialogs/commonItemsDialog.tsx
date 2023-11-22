@@ -34,7 +34,7 @@ export default function CommonItemsDialog({
 }) {
   // hooks
   const { supabase, session } = useSupabase();
-  const { openCommonItemsDialog, handleCommonItemsDialogClose } = useDialog();
+  const { showCommonItemsDialog, closeCommonItemsDialog } = useDialog();
 
   // Zustand
   const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
@@ -83,7 +83,7 @@ export default function CommonItemsDialog({
     } else {
       await fetchData();
       clearItemsToSubmit();
-      handleCommonItemsDialogClose();
+      closeCommonItemsDialog();
     }
   }
 
@@ -94,7 +94,7 @@ export default function CommonItemsDialog({
   );
 
   function handleClose(): void {
-    handleCommonItemsDialogClose();
+    closeCommonItemsDialog();
     clearItemsToSubmit();
   }
 
@@ -105,7 +105,7 @@ export default function CommonItemsDialog({
       <Dialog
         fullScreen={fullScreen}
         id="grocery-store-settings-dialog"
-        open={!!openCommonItemsDialog}
+        open={!!showCommonItemsDialog}
         fullWidth
         sx={{
           width: "100%",
