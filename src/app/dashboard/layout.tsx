@@ -1,4 +1,5 @@
 "use client";
+import { DialogContextProvider } from "@/context/DialogContext";
 import { theme } from "@/helpers/theme";
 import { Container, ThemeProvider } from "@mui/material";
 
@@ -11,6 +12,8 @@ export default function DashboardLayout({
   return (
     <>
       <ThemeProvider theme={theme}>
+      <DialogContextProvider>
+        
         <Container
         disableGutters
           sx={{
@@ -24,6 +27,7 @@ export default function DashboardLayout({
         </Container>
 
         {/* This shoudl be changed  */}
+        </DialogContextProvider>
       </ThemeProvider>
     </>
   );
