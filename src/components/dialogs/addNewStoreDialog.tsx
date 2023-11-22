@@ -39,6 +39,7 @@ import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
+import { useDialog } from "@/context/DialogContext";
 
 export default function AddNewStore({ select_id }: { select_id: string }) {
   //Component State
@@ -58,6 +59,10 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   const { supabase, session } = useSupabase();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const {
+    openNewStoreDialog,
+    handleNewStoreDialogClose,
+  } = useDialog();
 
   const validationSchema = Yup.object().shape({
     storeName: Yup.string()
@@ -123,6 +128,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
     setOpen(false);
+    handleNewStoreDialogClose()
   }
 
   // Submit
@@ -199,7 +205,11 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
         </>
       ) : null}
 
-      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
+      <Dialog
+        fullScreen={fullScreen}
+        open={openNewStoreDialog}
+        onClose={handleClose}
+      >
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={showLoader}

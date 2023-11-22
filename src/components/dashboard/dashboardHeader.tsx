@@ -7,6 +7,7 @@ import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 
 import AddNewStore from "../dialogs/addNewStoreDialog";
+import DashboardHeaderMenu from "./dashboardHeaderMenu";
 
 export default function DashboardHeader() {
   const selectId = useZustandStore(
@@ -35,8 +36,10 @@ export default function DashboardHeader() {
             >
               Dashboard
             </Typography>
-
-            <AddNewStore select_id={selectId} />
+{/* Add new dashvoard header meu  */}
+{/* Move all logic to that menu */}
+            {/* <AddNewStore select_id={selectId} /> */}
+            <DashboardHeaderMenu  />
           </Card>
         )}
       </ThemeProvider>

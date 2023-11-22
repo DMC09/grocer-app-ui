@@ -9,6 +9,9 @@ type DialogContext = {
   openAddNewItemDialog: boolean;
   handleAddNewItemDialogOpen: () => void;
   handleAddNewItemDialogClose: () => void;
+  openNewStoreDialog: boolean;
+  handleNewStoreDialogOpen: () => void;
+  handleNewStoreDialogClose: () => void;
   openStoreSettingsDialog: boolean;
   handleStoreSettingsDialogOpen: () => void;
   handleStoreSettingsDialogClose: () => void;
@@ -39,6 +42,14 @@ export function DialogContextProvider({
     setOpenAddNewItemDialog(false);
   }
 
+  const [openNewStoreDialog, setOpenNewStoreDialog] = useState(false);
+
+  async function handleNewStoreDialogOpen() {
+    setOpenNewStoreDialog(true);
+  }
+  async function handleNewStoreDialogClose() {
+    setOpenNewStoreDialog(false);
+  }
   const [openStoreSettingsDialog, setOpenStoreSettingsDialog] = useState(false);
 
   async function handleStoreSettingsDialogOpen() {
@@ -60,6 +71,9 @@ export function DialogContextProvider({
         openStoreSettingsDialog,
         handleStoreSettingsDialogOpen,
         handleStoreSettingsDialogClose,
+        openNewStoreDialog,
+        handleNewStoreDialogOpen,
+        handleNewStoreDialogClose,
       }}
     >
       {children}
