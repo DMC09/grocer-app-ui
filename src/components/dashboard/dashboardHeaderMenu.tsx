@@ -47,9 +47,7 @@ export default function DashboardHeaderMenu() {
 
   const GroceryStoreData = GroceryDataStore((state) => state.data);
 
-  const {
-    handleNewStoreDialogOpen,
-  } = useDialog();
+  const { handleNewStoreDialogOpen } = useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -156,7 +154,9 @@ export default function DashboardHeaderMenu() {
         </MenuItem>
       </Menu>
       <>
-       { profileData?.select_id &&  <AddNewStore select_id={profileData?.select_id} />}
+        {profileData?.select_id && (
+          <AddNewStore select_id={profileData?.select_id} />
+        )}
       </>
     </>
   );

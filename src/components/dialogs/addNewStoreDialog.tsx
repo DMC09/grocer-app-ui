@@ -56,13 +56,10 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
   });
 
   // Hooks
+  const { openNewStoreDialog, handleNewStoreDialogClose } = useDialog();
   const { supabase, session } = useSupabase();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const {
-    openNewStoreDialog,
-    handleNewStoreDialogClose,
-  } = useDialog();
 
   const validationSchema = Yup.object().shape({
     storeName: Yup.string()
@@ -104,7 +101,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     reset({
       storeName: "",
     });
-
+    handleNewStoreDialogClose();
     resetComponentState();
   }
 
@@ -128,7 +125,6 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     setImage({ preview: "", raw: "" });
     setImagePath(null);
     setOpen(false);
-    handleNewStoreDialogClose()
   }
 
   // Submit
@@ -175,15 +171,6 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
   return (
     <>
-      <Button
-        aria-label="Add New Store"
-        onClick={handleOpen}
-        endIcon={<AddCircleIcon />}
-        size="large"
-        sx={{
-          marginLeft: "auto",
-        }}
-      />
       {alert ? (
         <>
           <Snackbar

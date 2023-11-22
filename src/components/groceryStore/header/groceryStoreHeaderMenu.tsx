@@ -19,13 +19,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
 import { GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-
 import CloseIcon from "@mui/icons-material/Close";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-
 import { useDialog } from "@/context/DialogContext";
-
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   deleteGroceryStore,
@@ -51,7 +48,6 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     (state) => state.deleteGroceryStore
   );
 
-  // TODO: Click way listener
 
   const {
     handleCommonItemsDialogOpen,
