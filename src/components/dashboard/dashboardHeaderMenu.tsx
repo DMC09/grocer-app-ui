@@ -9,30 +9,30 @@ import {
   MenuItem,
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import CheckIcon from "@mui/icons-material/Check";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
-import { GroceryStoreType, ProfileType } from "@/types";
+import { DashboardView, GroceryStoreType, ProfileType } from "@/types";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 import CloseIcon from "@mui/icons-material/Close";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-
 import { useDialog } from "@/context/DialogContext";
-
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   deleteGroceryStore,
   getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
 import { handleChangeGroceryStoreItemView } from "@/helpers/profile";
-
-import CommonItemsDialog from "@/components/dialogs/commonItemsDialog";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddNewStore from "../dialogs/addNewStoreDialog";
 
@@ -60,16 +60,59 @@ export default function DashboardHeaderMenu() {
     await getAllGroceryStoresData(supabase);
   }
 
-  async function handleChangeView() {
-    if (profileData?.expanded_groceryitem !== undefined) {
-      await handleChangeGroceryStoreItemView(
-        supabase,
-        profileData?.expanded_groceryitem,
-        profileData?.id
-      );
+  async function handleChangeView(view: DashboardView) {
+    switch (view) {
+      case DashboardView.AllItemsView:
+        await supabase
+          .from("profiles")
+          .update({ view_by_category: false, view_all: true })
+          .eq("id", profileData?.id)
+          .select()
+          .single();
+        break;
+      case DashboardView.CategoryView:
+        await supabase
+          .from("profiles")
+          .update({ view_by_category: true, view_all: false })
+          .eq("id", profileData?.id)
+          .select()
+          .single();
+        break;
+      case DashboardView.StoreView:
+        await supabase
+          .from("profiles")
+          .update({ view_by_category: false, view_all: false })
+          .eq("id", profileData?.id)
+          .select()
+          .single();
+        break;
+      default:
+        console.error("Invalid DashboardView value:", view);
+        break;
     }
   }
 
+  const dashboardView = useMemo(() => {
+    let dashboardView;
+
+    switch (true) {
+      case profileData?.view_all:
+        dashboardView = DashboardView.AllItemsView;
+        break;
+      case profileData?.view_by_category:
+        dashboardView = DashboardView.CategoryView;
+        break;
+      default:
+        dashboardView = DashboardView.StoreView;
+    }
+
+    return dashboardView;
+  }, [profileData?.view_all, profileData?.view_by_category]);
+
+  //   Depending on View I want to show different things
+  // All Items mode I want to show only Add Item
+  // Category Mode I want to show add Category
+  // store mode keep all stores
   return (
     <>
       <IconButton
@@ -120,37 +163,61 @@ export default function DashboardHeaderMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={openNewStoreDialog}>
-          <ListItemIcon>
-            <ControlPointIcon fontSize="small" />
-          </ListItemIcon>
-          Add Store
-        </MenuItem>
-        <Divider />
-        {/* <MenuItem onClick={() => console.log("logged")}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Store Settings
-        </MenuItem> */}
-        {/* <MenuItem onClick={handleChangeView}>
-          <ListItemIcon>
-            {profileData?.expanded_groceryitem ? <GridViewIcon /> : <TocIcon />}
-          </ListItemIcon>
-          Change View
-        </MenuItem> */}
+        {dashboardView === DashboardView.AllItemsView && (
+          <MenuItem onClick={openNewStoreDialog}>
+            <ListItemIcon>
+              <ControlPointIcon fontSize="small" />
+            </ListItemIcon>
+            Add Item
+          </MenuItem>
+        )}
 
-        <MenuItem onClick={() => console.log("logged")}>
+        {dashboardView === DashboardView.StoreView && (
+          <MenuItem onClick={openNewStoreDialog}>
+            <ListItemIcon>
+              <ControlPointIcon fontSize="small" />
+            </ListItemIcon>
+            Add Store
+          </MenuItem>
+        )}
+        {dashboardView === DashboardView.CategoryView && (
+          <MenuItem onClick={() => alert("need to implement")}>
+            <ListItemIcon>
+              <ControlPointIcon fontSize="small" />
+            </ListItemIcon>
+            Add Category
+          </MenuItem>
+        )}
+        <Divider />
+        <MenuItem onClick={() => handleChangeView(DashboardView.CategoryView)}>
           <ListItemIcon>
-            <ListAltIcon fontSize="small" />
+            {dashboardView === DashboardView.CategoryView ? (
+              <CheckCircleRoundedIcon fontSize="small" />
+            ) : (
+              <RadioButtonUncheckedIcon fontSize="small" />
+            )}
           </ListItemIcon>
-          View by Store
+          View by <cite></cite>ategory
         </MenuItem>
-        <MenuItem onClick={() => console.log("logged")}>
+        <MenuItem onClick={() => handleChangeView(DashboardView.StoreView)}>
           <ListItemIcon>
-            <ListAltIcon fontSize="small" />
+            {dashboardView === DashboardView.StoreView ? (
+              <CheckCircleRoundedIcon fontSize="small" />
+            ) : (
+              <RadioButtonUncheckedIcon fontSize="small" />
+            )}
           </ListItemIcon>
-          View by Category
+          View by store
+        </MenuItem>
+        <MenuItem onClick={() => handleChangeView(DashboardView.AllItemsView)}>
+          <ListItemIcon>
+            {dashboardView === DashboardView.AllItemsView ? (
+              <CheckCircleRoundedIcon fontSize="small" />
+            ) : (
+              <RadioButtonUncheckedIcon fontSize="small" />
+            )}
+          </ListItemIcon>
+          View all
         </MenuItem>
       </Menu>
       <>
