@@ -1,4 +1,4 @@
-import { GroupMemberType, ProfileType } from "@/types";
+import { DashboardView, GroupMemberType, ProfileType } from "@/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { mountStoreDevtool } from "simple-zustand-devtools";
@@ -9,6 +9,7 @@ import { produce } from "immer";
 interface ProfileState {
   data: ProfileType;
   groupData: GroupMemberType[];
+  dashboardView: DashboardView;
 }
 
 type ProfileActions = {
@@ -45,11 +46,13 @@ const initialProfileState: ProfileState = {
       last_name: null,
     },
   ],
+  dashboardView: DashboardView.StoreView,
 };
 
 const _ProfileDataStore = immer<ProfileState & ProfileActions>((set, get) => ({
   data: initialProfileState.data,
   groupData: initialProfileState.groupData,
+  dashboardView: initialProfileState.dashboardView,
   resetStore: () => {
     set(initialProfileState);
   },
