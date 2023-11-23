@@ -36,8 +36,6 @@ export default function DashboardHeader() {
             >
               Dashboard
             </Typography>
-{/* Add new dashvoard header meu  */}
-{/* Move all logic to that menu */}
             {/* <AddNewStore select_id={selectId} /> */}
             <DashboardHeaderMenu  />
           </Card>
