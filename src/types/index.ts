@@ -186,8 +186,6 @@ export interface Database {
           avatar_url: string | null
           created_at: string
           email: string
-          expanded_dashboard: boolean
-          expanded_groceryitem: boolean
           first_name: string | null
           id: string
           in_group: boolean | null
@@ -195,13 +193,13 @@ export interface Database {
           phone: string | null
           select_id: string | null
           updated_at: string
+          view_all: boolean
+          view_by_category: boolean
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           email: string
-          expanded_dashboard?: boolean
-          expanded_groceryitem?: boolean
           first_name?: string | null
           id: string
           in_group?: boolean | null
@@ -209,13 +207,13 @@ export interface Database {
           phone?: string | null
           select_id?: string | null
           updated_at?: string
+          view_all?: boolean
+          view_by_category?: boolean
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           email?: string
-          expanded_dashboard?: boolean
-          expanded_groceryitem?: boolean
           first_name?: string | null
           id?: string
           in_group?: boolean | null
@@ -223,6 +221,8 @@ export interface Database {
           phone?: string | null
           select_id?: string | null
           updated_at?: string
+          view_all?: boolean
+          view_by_category?: boolean
         }
         Relationships: []
       }
@@ -267,6 +267,7 @@ export interface Database {
     }
   }
 }
+
 
 
 export type GroceryStoreType =
@@ -337,3 +338,10 @@ export type SnackBarPropsType = {
   type: AlertType | null;
   color: string | null;
 };
+
+export enum DashboardView {
+  StoreView = "Store",
+  AllItemsView = "All",
+  CategoryView = "Category",
+
+}
