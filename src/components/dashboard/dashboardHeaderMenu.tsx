@@ -1,51 +1,38 @@
 "use client";
 // Imports
+import { DashboardView, GroceryStoreType, ProfileType } from "@/types";
 import {
   Divider,
-  Fade,
   IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
 } from "@mui/material";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import CheckIcon from "@mui/icons-material/Check";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { useContext, useEffect, useMemo, useState } from "react";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Settings } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useRouter } from "next/navigation";
-import { DashboardView, GroceryStoreType, ProfileType } from "@/types";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-
 import CloseIcon from "@mui/icons-material/Close";
+import { updateDashboardView } from "@/helpers/profile";
 import useZustandStore from "@/hooks/useZustandStore";
-import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import { useDialog } from "@/context/DialogContext";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import {
-  deleteGroceryStore,
-  getAllGroceryStoresData,
-} from "@/helpers/groceryStore";
-import { handleChangeGroceryStoreItemView } from "@/helpers/profile";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import { useDialog } from "@/context/DialogContext";
+import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddNewStore from "../dialogs/addNewStoreDialog";
 
 export default function DashboardHeaderMenu() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
-  const { supabase, session } = useSupabase();
-  const router = useRouter();
+  const dashboardView = useZustandStore(
+    ProfileDataStore,
+    (state) => state?.dashboardView
+  );
+  const { supabase } = useSupabase();
+
   // State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
-
-  const GroceryStoreData = GroceryDataStore((state) => state.data);
 
   const { openNewStoreDialog } = useDialog();
 
@@ -56,63 +43,12 @@ export default function DashboardHeaderMenu() {
     setAnchorEl(null);
   }
 
-  async function fetchData() {
-    await getAllGroceryStoresData(supabase);
-  }
-
   async function handleChangeView(view: DashboardView) {
-    switch (view) {
-      case DashboardView.AllItemsView:
-        await supabase
-          .from("profiles")
-          .update({ view_by_category: false, view_all: true })
-          .eq("id", profileData?.id)
-          .select()
-          .single();
-        break;
-      case DashboardView.CategoryView:
-        await supabase
-          .from("profiles")
-          .update({ view_by_category: true, view_all: false })
-          .eq("id", profileData?.id)
-          .select()
-          .single();
-        break;
-      case DashboardView.StoreView:
-        await supabase
-          .from("profiles")
-          .update({ view_by_category: false, view_all: false })
-          .eq("id", profileData?.id)
-          .select()
-          .single();
-        break;
-      default:
-        console.error("Invalid DashboardView value:", view);
-        break;
+    if (profileData?.id && dashboardView) {
+      await updateDashboardView(supabase, profileData?.id, view);
     }
   }
 
-  const dashboardView = useMemo(() => {
-    let dashboardView;
-
-    switch (true) {
-      case profileData?.view_all:
-        dashboardView = DashboardView.AllItemsView;
-        break;
-      case profileData?.view_by_category:
-        dashboardView = DashboardView.CategoryView;
-        break;
-      default:
-        dashboardView = DashboardView.StoreView;
-    }
-
-    return dashboardView;
-  }, [profileData?.view_all, profileData?.view_by_category]);
-
-  //   Depending on View I want to show different things
-  // All Items mode I want to show only Add Item
-  // Category Mode I want to show add Category
-  // store mode keep all stores
   return (
     <>
       <IconButton
