@@ -30,16 +30,18 @@ import {
   ImageType,
   SnackBarPropsType,
 } from "@/types";
-
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
-import { addNewGroceryStoreItem } from "@/helpers/groceryStoreItem";
+import { addNewGroceryStoreItem, addNewItem } from "@/helpers/ItemUtils";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import useZustandStore from "@/hooks/useZustandStore";
 
-export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
+export default function AddNewItemDialog() {
+  //need to change this so it doesn't require a store
   //Component State
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showLoader, setShowLoader] = useState<boolean>(false);
@@ -53,6 +55,8 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     preview: "",
     raw: "",
   });
+
+  const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
 
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
@@ -115,9 +119,9 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
   }
 
   async function handleSetImage(event: any) {
-    if (event.target.files.length && groceryStore?.select_id) {
+    if (event.target.files.length && profileData?.select_id) {
       const generatedPath = await generateImagePath(
-        groceryStore?.select_id,
+        profileData?.select_id,
         ImageType.Item
       );
 
@@ -135,7 +139,7 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
     }
   }
 
-  async function onSubmit(data: any, selectId: string) {
+  async function onSubmit(data: any, selectId: string | null) {
     try {
       setShowLoader(true);
       if (image.raw && imagePath) {
@@ -146,18 +150,20 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           BucketType.Store
         );
       }
-      const newItem = await addNewGroceryStoreItem(
-        supabase,
-        groceryStore.id,
-        data.itemName,
-        data.itemNotes.trim(),
-        Number(data.itemQuantity),
-        selectId,
-        imagePath
-      );
+      // TODO: need to make this configurable to take the grocery store if
+      const newItem =
+        selectId &&
+        (await addNewItem(
+          supabase,
+          data.itemName,
+          data.itemNotes.trim(),
+          Number(data.itemQuantity),
+          selectId,
+          imagePath
+        ));
 
       if (newItem) {
-       await fetchData();
+        await fetchData();
         setSnackbar({
           msg: AlertMsgType.AddNewItemSuccess,
           type: AlertType.Success,
@@ -314,12 +320,14 @@ export default function AddNewItemDialog(groceryStore: GroceryStoreType) {
           }}
         >
           <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit((d) => onSubmit(d, groceryStore?.select_id))}
-          >
-            Submit
-          </Button>
+          {profileData && profileData?.select_id && (
+            <Button
+              variant="contained"
+              onClick={handleSubmit((d) => onSubmit(d, profileData?.select_id))}
+            >
+              Submit
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

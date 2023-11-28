@@ -20,6 +20,7 @@ import { useDialog } from "@/context/DialogContext";
 import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddNewStore from "../dialogs/addNewStoreDialog";
+import AddNewItemDialog from "../dialogs/addNewItemDialog";
 
 export default function DashboardHeaderMenu() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -34,7 +35,7 @@ export default function DashboardHeaderMenu() {
 
   const open = Boolean(anchorEl);
 
-  const { openNewStoreDialog } = useDialog();
+  const { openNewStoreDialog, openNewItemDialog } = useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -100,7 +101,7 @@ export default function DashboardHeaderMenu() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {dashboardView === DashboardView.AllItemsView && (
-          <MenuItem onClick={openNewStoreDialog}>
+          <MenuItem onClick={openNewItemDialog}>
             <ListItemIcon>
               <ControlPointIcon fontSize="small" />
             </ListItemIcon>
@@ -133,7 +134,7 @@ export default function DashboardHeaderMenu() {
               <RadioButtonUncheckedIcon fontSize="small" />
             )}
           </ListItemIcon>
-          View by <cite></cite>ategory
+          View by category
         </MenuItem>
         <MenuItem onClick={() => handleChangeView(DashboardView.StoreView)}>
           <ListItemIcon>
@@ -160,6 +161,7 @@ export default function DashboardHeaderMenu() {
         {profileData?.select_id && (
           <AddNewStore select_id={profileData?.select_id} />
         )}
+        <AddNewItemDialog />
       </>
     </>
   );
