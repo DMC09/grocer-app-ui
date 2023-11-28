@@ -57,7 +57,7 @@ export default function SupabaseListener({
 
   // Grocery items
 
-  const addNewitem = GroceryDataStore((state) => state.insertGroceryItem);
+  const addNewItem = GroceryDataStore((state) => state.insertGroceryItem);
   const deleteItem = GroceryDataStore((state) => state.deleteGroceryItem);
   const updateItem = GroceryDataStore((state) => state.updateGroceryItem);
   // commonItems items
@@ -219,7 +219,7 @@ export default function SupabaseListener({
     }
   }, [
     GroceryStoreData,
-    addNewitem,
+    addNewItem,
     deleteItem,
     selectId,
     supabase,
