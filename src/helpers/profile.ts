@@ -1,5 +1,5 @@
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import { Database, ProfileType } from "@/types";
+import { DashboardView, Database, ProfileType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getProfileData(
@@ -65,21 +65,82 @@ export async function editProfileData(
   }
 }
 
-export async function handleChangeGroceryStoreItemView(
-  supabase: SupabaseClient<Database>,
-  expanded: boolean,
-  profileId: string
-) {
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({ expanded_groceryitem: !expanded })
-    .eq("id", profileId)
-    .select()
-    .single();
+// export async function handleChangeGroceryStoreItemView(
+//   supabase: SupabaseClient<Database>,
+//   expanded: boolean,
+//   profileId: string
+// ) {
+//   const { data, error } = await supabase
+//     .from("profiles")
+//     .update({ expanded_groceryitem: !expanded })
+//     .eq("id", profileId)
+//     .select()
+//     .single();
 
-  if (error) {
-    throw new Error(error.message);
-  } else {
-    console.log(data, "after changing view");
+//   if (error) {
+//     throw new Error(error.message);
+//   } else {
+//     console.log(data, "after changing view");
+//   }
+// }
+
+export async function updateDashboardView(
+  supabase: SupabaseClient<Database>,
+  profileId: string,
+  view: DashboardView
+) {
+  switch (view) {
+    case DashboardView.AllItemsView:
+      console.log("updating To All View!");
+      const { data: AllViewData, error: AllViewError } = await supabase
+        .from("profiles")
+        .update({ view_by_category: false, view_all: true })
+        .eq("id", profileId)
+        .select()
+        .single();
+
+      if (AllViewError) {
+        console.error("Invalid DashboardView value:", view);
+      } else {
+        ProfileDataStore.setState({
+          dashboardView: DashboardView.AllItemsView as DashboardView,
+        });
+      }
+      break;
+    case DashboardView.CategoryView:
+      const { data: categoryData, error: categoryError } = await supabase
+        .from("profiles")
+        .update({ view_by_category: true, view_all: false })
+        .eq("id", profileId)
+        .select()
+        .single();
+
+      if (categoryError) {
+        console.error("Invalid DashboardView value:", view);
+      } else {
+        ProfileDataStore.setState({
+          dashboardView: DashboardView.CategoryView as DashboardView,
+        });
+      }
+      break;
+    case DashboardView.StoreView:
+      const { data: storeData, error: storeError } = await supabase
+        .from("profiles")
+        .update({ view_by_category: false, view_all: false })
+        .eq("id", profileId)
+        .select()
+        .single();
+
+      if (storeError) {
+        console.error("Invalid DashboardView value:", view);
+      } else {
+        ProfileDataStore.setState({
+          dashboardView: DashboardView.StoreView as DashboardView,
+        });
+      }
+      break;
+    default:
+      console.error("Invalid DashboardView value:", view);
+      break;
   }
 }
