@@ -21,7 +21,7 @@ import { BucketType, GroceryStoreItemType, ImageType } from "@/types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
-import { updateGroceryStoreItem } from "@/helpers/groceryStoreItem";
+import { updateGroceryStoreItem } from "@/helpers/ItemUtils";
 import { getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
