@@ -3,17 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
-import {
-  GroceryDataStore,
-  findGroceryStoreIndex,
-  getGroceryStoreItemIndex,
-} from "@/stores/GroceryDataStore";
-import {
-  CommonItemType,
-  GroceryStoreItemType,
-  GroceryStoreWithItemsType,
-  ProfileType,
-} from "@/types";
+import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { ProfileType } from "@/types";
 
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
@@ -45,21 +36,7 @@ export default function SupabaseListener({
   const GroceryStoreData = GroceryDataStore((state) => state.data);
   const CommonItemCatalog = CommonItemsDataStore((state) => state.catalog);
 
-  const addNewGroceryStore = GroceryDataStore(
-    (state) => state.addNewGroceryStore
-  );
-  const deleteGroceryStore = GroceryDataStore(
-    (state) => state.deleteGroceryStore
-  );
-  const updatedGroceryStore = GroceryDataStore(
-    (state) => state.updateGroceryStore
-  );
-
   // Grocery items
-
-  const addNewItem = GroceryDataStore((state) => state.insertGroceryItem);
-  const deleteItem = GroceryDataStore((state) => state.deleteGroceryItem);
-  const updateItem = GroceryDataStore((state) => state.updateGroceryItem);
   // commonItems items
 
   const addToCatalog = CommonItemsDataStore((state) => state.addToCatalog);
@@ -175,14 +152,7 @@ export default function SupabaseListener({
         supabase.removeChannel(storeChannel);
       };
     }
-  }, [
-    GroceryStoreData,
-    addNewGroceryStore,
-    deleteGroceryStore,
-    selectId,
-    supabase,
-    updatedGroceryStore,
-  ]);
+  }, [GroceryStoreData, selectId, supabase]);
 
   // --------------------------------------------------- Grocery Store Item Events ---------------------------------------------------
 
@@ -217,14 +187,7 @@ export default function SupabaseListener({
         supabase.removeChannel(itemChannel);
       };
     }
-  }, [
-    GroceryStoreData,
-    addNewItem,
-    deleteItem,
-    selectId,
-    supabase,
-    updateItem,
-  ]);
+  }, [GroceryStoreData, selectId, supabase]);
 
   // --------------------------------------------------- Common Item Listeners Events ---------------------------------------------------
 
