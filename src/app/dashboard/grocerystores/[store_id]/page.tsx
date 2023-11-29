@@ -12,18 +12,11 @@ import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import ExpandedItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 import Item from "@/components/groceryStore/groceryStoreItem/item";
 
-
-
-
-
 // need to grab the pfiles boolean and render the differnt view.
 
 export default function Page() {
   const { store_id } = useParams();
-  const expandedView = useZustandStore(
-    ProfileDataStore,
-    (state) => state?.data?.expanded_groceryitem
-  );
+
   const grocerystoreitems = useZustandStore(
     GroceryDataStore,
     (state) => state?.data
@@ -32,11 +25,7 @@ export default function Page() {
 
   const groceryStoreItemsToRender = grocerystoreitems?.map(
     (item: GroceryStoreItemType) => {
-      return expandedView ? (
-        <ExpandedItem key={item.id} groceryStoreItem={item} />
-      ) : (
-        <Item key={item.id} groceryStoreItem={item} />
-      );
+      return <Item key={item.id} groceryStoreItem={item} />;
     }
   );
 
