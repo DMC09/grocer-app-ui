@@ -25,8 +25,6 @@ export default function DashboardLayout({
         >
           {children}
         </Container>
-
-        {/* This shoudl be changed  */}
         </DialogContextProvider>
       </ThemeProvider>
     </>
