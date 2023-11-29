@@ -1,5 +1,3 @@
-
-
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   Database,
@@ -70,7 +68,6 @@ export async function updateGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-
       return data;
     }
   } else {
@@ -83,7 +80,6 @@ export async function updateGroceryStore(
     if (error) {
       throw new Error(error.message);
     } else {
-
       return data;
     }
   }
@@ -109,7 +105,6 @@ export async function deleteGroceryStore(
     throw new Error(error.message);
   }
 }
-
 
 export async function addNewGroceryStoreItem(
   supabase: SupabaseClient<Database>,
@@ -162,7 +157,6 @@ export async function addNewGroceryStoreItem(
   }
 }
 
-
 export async function getAllGroceryStoresData(
   supabase: SupabaseClient<Database>
 ) {
@@ -176,6 +170,31 @@ export async function getAllGroceryStoresData(
     GroceryDataStore.setState({
       data: data as GroceryStoreWithItemsType[],
     });
+  }
+}
+
+export async function getAllGroceryStores(supabase: SupabaseClient<Database>) {
+  // console.log(supabase,'supabase?')
+  const { data, error } = await supabase.from("grocerystores").select("*"); //filter this
+  if (error) {
+    throw new Error(error.message);
+  } else {
+    GroceryDataStore.setState({
+      data: data as GroceryStoreWithItemsType[],
+    });
+  }
+}
+
+export async function fetchAllItems(supabase: SupabaseClient<Database>) {
+  // console.log(supabase,'supabase?')
+  const { data, error } = await supabase.from("grocerystoreitems").select("*"); //filter this
+  if (error) {
+    throw new Error(error.message);
+  } else {
+    console.log(data, "this is all of the data!!");
+    // GroceryDataStore.setState({
+    //   data: data as GroceryStoreWithItemsType[],
+    // });
   }
 }
 
