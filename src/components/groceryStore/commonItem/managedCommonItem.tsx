@@ -18,7 +18,7 @@ import { CommonItemType } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
 
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { deleteCommonItem, getAllCommonItems } from "@/helpers/commonItem";
+import { deleteCommonItem, fetchAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditCommonItem from "../../dialogs/editCommonItemDialog";
 
@@ -36,7 +36,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
   }
 
   async function fetchData() {
-    await getAllCommonItems(supabase);
+    await fetchAllCommonItems(supabase);
   }
 
   async function handleDelete() {

@@ -15,7 +15,7 @@ import { useContext, useEffect, useState } from "react";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import {
-  getAllCommonItems,
+  fetchAllCommonItems,
   isCommonItemDataStoreEmpty,
 } from "@/helpers/commonItem";
 import { CommonItemType } from "@/types";
@@ -42,9 +42,6 @@ export default function CommonItemsDialog({
   const clearItemsToSubmit = CommonItemsDataStore(
     (state) => state.clearItemsToSubmit
   );
-  const insertGroceryItems = GroceryDataStore(
-    (state) => state.insertGroceryItems
-  );
 
   //Refresh datat
   useEffect(() => {
@@ -69,7 +66,7 @@ export default function CommonItemsDialog({
   }));
 
   async function fetchData() {
-    await getAllGroceryStoresData(supabase);
+    await getAllGroceryStoresData(supabase); //maybe we need to change this to only include getting the common items catalog
   }
 
   async function handleAddCommonItems() {

@@ -25,7 +25,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { supabase } from "@supabase/auth-ui-shared";
-import { addCommonItem, getAllCommonItems } from "@/helpers/commonItem";
+import { addCommonItem, fetchAllCommonItems } from "@/helpers/commonItem";
 import { Category } from "@mui/icons-material";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import {
@@ -95,7 +95,7 @@ export default function AddCommonItem() {
 
   // Data
   async function fetchData() {
-    await getAllCommonItems(supabase);
+    await fetchAllCommonItems(supabase);
   }
 
   // Handlers

@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import { getAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
+import { fetchAllCommonItems, updateCommonItem } from "@/helpers/commonItem";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { theme } from "@/helpers/theme";
 import { useForm, Controller, useFormState } from "react-hook-form";
@@ -75,7 +75,7 @@ export default function EditCommonItem(item: CommonItemType) {
 
   // Data
   async function fetchData() {
-    await getAllCommonItems(supabase);
+    await fetchAllCommonItems(supabase);
   }
 
   function handleClickOpen() {
