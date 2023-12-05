@@ -11,7 +11,7 @@ import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { CommonItemType } from "@/types";
 import ManagedCommonItem from "../groceryStore/commonItem/managedCommonItem";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
-import { getAllCommonItems } from "@/helpers/commonItem";
+import { fetchAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCommonItem from "../dialogs/addCommonItemDialog";
 import NoManagedCommonItem from "../utils/commonitems/noManagedCommonItems";
@@ -26,7 +26,7 @@ export default function CommonItemsSettings() {
   );
 
   async function handleRefresh() {
-    await getAllCommonItems(supabase);
+    await fetchAllCommonItems(supabase);
   }
 
   return (
