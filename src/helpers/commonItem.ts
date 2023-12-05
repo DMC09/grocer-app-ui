@@ -1,7 +1,7 @@
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { CommonItemType, Database, GroceryStoreItemType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { getAllGroceryStoresData } from "./groceryStore";
+import { fetchAllItems, getAllGroceryStoresData } from "./groceryStore";
 
 export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
   // When I do a check on the individal commonGroceryStoreItem
@@ -47,13 +47,12 @@ export async function addToCommonItemCatalog(
   if (error) {
     throw new Error(error.message);
   } else {
-
     const CommonId = commonItemResponse?.id;
 
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .update({
-        cid: CommonId,
+        common_item_id: CommonId,
       })
       .eq("id", `${groceryStoreItem.id}`)
       .select()
@@ -64,12 +63,13 @@ export async function addToCommonItemCatalog(
     } else {
       console.log(data, "updated items");
       await getAllGroceryStoresData(supabase);
-      await getAllCommonItems(supabase);
+      await fetchAllCommonItems(supabase);
+      await fetchAllItems(supabase);
     }
   }
 }
 
-export async function getAllCommonItems(supabase: SupabaseClient<Database>) {
+export async function fetchAllCommonItems(supabase: SupabaseClient<Database>) {
   const { data, error } = await supabase.from("commonitems").select("*");
   console.log("fetching common itemS1");
   if (error) {
@@ -100,7 +100,7 @@ export function isCommonItemDataStoreEmpty(
 export async function updateCommonItem(
   supabase: SupabaseClient<Database>,
   id: number,
-  name: string ,
+  name: string,
   notes: string | null,
   imagePath: string | null
 ) {
