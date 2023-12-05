@@ -16,7 +16,7 @@ export default function NoItems() {
         }}
       >
         <Typography variant="h4" color="text.secondary">
-          No items available. please add one
+          No items available...
         </Typography>
       </Container>
     </>
