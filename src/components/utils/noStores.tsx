@@ -14,8 +14,8 @@ export default function NoStores() {
           p: 1,
         }}
       >
-        <Typography variant="h4" color="primary.main">
-          No <s></s>tores added....
+        <Typography variant="h4" color="text.secondary">
+          No stores available...
         </Typography>
       </Container>
     </>
