@@ -35,7 +35,7 @@ export default function Page() {
               gap: 3,
             }}
           >
-            {itemsToRender}
+            <ul style={{ width: "100%" }}>{itemsToRender}</ul>
           </Container>
         ) : (
           <NoItems />
