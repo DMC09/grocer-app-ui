@@ -1,4 +1,5 @@
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { ItemDataStore } from "@/stores/ItemStore";
 import {
   Database,
   GroceryStoreItemType,
@@ -133,7 +134,7 @@ export async function addNewGroceryStoreItem(
     if (error) {
       throw new Error(error.message);
     } else {
-      console.log(data, "added new item with images and");
+      console.log(data, "added new item with images ");
     }
   } else {
     const { data, error } = await supabase
@@ -173,14 +174,14 @@ export async function getAllGroceryStoresData(
   }
 }
 
-export async function getAllGroceryStores(supabase: SupabaseClient<Database>) {
-  // console.log(supabase,'supabase?')
+export async function fetchAllGroceryStores(supabase: SupabaseClient<Database>) {
+
   const { data, error } = await supabase.from("grocerystores").select("*"); //filter this
   if (error) {
     throw new Error(error.message);
   } else {
     GroceryDataStore.setState({
-      data: data as GroceryStoreWithItemsType[],
+      groceryStores: data as GroceryStoreType[],
     });
   }
 }
@@ -191,22 +192,21 @@ export async function fetchAllItems(supabase: SupabaseClient<Database>) {
   if (error) {
     throw new Error(error.message);
   } else {
-    console.log(data, "this is all of the data!!");
-    // GroceryDataStore.setState({
-    //   data: data as GroceryStoreWithItemsType[],
-    // });
+    ItemDataStore.setState({
+      data: data as GroceryStoreItemType[],
+    });
   }
 }
 
-export function isGroceryStoreDataEmpty(
-  groceryStoreData: GroceryStoreWithItemsType[] | undefined
+export function isItemsStateEmpty(
+  items: GroceryStoreItemType[] | undefined
 ): boolean {
-  if (groceryStoreData) {
-    for (const groceryStore of groceryStoreData) {
+  if (items) {
+    for (const item of items) {
       if (
-        groceryStore.created_at === "" ||
-        groceryStore.id === 0 ||
-        groceryStore.select_id === null
+        item.created_at === "" ||
+        item.id === 0 ||
+        item.select_id === null
       ) {
         return true;
       }
