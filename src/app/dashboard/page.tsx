@@ -1,61 +1,69 @@
 "use client";
 
 import { CircularProgress, Container } from "@mui/material";
-import { useEffect, useState } from "react";
-import { GroceryStoreType } from "@/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { DashboardView } from "@/types";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import DashboardHeader from "@/components/dashboard/dashboardHeader";
-import GroceryStore from "@/components/groceryStore/groceryStore";
 import GroceryStoreSkeleton from "@/components/skeletons/groceryStoreSkeleton";
-
-import NoStores from "@/components/utils/grocerystore/nostores";
 import useZustandStore from "@/hooks/useZustandStore";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
-  getAllGroceryStoresData,
-  isGroceryStoreDataEmpty,
+  fetchAllItems,
+  fetchAllGroceryStores,
+  isItemsStateEmpty,
 } from "@/helpers/groceryStore";
-import { getAllCommonItems } from "@/helpers/commonItem";
+import { fetchAllCommonItems } from "@/helpers/commonItem";
+import { ProfileDataStore } from "@/stores/ProfileDataStore";
+import { ItemDataStore } from "@/stores/ItemStore";
+import AllItemsView from "@/components/dashboard/allItems";
+import AllStoresView from "@/components/dashboard/allStoresView";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);
-  const groceryStoreData = useZustandStore(
-    GroceryDataStore,
-    (state) => state?.data
-  );
+
   const { supabase, session } = useSupabase();
 
-  async function fetchData() {
-    await getAllGroceryStoresData(supabase);
-    await getAllCommonItems(supabase);
-  }
+  const groceryStores = useZustandStore(
+    GroceryDataStore,
+    (state) => state?.groceryStores
+  );
+  const itemsData = useZustandStore(ItemDataStore, (state) => state.data);
+
+  const dashboardView = useZustandStore(
+    ProfileDataStore,
+    (state) => state?.dashboardView
+  );
+
+  const fetchData = useCallback(() => {
+    async function fetchDataInternal() {
+      await fetchAllItems(supabase);
+      await fetchAllCommonItems(supabase);
+      await fetchAllGroceryStores(supabase);
+    }
+
+    fetchDataInternal();
+  }, [supabase]);
+
   useEffect(() => {
-    if (groceryStoreData) {
-      if (isGroceryStoreDataEmpty(groceryStoreData)) {
-        console.log("Grocery Store Data not found!");
+    if (itemsData) {
+      if (isItemsStateEmpty(itemsData)) {
+        console.log("No data found!");
         fetchData();
       } else {
         console.log("Using Cache");
       }
     }
-  }, [groceryStoreData]);
-
-  // TODO: Put this in to a componeont
-  const groceryStoresToRender = groceryStoreData?.map(
-    (groceryStore: GroceryStoreType) => {
-      return <GroceryStore key={groceryStore.id} groceryStore={groceryStore} />;
-    }
-  );
+  }, [fetchData, itemsData]);
 
   async function handleRefresh() {
     setLoading(true);
-    setLoading(true);
     await fetchData();
-    if (groceryStoreData) {
+    if (itemsData) {
       setLoading(false);
     }
-    if (groceryStoreData) {
+    if (itemsData) {
       setLoading(false);
     }
   }
@@ -63,7 +71,6 @@ export default function Dashboard() {
   return (
     <>
       <DashboardHeader />
-
       <Container
         disableGutters
         sx={{
@@ -88,23 +95,10 @@ export default function Dashboard() {
               disableGutters
               sx={{ height: "100%", width: "98%", overflowY: "scroll" }}
             >
-              {groceryStoreData && groceryStoreData.length > 0 ? (
-                <Container
-                  disableGutters
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    flexFlow: "column",
-                    justifyContent: "flex-start",
-                    backgroundColor: "white",
-                    overflowY: "scroll",
-                  }}
-                >
-                  <ul>{groceryStoresToRender}</ul>
-                </Container>
+              {dashboardView === DashboardView.AllItemsView ? (
+                <AllItemsView items={itemsData} />
               ) : (
-                <NoStores />
+                <AllStoresView groceryStores={groceryStores} />
               )}
             </Container>
           </PullToRefresh>
