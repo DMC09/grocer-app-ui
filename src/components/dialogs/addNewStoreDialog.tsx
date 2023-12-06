@@ -25,6 +25,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import {
   addNewGroceryStore,
+  fetchAllGroceryStores,
   getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
 import {
@@ -89,7 +90,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
 
   // Data
   async function fetchData() {
-    await getAllGroceryStoresData(supabase);
+    await fetchAllGroceryStores(supabase);
   }
 
   // Handlers

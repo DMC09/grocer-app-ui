@@ -66,7 +66,7 @@ export default function CommonItemsDialog({
   }));
 
   async function fetchData() {
-    await getAllGroceryStoresData(supabase); //maybe we need to change this to only include getting the common items catalog
+    await fetchAllCommonItems(supabase); 
   }
 
   async function handleAddCommonItems() {

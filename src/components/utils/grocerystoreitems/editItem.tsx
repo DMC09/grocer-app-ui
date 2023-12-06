@@ -22,7 +22,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { updateGroceryStoreItem } from "@/helpers/ItemUtils";
-import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { fetchAllGroceryStores, fetchAllItems, getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -82,7 +82,9 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
   // Data
   async function fetchData() {
-    await getAllGroceryStoresData(supabase);
+    await fetchAllGroceryStores(supabase);
+    await fetchAllItems(supabase);
+
   }
 
   async function resetComponentState() {

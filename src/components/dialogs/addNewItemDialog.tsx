@@ -37,7 +37,7 @@ import {
 } from "@/types";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { addNewGroceryStoreItem, addNewItem } from "@/helpers/ItemUtils";
-import { fetchAllItems, getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { fetchAllGroceryStores, fetchAllItems, getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -113,7 +113,7 @@ export default function AddNewItemDialog() {
 
   // Data
   async function fetchData() {
-    await getAllGroceryStoresData(supabase);
+    await fetchAllGroceryStores(supabase);
     await fetchAllItems(supabase);
   }
 
@@ -155,7 +155,6 @@ export default function AddNewItemDialog() {
   }
 
   async function onSubmit(data: any, selectId: string | null) {
-    console.log(storeIdToUse, "storeId eing passed in !");
     try {
       setShowLoader(true);
       if (image.raw && imagePath) {
