@@ -26,12 +26,14 @@ import { useDialog } from "@/context/DialogContext";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import {
   deleteGroceryStore,
+  fetchAllItems,
+  fetchAllGroceryStores,
   getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
-import { handleChangeGroceryStoreItemView } from "@/helpers/profile";
 import AddNewItemDialog from "../../dialogs/addNewItemDialog";
 import CommonItemsDialog from "@/components/dialogs/commonItemsDialog";
 import EditGroceryStoreDialog from "@/components/dialogs/editGroceryStoreDialog";
+import AddNewStoreItem from "@/components/dialogs/addNewStoreItem";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -44,16 +46,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
 
   const GroceryStoreData = GroceryDataStore((state) => state.data);
 
-  const deleteGroceryStoreFromState = GroceryDataStore(
-    (state) => state.deleteGroceryStore
-  );
-
-
-  const {
-    openCommonItemsDialog,
-    openNewItemDialog,
-    openStoreSettingsDialog,
-  } = useDialog();
+  const { openCommonItemsDialog, openNewItemDialog, openStoreSettingsDialog } =
+    useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -63,7 +57,8 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   }
 
   async function fetchData() {
-    await getAllGroceryStoresData(supabase);
+    await fetchAllGroceryStores(supabase);
+    await fetchAllItems(supabase);
   }
 
   async function handleDeleteGroceryStore() {
@@ -74,17 +69,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     );
 
     if (deletedStoreId) {
-    await  fetchData();
-    }
-  }
-
-  async function handleChangeView() {
-    if (profileData?.expanded_groceryitem !== undefined) {
-      await handleChangeGroceryStoreItemView(
-        supabase,
-        profileData?.expanded_groceryitem,
-        profileData?.id
-      );
+      await fetchData();
     }
   }
 
@@ -172,7 +157,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
         </MenuItem>
       </Menu>
       <>
-        <AddNewItemDialog {...groceryStore} />
+        <AddNewStoreItem groceryStoreId={groceryStore.id} />
       </>
       <>
         <EditGroceryStoreDialog {...groceryStore} />
