@@ -1,9 +1,4 @@
 "use client";
-
-import { ChangeEvent, useEffect, useState } from "react";
-import { GroceryStoreItemProps, GroceryStoreItemType } from "@/types";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Card,
@@ -16,24 +11,17 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-
-import {
-  GroceryDataStore,
-  findGroceryStoreIndex,
-} from "@/stores/GroceryDataStore";
-
 import {
   addToCommonItemCatalog,
   fetchAllCommonItems,
 } from "@/helpers/commonItem";
-
+import { ChangeEvent, useEffect, useState } from "react";
+import { GroceryStoreItemProps } from "@/types";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CloseIcon from "@mui/icons-material/Close";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
-import {
-  fetchAllGroceryStores,
-  fetchAllItems,
-  getAllGroceryStoresData,
-} from "@/helpers/groceryStore";
+import { fetchAllGroceryStores, fetchAllItems } from "@/helpers/groceryStore";
 import { theme } from "@/helpers/theme";
 
 export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
@@ -98,7 +86,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             sx={{
               display: "flex",
               alignItems: "center",
-
             }}
           >
             <Box
@@ -106,10 +93,10 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 backgroundColor: "primary.main",
                 p: 1,
                 m: 1,
-                height:20,
-                width:20,
+                height: 20,
+                width: 20,
                 borderRadius: 15,
-                border:2,
+                border: 2,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -128,14 +115,19 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 height: "100%",
-                width:"100%",
-                ml:1
+                width: "100%",
+                ml: 1,
               }}
             >
               <Typography align="left" sx={{}} variant="h5">
                 {groceryStoreItem?.name}
               </Typography>
-               <Typography color="secondary.dark" align="left" sx={{}} variant="body1">
+              <Typography
+                color="secondary.dark"
+                align="left"
+                sx={{}}
+                variant="body1"
+              >
                 {groceryStoreItem?.notes}
               </Typography>
             </Box>
