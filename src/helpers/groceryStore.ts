@@ -161,10 +161,10 @@ export async function addNewGroceryStoreItem(
 export async function getAllGroceryStoresData(
   supabase: SupabaseClient<Database>
 ) {
-  // console.log(supabase,'supabase?')
+
   const { data, error } = await supabase
     .from("grocerystores")
-    .select("*,grocerystoreitems(*)"); //filter this
+    .select("*,grocerystoreitems(*)"); //TODO: filter this using select_id
   if (error) {
     throw new Error(error.message);
   } else {
@@ -176,7 +176,7 @@ export async function getAllGroceryStoresData(
 
 export async function fetchAllGroceryStores(supabase: SupabaseClient<Database>) {
 
-  const { data, error } = await supabase.from("grocerystores").select("*"); //filter this
+  const { data, error } = await supabase.from("grocerystores").select("*"); //TODO: filter this using select_id
   if (error) {
     throw new Error(error.message);
   } else {
@@ -187,7 +187,7 @@ export async function fetchAllGroceryStores(supabase: SupabaseClient<Database>) 
 }
 
 export async function fetchAllItems(supabase: SupabaseClient<Database>) {
-  // console.log(supabase,'supabase?')
+
   const { data, error } = await supabase.from("grocerystoreitems").select("*"); //filter this
   if (error) {
     throw new Error(error.message);
