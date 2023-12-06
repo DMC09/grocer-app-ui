@@ -31,9 +31,7 @@ export default function allStoresView({
             overflowY: "scroll",
           }}
         >
-          <ul>
-            <>{groceryStoresToRender}</>
-          </ul>
+          <ul>{groceryStoresToRender}</ul>
         </Container>
       ) : (
         <NoStores />
