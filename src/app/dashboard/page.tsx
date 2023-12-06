@@ -17,7 +17,7 @@ import {
 import { fetchAllCommonItems } from "@/helpers/commonItem";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { ItemDataStore } from "@/stores/ItemStore";
-import AllItemsView from "@/components/dashboard/allItems";
+import AllItemsView from "@/components/dashboard/allItemsView";
 import AllStoresView from "@/components/dashboard/allStoresView";
 
 export default function Dashboard() {
