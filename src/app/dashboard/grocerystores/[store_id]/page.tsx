@@ -3,36 +3,27 @@
 import { Container, Skeleton, ThemeProvider } from "@mui/material";
 import { useParams } from "next/navigation";
 import { GroceryStoreItemType } from "@/types";
-import NoItems from "@/components/utils/grocerystoreitems/noItems";
-import { PostgrestError } from "@supabase/supabase-js";
 import { theme } from "@/helpers/theme";
-import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import useZustandStore from "@/hooks/useZustandStore";
-import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import ExpandedItem from "@/components/groceryStore/groceryStoreItem/expandedItem";
 import Item from "@/components/groceryStore/groceryStoreItem/item";
-
-// need to grab the pfiles boolean and render the differnt view.
+import { ItemDataStore } from "@/stores/ItemStore";
+import NoItems from "@/components/utils/noItems";
 
 export default function Page() {
   const { store_id } = useParams();
 
-  const grocerystoreitems = useZustandStore(
-    GroceryDataStore,
-    (state) => state?.data
-  )?.filter((grocerystore) => Number(grocerystore.id) === Number(store_id))?.[0]
-    ?.grocerystoreitems;
-
-  const groceryStoreItemsToRender = grocerystoreitems?.map(
-    (item: GroceryStoreItemType) => {
-      return <Item key={item.id} groceryStoreItem={item} />;
-    }
+  const items = useZustandStore(ItemDataStore, (state) => state.data)?.filter(
+    (item) => Number(item.store_id) === Number(store_id)
   );
+
+  const itemsToRender = items?.map((item: GroceryStoreItemType) => {
+    return <Item key={item.id} groceryStoreItem={item} />;
+  });
 
   return (
     <>
       <ThemeProvider theme={theme}>
-        {grocerystoreitems && grocerystoreitems.length > 0 ? (
+        {items && items.length > 0 ? (
           <Container
             disableGutters
             sx={{
@@ -44,7 +35,7 @@ export default function Page() {
               gap: 3,
             }}
           >
-            {groceryStoreItemsToRender}
+            {itemsToRender}
           </Container>
         ) : (
           <NoItems />
