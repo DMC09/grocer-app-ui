@@ -9,11 +9,11 @@ import { ProfileType } from "@/types";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
-import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { fetchAllItems, getAllGroceryStoresData } from "@/helpers/groceryStore";
 import { getGroupData } from "@/helpers/group";
 import { getProfileData } from "@/helpers/profile";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
-import { getAllCommonItems } from "@/helpers/commonItem";
+import { fetchAllCommonItems } from "@/helpers/commonItem";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -56,6 +56,9 @@ export default function SupabaseListener({
   async function getGroceryData() {
     await getAllGroceryStoresData(supabase);
   }
+  async function getAllItems() {
+    await fetchAllItems(supabase);
+  }
 
   // --------------------------------------------------- Select ID Watcher ---------------------------------------------------
   useEffect(() => {
@@ -67,7 +70,8 @@ export default function SupabaseListener({
           getProfileData(supabase, session?.user?.id);
           // fetch Grocery Store Data and common Item Data
           getAllGroceryStoresData(supabase);
-          getAllCommonItems(supabase);
+          getAllItems()
+          fetchAllCommonItems(supabase);
         }
 
         console.log(
@@ -133,7 +137,7 @@ export default function SupabaseListener({
           },
           (payload) => {
             if (payload) {
-              getAllGroceryStoresData(supabase);
+              getAllGroceryStoresData(supabase); //Change to only the store data
             }
           }
         )
@@ -171,6 +175,7 @@ export default function SupabaseListener({
           (payload) => {
             if (payload) {
               getAllGroceryStoresData(supabase);
+              getAllItems()
             }
           }
         )
@@ -200,7 +205,7 @@ export default function SupabaseListener({
           { event: "*", schema: "public", table: "commonitems" },
           (payload) => {
             console.log(payload, "Event happened on commonitems tables");
-            getAllCommonItems(supabase);
+            fetchAllCommonItems(supabase);
           }
         )
         .subscribe((status, err) =>
