@@ -8,7 +8,7 @@ export default function allItemsView({
 }: {
   items: GroceryStoreItemType[] | [] | undefined;
 }) {
-  const allItemsToRender = items?.map((item) => {
+  const itemToRender = items?.map((item) => {
     return <Item groceryStoreItem={item} key={item.id} />;
   });
 
@@ -30,7 +30,7 @@ export default function allItemsView({
             overflowY: "scroll",
           }}
         >
-          <ul style={{width: "100%"}}>{allItemsToRender}</ul>
+          <ul style={{width: "100%",}}>{itemToRender}</ul>
         </Container>
       ) : (
         <NoItems />

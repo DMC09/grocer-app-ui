@@ -6,7 +6,7 @@ import { Session } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// do not cache this page
+// Do not cache this page
 export const revalidate = 0;
 
 export default function HomePage() {

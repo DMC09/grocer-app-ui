@@ -70,8 +70,8 @@ export default function EditProfileSettings(profile: ProfileType) {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      firstName: profile.first_name,
-      lastName: profile.last_name,
+      firstName: profile.first_name || "",
+      lastName: profile.last_name || "",
       phone: profile.phone ? profile.phone : undefined,
     },
   });
@@ -89,8 +89,8 @@ export default function EditProfileSettings(profile: ProfileType) {
     setImagePath(null);
     setImage({ preview: profile?.avatar_url, raw: "" });
     reset({
-      firstName: profile.first_name,
-      lastName: profile.last_name,
+      firstName: profile.first_name || "",
+      lastName: profile.last_name || "",
       phone: profile.phone ? profile.phone : "",
     });
     setOpen(false);

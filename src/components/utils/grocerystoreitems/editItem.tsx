@@ -22,7 +22,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { updateGroceryStoreItem } from "@/helpers/ItemUtils";
-import { fetchAllGroceryStores, fetchAllItems, getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { fetchAllGroceryStores, fetchAllItems } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -74,9 +74,9 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      itemName: groceryStoreItem.name,
-      itemNotes: groceryStoreItem.notes,
-      itemQuantity: groceryStoreItem.quantity,
+      itemName: groceryStoreItem.name || "",
+      itemNotes: groceryStoreItem.notes || "",
+      itemQuantity: groceryStoreItem.quantity || 0,
     },
   });
 
@@ -84,7 +84,6 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   async function fetchData() {
     await fetchAllGroceryStores(supabase);
     await fetchAllItems(supabase);
-
   }
 
   async function resetComponentState() {
@@ -97,8 +96,8 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
   async function handleClose() {
     reset({
-      itemName: groceryStoreItem.name,
-      itemNotes: groceryStoreItem.notes,
+      itemName: groceryStoreItem.name || "",
+      itemNotes: groceryStoreItem.notes || "",
       itemQuantity: Number(groceryStoreItem?.quantity),
     });
     setOpen(false);
@@ -123,7 +122,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
   async function onSubmit(data: any) {
     try {
-      setShowLoader(true)
+      setShowLoader(true);
       const now = new Date().toISOString();
       if (image.raw && imagePath) {
         await handleImageUpload(
@@ -150,14 +149,14 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       console.error(error);
     } finally {
       await handleClose();
-      setShowLoader(false)
+      setShowLoader(false);
     }
   }
 
   // Effects
   useEffect(() => {
     reset({
-      itemName: groceryStoreItem.name,
+      itemName: groceryStoreItem.name || "",
       itemNotes: groceryStoreItem.notes,
       itemQuantity: Number(groceryStoreItem?.quantity),
     });

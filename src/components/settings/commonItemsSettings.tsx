@@ -1,16 +1,8 @@
-import {
-  Container,
-  Box,
-  Card,
-  CardMedia,
-  TextField,
-  IconButton,
-} from "@mui/material";
-import EditProfileSettings from "./editProfileSettings";
+import { Container } from "@mui/material";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { CommonItemType } from "@/types";
 import ManagedCommonItem from "../groceryStore/commonItem/managedCommonItem";
-import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
+
 import { fetchAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCommonItem from "../dialogs/addCommonItemDialog";
@@ -35,7 +27,7 @@ export default function CommonItemsSettings() {
         sx={{
           display: "flex",
           flexFlow: "column",
-          alignItems:"center",
+          alignItems: "center",
           borderColor: "primary.main",
           backgroundColor: "background.default",
           px: 4,
@@ -50,7 +42,11 @@ export default function CommonItemsSettings() {
           <AddCommonItem />
         </>
 
-        {commonItemsCatalog.length > 0 ? commonItemsToRender : <NoManagedCommonItem />}
+        {commonItemsCatalog.length > 0 ? (
+          commonItemsToRender
+        ) : (
+          <NoManagedCommonItem />
+        )}
       </Container>
     </>
   );

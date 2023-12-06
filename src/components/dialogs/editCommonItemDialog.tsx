@@ -68,7 +68,7 @@ export default function EditCommonItem(item: CommonItemType) {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      itemName: item.item_name,
+      itemName: item.item_name || "",
       itemNotes: item.item_notes,
     },
   });
@@ -84,7 +84,7 @@ export default function EditCommonItem(item: CommonItemType) {
 
   async function handleClose() {
     reset({
-      itemName: item.item_name,
+      itemName: item.item_name || "",
       itemNotes: item.item_notes,
     });
     setOpen(false);
