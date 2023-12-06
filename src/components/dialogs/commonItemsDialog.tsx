@@ -21,7 +21,7 @@ import {
 import { CommonItemType } from "@/types";
 import { theme } from "@/helpers/theme";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
-import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+
 import CommonItem from "../groceryStore/commonItem/commonItem";
 import NoCommonItems from "../utils/commonitems/noCommonItems";
 
@@ -43,7 +43,7 @@ export default function CommonItemsDialog({
     (state) => state.clearItemsToSubmit
   );
 
-  //Refresh datat
+  //Refresh data
   useEffect(() => {
     if (commonItemsCatalog) {
       if (isCommonItemDataStoreEmpty(commonItemsCatalog)) {

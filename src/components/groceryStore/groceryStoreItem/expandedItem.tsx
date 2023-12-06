@@ -139,9 +139,6 @@ export default function ExpandedItem({
             <Typography color="#071236" variant="subtitle2">
               {groceryStoreItem.quantity}
             </Typography>
-            {/* <Typography color="#071236" variant="caption">
-              {created_atLocal()}
-            </Typography> */}
             <EditItem {...groceryStoreItem} />
           </CardActions>
         </Card>

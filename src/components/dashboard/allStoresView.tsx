@@ -1,5 +1,4 @@
-import { GroceryStoreItemType, GroceryStoreType } from "@/types";
-import Item from "../groceryStore/groceryStoreItem/item";
+import { GroceryStoreType } from "@/types";
 import GroceryStore from "../groceryStore/groceryStore";
 import { Container } from "@mui/material";
 import NoStores from "../utils/noStores";
@@ -9,7 +8,6 @@ export default function allStoresView({
 }: {
   groceryStores: GroceryStoreType[] | [] | undefined;
 }) {
-  //If Items then redner them otherwise riendor a placeholder text
   const groceryStoresToRender = groceryStores?.map(
     (groceryStore: GroceryStoreType) => {
       return <GroceryStore key={groceryStore.id} groceryStore={groceryStore} />;

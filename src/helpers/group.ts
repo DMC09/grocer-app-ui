@@ -9,8 +9,5 @@ export async function getGroupData(supabase: SupabaseClient<Database>) {
     throw new Error(error.message);
   } else {
     ProfileDataStore.setState({ groupData: data as GroupMemberType[] });
-    // setOtherGroupMembers(data);
-    // setGroup(data as GroupMemberType[]);
-    console.log(data, "view data");
   }
 }

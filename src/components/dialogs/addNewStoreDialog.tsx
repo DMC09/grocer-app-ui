@@ -15,8 +15,7 @@ import {
   Backdrop,
   CircularProgress,
   Snackbar,
-  Slide,
-  SnackbarContent,
+
 } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
@@ -26,7 +25,7 @@ import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import {
   addNewGroceryStore,
   fetchAllGroceryStores,
-  getAllGroceryStoresData,
+
 } from "@/helpers/groceryStore";
 import {
   AlertMsgType,
@@ -241,7 +240,6 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
                   sx={{ objectFit: "fill", zIndex: 0 }}
                   component="img"
                   height="250"
-                  //TODO: use Placeholder in store
                   image={
                     image.preview ||
                     "https://filetandvine.com/wp-content/uploads/2015/07/pix-uploaded-placeholder.jpg"

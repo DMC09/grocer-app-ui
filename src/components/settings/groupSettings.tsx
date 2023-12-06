@@ -1,19 +1,11 @@
 "use client";
 import {
   Box,
-  Button,
-  Chip,
   Container,
-  Divider,
-  Typography,
 } from "@mui/material";
 import { useSupabase } from "../supabase/supabase-provider";
-import { useEffect, useMemo, useState } from "react";
-import JoinGroup from "../utils/group/joinGroup";
-import CreateGroup from "../utils/group/createGroup";
 import { GroupMemberType, GroupType, ProfileType } from "@/types";
 import LeaveGroup from "../utils/group/leaveGroup";
-import LibraryAddSharpIcon from "@mui/icons-material/LibraryAddSharp";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import JoinCreateActions from "../group/joinCreateActions";
 import ShareCode from "../utils/group/shareCode";

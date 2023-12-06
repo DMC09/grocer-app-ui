@@ -2,7 +2,6 @@
 // Imports
 import {
   Divider,
-  Fade,
   IconButton,
   ListItemIcon,
   Menu,
@@ -12,13 +11,11 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useContext, useEffect, useState } from "react";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Settings } from "@mui/icons-material";
 import { useSupabase } from "../../supabase/supabase-provider";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
-import { GroceryStoreType, ProfileType } from "@/types";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { GroceryStoreType } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
@@ -28,9 +25,7 @@ import {
   deleteGroceryStore,
   fetchAllItems,
   fetchAllGroceryStores,
-  getAllGroceryStoresData,
 } from "@/helpers/groceryStore";
-import AddNewItemDialog from "../../dialogs/addNewItemDialog";
 import CommonItemsDialog from "@/components/dialogs/commonItemsDialog";
 import EditGroceryStoreDialog from "@/components/dialogs/editGroceryStoreDialog";
 import AddNewStoreItem from "@/components/dialogs/addNewStoreItem";

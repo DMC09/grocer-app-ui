@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useState } from "react";
-
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { ProfileType } from "@/types";
 import { useSupabase } from "../supabase/supabase-provider";
@@ -41,11 +40,8 @@ export default function CreateGroup(profile: ProfileType | null) {
 
   async function handleImageUpload() {
     if (image.raw && imagePath) {
-      // TODO: error handling
       const { data, error } = await supabase.storage
         .from("profile")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
         .upload(imagePath, image.raw);
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);
@@ -60,7 +56,7 @@ export default function CreateGroup(profile: ProfileType | null) {
     const currentTimeStamp = new Date().getTime();
     setImagePath(`groups/${lastPartOfSelectId}/${currentTimeStamp}`);
   }
-  //Need to generate UUID
+
   async function handleImageSet(event: any) {
     if (event.target.files.length && groupId) {
       generateImagePath(groupId);
@@ -73,7 +69,7 @@ export default function CreateGroup(profile: ProfileType | null) {
 
   async function handleSubmit() {
     if (image.raw && imagePath) {
-      // TODO: error handling
+
       await handleImageUpload();
       const { data, error } = await supabase
         .from("groups")

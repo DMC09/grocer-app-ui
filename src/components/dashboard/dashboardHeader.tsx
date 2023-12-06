@@ -1,12 +1,9 @@
 "use client";
 
 import { ThemeProvider, Typography, Card } from "@mui/material";
-
 import { theme } from "@/helpers/theme";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-
-import AddNewStore from "../dialogs/addNewStoreDialog";
 import DashboardHeaderMenu from "./dashboardHeaderMenu";
 
 export default function DashboardHeader() {
@@ -36,7 +33,6 @@ export default function DashboardHeader() {
             >
               Dashboard
             </Typography>
-            {/* <AddNewStore select_id={selectId} /> */}
             <DashboardHeaderMenu  />
           </Card>
         )}

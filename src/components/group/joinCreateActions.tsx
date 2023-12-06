@@ -1,7 +1,6 @@
 "use client";
 
 import { Divider, Chip, Box } from "@mui/material";
-import { profile } from "console";
 import CreateGroup from "../utils/group/createGroup";
 import JoinGroup from "../utils/group/joinGroup";
 import { ProfileType } from "@/types";

@@ -43,8 +43,6 @@ export default function CreateGroup(profile: ProfileType | null) {
       // TODO: error handling
       const { data, error } = await supabase.storage
         .from("profile")
-        // Need a custom path thing for this.
-        // Also need to getthe public url
         .upload(imagePath, image.raw);
       if (error) {
         throw new Error(`Error uploading image ${error.message}`);

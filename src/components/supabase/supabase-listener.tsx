@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useSupabase } from "./supabase-provider";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 import { ProfileType } from "@/types";
-
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
@@ -244,8 +243,6 @@ export default function SupabaseListener({
 
   // --------------------------------------------------- Auth Listeners Events ---------------------------------------------------
   useEffect(() => {
-    // what there is no session, redirect to the login
-    //because of this code block I am constantly getting the profile data and setting if I make a change...
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event == "SIGNED_IN" && session && session.user) {
         const profile = await getProfileData(supabase, session.user.id);
@@ -255,10 +252,10 @@ export default function SupabaseListener({
             await getGroupData(supabase);
           }
         } else {
-          //Need an error page or something
+
           throw new Error("No Profile found");
         }
-        //if we are in a group fetch the data
+
       }
     });
 

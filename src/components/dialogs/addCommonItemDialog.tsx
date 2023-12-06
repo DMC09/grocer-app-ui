@@ -10,23 +10,18 @@ import {
   DialogActions,
   useMediaQuery,
   Box,
-  IconButton,
   Typography,
   Backdrop,
   CircularProgress,
   Snackbar,
-  Slide,
 } from "@mui/material";
-import image from "next/image";
+
 import { useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
-import { supabase } from "@supabase/auth-ui-shared";
 import { addCommonItem, fetchAllCommonItems } from "@/helpers/commonItem";
-import { Category } from "@mui/icons-material";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import {
   AlertMsgType,

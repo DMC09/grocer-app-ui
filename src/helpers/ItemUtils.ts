@@ -51,7 +51,7 @@ export async function updateGroceryStoreItem(
 }
 export async function addNewGroceryStoreItem(
   supabase: SupabaseClient<Database>,
-  storeId: number | null = null, // need to make this optional
+  storeId: number | null = null, 
   name: string,
   notes: string,
   quantity: number,
@@ -63,7 +63,7 @@ export async function addNewGroceryStoreItem(
       .from("grocerystoreitems")
       .insert([
         {
-          store_id: storeId ? storeId : null, // ternary other null
+          store_id: storeId ? storeId : null,
           name,
           notes,
           quantity: Number(quantity),
@@ -153,7 +153,7 @@ export async function addNewItem(
 
 export async function addCategoryItem(
   supabase: SupabaseClient<Database>,
-  storeId: number | null = null, // need to make this optional
+  storeId: number | null = null,
   name: string,
   notes: string,
   quantity: number,
@@ -165,7 +165,7 @@ export async function addCategoryItem(
       .from("grocerystoreitems")
       .insert([
         {
-          store_id: storeId ? storeId : null, // ternary other null
+          store_id: storeId ? storeId : null,
           name,
           notes,
           quantity: Number(quantity),

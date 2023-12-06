@@ -37,7 +37,7 @@ import {
 } from "@/types";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { addNewGroceryStoreItem, addNewItem } from "@/helpers/ItemUtils";
-import { fetchAllGroceryStores, fetchAllItems, getAllGroceryStoresData } from "@/helpers/groceryStore";
+import { fetchAllGroceryStores, fetchAllItems } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -48,7 +48,6 @@ import { useParams } from "next/navigation";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 export default function AddNewItemDialog() {
-  //need to change this so it doesn't require a store
   //Component State
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showLoader, setShowLoader] = useState<boolean>(false);
@@ -69,7 +68,6 @@ export default function AddNewItemDialog() {
     (state) => state?.groceryStores
   );
 
-  const grocerStoreId = null;
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
       .required("Item name is required")

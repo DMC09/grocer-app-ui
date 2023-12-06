@@ -18,21 +18,6 @@ export default function LoginPage() {
 
   return (
     <>
-     {/* {session?.user ? <Box
-        sx={{
-          display: "flex",
-          flexFlow: "column",
-        }}
-        maxWidth={350}
-        width={"100%"}
-      >
-        <Auth
-          supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
-          providers={["google"]}
-          theme="dark"
-        />
-      </Box> :<DashBoardSkeleton/>} */}
       <Box
         sx={{
           display: "flex",

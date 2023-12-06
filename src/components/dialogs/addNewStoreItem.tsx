@@ -39,7 +39,7 @@ import { addNewGroceryStoreItem, addNewItem } from "@/helpers/ItemUtils";
 import {
   fetchAllGroceryStores,
   fetchAllItems,
-  getAllGroceryStoresData,
+
 } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -54,7 +54,6 @@ export default function AddNewItemDialog({
 }: {
   groceryStoreId: number | null;
 }) {
-  //need to change this so it doesn't require a store
   //Component State
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showLoader, setShowLoader] = useState<boolean>(false);
@@ -71,8 +70,6 @@ export default function AddNewItemDialog({
   });
 
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
-
-  // if there are params of store_id then we need to use it for the actual dialog, then if it's there pass it
 
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()

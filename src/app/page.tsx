@@ -16,8 +16,6 @@ export default function HomePage() {
   const [sessionData] = useState<Session | null>(session);
 
   useEffect(() => {
-    // console.log(session, "session info");
-    // console.log(supabase, "supabase info");
 
     sessionData?.user ? router.push("/dashboard") : router.push("/login");
   }, []);

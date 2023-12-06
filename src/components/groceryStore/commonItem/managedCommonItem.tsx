@@ -2,16 +2,12 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  Checkbox,
   Typography,
-  CardActions,
   IconButton,
-  TextField,
   Box,
   CardMedia,
   Dialog,
   DialogActions,
-  Switch,
 } from "@mui/material";
 import { useState } from "react";
 import { CommonItemType } from "@/types";

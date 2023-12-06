@@ -5,17 +5,12 @@ import {
   Card,
   CardMedia,
   Container,
-  Tab,
-  Tabs,
   TextField,
-  Typography,
 } from "@mui/material";
 import EditProfileSettings from "./editProfileSettings";
 import GroupSettings from "./groupSettings";
-
 import { useSupabase } from "../supabase/supabase-provider";
 import ReactPullToRefresh from "react-pull-to-refresh/dist/index";
-
 import { SetStateAction, useState } from "react";
 import { BorderColor } from "@mui/icons-material";
 import useZustandStore from "@/hooks/useZustandStore";
@@ -28,7 +23,6 @@ export default function ProfileSettings() {
   const { supabase, session } = useSupabase();
 
   async function handleRefresh(): Promise<void> {
-    // throw new Error("Function not implemented.");
     console.log("refreshing data");
     await getProfileData(supabase, session?.user?.id);
     await getGroupData(supabase);

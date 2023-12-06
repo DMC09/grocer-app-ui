@@ -72,7 +72,7 @@ export default function CommonItem(item: CommonItemType) {
     if (!selected) {
       setSelected(true);
 
-      generateUiD(); // should only be if is true
+      generateUiD(); 
     } else {
       setSelected(false);
     }

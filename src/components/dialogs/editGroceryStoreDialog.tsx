@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
   fetchAllGroceryStores,
-  getAllGroceryStoresData,
+
   updateGroceryStore,
 } from "@/helpers/groceryStore";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
@@ -80,7 +80,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
 
   // Data
   async function fetchData() {
-    await fetchAllGroceryStores(supabase); // change to only include getting the store data
+    await fetchAllGroceryStores(supabase);
   }
 
   // Handlers

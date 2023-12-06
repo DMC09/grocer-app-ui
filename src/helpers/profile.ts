@@ -65,24 +65,6 @@ export async function editProfileData(
   }
 }
 
-// export async function handleChangeGroceryStoreItemView(
-//   supabase: SupabaseClient<Database>,
-//   expanded: boolean,
-//   profileId: string
-// ) {
-//   const { data, error } = await supabase
-//     .from("profiles")
-//     .update({ expanded_groceryitem: !expanded })
-//     .eq("id", profileId)
-//     .select()
-//     .single();
-
-//   if (error) {
-//     throw new Error(error.message);
-//   } else {
-//     console.log(data, "after changing view");
-//   }
-// }
 
 export async function updateDashboardView(
   supabase: SupabaseClient<Database>,
@@ -91,7 +73,7 @@ export async function updateDashboardView(
 ) {
   switch (view) {
     case DashboardView.AllItemsView:
-      console.log("updating To All View!");
+
       const { data: AllViewData, error: AllViewError } = await supabase
         .from("profiles")
         .update({ view_by_category: false, view_all: true })

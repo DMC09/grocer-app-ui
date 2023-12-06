@@ -4,29 +4,6 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { fetchAllItems, getAllGroceryStoresData } from "./groceryStore";
 
 export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
-  // When I do a check on the individal commonGroceryStoreItem
-  // store id needs to be the same
-  // could make a state for the common items
-  // Then part of that state can be the items to add?
-  // Quantity will differ,
-  // name,notes,select_id, and image should come from the object
-  //but we want image path to be changeable.
-
-  const commonItemsToAdd = null;
-
-  // const { data, error } = await supabase
-  // .from("grocerystoreitems")
-  // .insert([
-  //   {
-  //     store_id: storeId,
-  //     name,
-  //     notes,
-  //     quantity: Number(quantity),
-  //     select_id: selectId,
-  //     image: imagePath,
-  //   },
-  // ])
-  // .select();
 }
 
 export async function addToCommonItemCatalog(
