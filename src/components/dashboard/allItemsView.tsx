@@ -8,10 +8,11 @@ export default function allItemsView({
 }: {
   items: GroceryStoreItemType[] | [] | undefined;
 }) {
-  //If Items then redner them otherwise riendor a placeholder text
   const allItemsToRender = items?.map((item) => {
     return <Item groceryStoreItem={item} key={item.id} />;
   });
+
+
 
   return (
     <>
@@ -19,18 +20,17 @@ export default function allItemsView({
         <Container
           disableGutters
           sx={{
+            alignItems: "center",
+            justifyContent: "flex-start",
             width: "100%",
             height: "100%",
             display: "flex",
             flexFlow: "column",
-            justifyContent: "flex-start",
             backgroundColor: "white",
             overflowY: "scroll",
           }}
         >
-          <ul>
-            <>{allItemsToRender}</>
-          </ul>
+          <ul style={{width: "100%"}}>{allItemsToRender}</ul>
         </Container>
       ) : (
         <NoItems />
