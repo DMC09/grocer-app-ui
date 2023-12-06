@@ -126,7 +126,8 @@ export default function DashboardHeaderMenu() {
           </MenuItem>
         )}
         <Divider />
-        <MenuItem onClick={() => handleChangeView(DashboardView.CategoryView)}>
+
+        {/* <MenuItem onClick={() => handleChangeView(DashboardView.CategoryView)}>
           <ListItemIcon>
             {dashboardView === DashboardView.CategoryView ? (
               <CheckCircleRoundedIcon fontSize="small" />
@@ -135,7 +136,7 @@ export default function DashboardHeaderMenu() {
             )}
           </ListItemIcon>
           View by category
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={() => handleChangeView(DashboardView.StoreView)}>
           <ListItemIcon>
             {dashboardView === DashboardView.StoreView ? (
