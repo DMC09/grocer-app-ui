@@ -5,16 +5,12 @@ import { GroceryStoreItemProps, GroceryStoreItemType } from "@/types";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import {
-  Badge,
   Box,
-  Button,
   Card,
   CardActionArea,
   CardMedia,
-  CircularProgress,
   Dialog,
   DialogActions,
-  DialogTitle,
   IconButton,
   Switch,
   Typography,
@@ -28,12 +24,16 @@ import {
 
 import {
   addToCommonItemCatalog,
-  getAllCommonItems,
+  fetchAllCommonItems,
 } from "@/helpers/commonItem";
 
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
-import { getAllGroceryStoresData } from "@/helpers/groceryStore";
+import {
+  fetchAllGroceryStores,
+  fetchAllItems,
+  getAllGroceryStoresData,
+} from "@/helpers/groceryStore";
 import { theme } from "@/helpers/theme";
 
 export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
@@ -41,49 +41,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
   const [open, setOpen] = useState(false);
   const [checked, setChecked] = useState<boolean | null>(null);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [progress, setProgress] = useState(0);
-
-  // function updatedRecently(timestamp: string | Date | null) {
-  //   if (timestamp) {
-  //     // Convert the timestamp to a Date object.
-  //     const passedDate = new Date(timestamp).getTime();
-
-  //     // Get the current time in milliseconds.
-  //     const now = Date.now();
-
-  //     // Return true if the passedDate is within the last 5 minutes.
-  //     return passedDate > now - 300000;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  const created_atLocal = () => {
-    if (groceryStoreItem?.created_at) {
-      const localDate = new Date(
-        groceryStoreItem?.created_at
-      ).toLocaleTimeString([], {
-        month: "numeric",
-        day: "numeric",
-        year: "2-digit",
-        hour: "numeric",
-        minute: "2-digit",
-      });
-      return localDate;
-    }
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 0 : prevProgress + 10
-      );
-    }, 800);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
 
   async function handleClickOpen() {
     setOpen(true);
@@ -93,36 +50,24 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
     setOpen(false);
   }
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 0 : prevProgress + 10
-      );
-    }, 800);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
   async function fetchData() {
-    await getAllGroceryStoresData(supabase);
+    await fetchAllGroceryStores(supabase);
+    await fetchAllItems(supabase);
   }
 
   const handleDelete = async (itemId: string) => {
-    //State to determine the click
-    //Countdown and display the x
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .delete()
       .eq("id", itemId)
-      .select()
-      .single();
+      .select();
     if (error) {
-      throw new Error(error?.message);
+      console.error(error?.message);
+      throw new Error("Error when deleting item");
     } else {
-      if (data && data.id) {
-       await fetchData();
+      console.log("successfully deleted item");
+      if (data) {
+        await fetchData();
       }
     }
   };
@@ -132,12 +77,9 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
     checked: boolean
   ) {
     setChecked(event.target.checked);
-
-    // Needa  new Util function called addToCommonItemCatalog
-
     if (checked) {
       addToCommonItemCatalog(supabase, groceryStoreItem);
-      getAllCommonItems(supabase);
+      fetchAllCommonItems(supabase);
     }
   }
 
@@ -145,11 +87,10 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
     <>
       <Card
         sx={{
-          border: 2,
+          m: 1.5,
+          border: 1,
           borderColor: "primary.main",
           display: "flex",
-          width: "80%",
-          maxWidth: "500px",
         }}
       >
         <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
@@ -157,17 +98,18 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             sx={{
               display: "flex",
               alignItems: "center",
+
             }}
           >
             <Box
               sx={{
                 backgroundColor: "primary.main",
-                height: 5,
-                width: 5,
-                p: 1.25,
+                p: 1,
                 m: 1,
-                borderRadius: 30,
-                border: 1,
+                height:20,
+                width:20,
+                borderRadius: 15,
+                border:2,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -183,9 +125,20 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 {groceryStoreItem?.quantity}
               </Typography>
             </Box>
-            <Typography align="center" sx={{ marginLeft: 4 }} variant="h5">
-              {groceryStoreItem?.name}
-            </Typography>
+            <Box
+              sx={{
+                height: "100%",
+                width:"100%",
+                ml:1
+              }}
+            >
+              <Typography align="left" sx={{}} variant="h5">
+                {groceryStoreItem?.name}
+              </Typography>
+               <Typography color="secondary.dark" align="left" sx={{}} variant="body1">
+                {groceryStoreItem?.notes}
+              </Typography>
+            </Box>
           </Box>
         </CardActionArea>
         <Box
@@ -193,11 +146,11 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            marginLeft: "auto",
           }}
         >
-          {/* <CircularProgress variant="determinate" value={progress} /> */}
           <IconButton
-            sx={{ p: 0.5, m: 0, marginLeft: "auto" }}
+            sx={{}}
             color="success"
             onClick={() => handleDelete(groceryStoreItem.id.toString())}
             aria-label={`Complete ${groceryStoreItem.name}`}
@@ -292,7 +245,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               display: "flex",
             }}
           >
-            {!groceryStoreItem.cid && (
+            {!groceryStoreItem.common_item_id && (
               <>
                 <Box textAlign="center" sx={{}}>
                   <Typography variant="body2">Add To Common Items</Typography>
