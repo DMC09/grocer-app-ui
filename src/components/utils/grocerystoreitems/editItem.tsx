@@ -169,13 +169,15 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
   return (
     <>
+    <Box >
       <IconButton
-        sx={{ color: "background.default" }}
+        sx={{ color: "primary.dark" }}
         aria-label="Edit Item"
         onClick={handleClickOpen}
-      >
-        <EditIcon sx={{ fontSize: 25 }} />
+        >
+        <EditIcon sx={{  }} />
       </IconButton>
+        </Box>
 
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
         <Backdrop
