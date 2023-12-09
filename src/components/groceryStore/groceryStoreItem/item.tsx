@@ -17,7 +17,7 @@ import {
 } from "@/helpers/commonItem";
 import { ChangeEvent, useEffect, useState } from "react";
 import { GroceryStoreItemProps } from "@/types";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from "@mui/icons-material/Close";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
@@ -78,6 +78,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           m: 1.5,
           border: 1,
           borderColor: "primary.main",
+          backgroundColor:"primary.main",
           display: "flex",
         }}
       >
@@ -90,12 +91,8 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           >
             <Box
               sx={{
+                flexGrow: 1,
                 backgroundColor: "primary.main",
-                p: 1,
-                m: 1,
-                height: 20,
-                width: 20,
-                borderRadius: 15,
                 border: 2,
                 display: "flex",
                 alignItems: "center",
@@ -104,19 +101,19 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             >
               <Typography
                 sx={{
-                  lineHeight: "normal",
                   color: "secondary.main",
                 }}
-                variant="h6"
-              >
+                variant="h5"
+
+>
                 {groceryStoreItem?.quantity}
               </Typography>
             </Box>
             <Box
               sx={{
-                height: "100%",
-                width: "100%",
-                ml: 1,
+                pl:1,
+                flexGrow: 3,
+                backgroundColor:"background.default"
               }}
             >
               <Typography align="left" sx={{}} variant="h5">
@@ -139,15 +136,16 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             justifyContent: "center",
             alignItems: "center",
             marginLeft: "auto",
+            backgroundColor:"green"
           }}
         >
           <IconButton
-            sx={{}}
-            color="success"
+            sx={{color:"white"}}
+
             onClick={() => handleDelete(groceryStoreItem.id.toString())}
             aria-label={`Complete ${groceryStoreItem.name}`}
           >
-            <CheckCircleIcon />
+            <CheckIcon />
           </IconButton>
         </Box>
       </Card>
@@ -166,15 +164,15 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           <Box
             sx={{
               display: "flex",
-              p: 1,
               justifyContent: "space-between",
-              backgroundColor: "#454545",
+              backgroundColor: "background.default",
             }}
           >
             <Box
               sx={{
-                p: 1,
-
+                border: 3,
+                borderColor: "primary.main",
+                backgroundColor: "primary.main",
                 flexGrow: 2,
                 display: "flex",
                 justifyContent: "center",
@@ -182,41 +180,45 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 flexFlow: "column",
               }}
             >
-              <Typography color="background.default" variant="h6">
+              <Typography
+                fontWeight={"bold"}
+                color="background.default"
+                variant="h5"
+              >
                 {groceryStoreItem.quantity}
               </Typography>
             </Box>
 
             <Box
               sx={{
+                pl: 2,
                 height: "100%",
                 display: "flex",
                 flexFlow: "column",
                 justifyContent: "space-around",
-                alignItems: "center",
+                alignItems: "flexStart",
                 flexGrow: 3,
+
+                borderColor: "primary.main",
               }}
             >
-              <Typography
-                color="background.default"
-                variant="h5"
-                align="center"
-              >
+              <Typography align="left" color="primary.main" variant="h5">
                 {groceryStoreItem?.name}
               </Typography>
-              <Typography color="background.default" variant="subtitle1">
+              <Typography align="left" color="primary.main" variant="subtitle1">
                 {groceryStoreItem.notes}
               </Typography>
             </Box>
             <Box
               sx={{
-                flexGrow: 2,
+                borderColor: "primary.main",
+                backgroundColor: "background.default",
+                flexGrow: 1,
                 display: "flex",
                 justifyContent: "center",
+                alignItems: "center",
               }}
-            >
-              <EditItem {...groceryStoreItem} />
-            </Box>
+            ></Box>
           </Box>
           <CardMedia
             component="img"
@@ -225,22 +227,30 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             alt={`Image of ${groceryStoreItem.name} `}
             sx={{
               objectFit: "fill",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
+              borderTop: 1,
+              borderBottom: 1,
             }}
           />
         </Box>
-        <DialogActions>
+        <DialogActions
+          sx={{
+            p: 0,
+            m: 0,
+          }}
+        >
           <Box
             sx={{
               width: "100%",
               display: "flex",
+              p: 1,
+              m: 0,
+              justifyContent: "space-between",
             }}
           >
             {!groceryStoreItem.common_item_id && (
               <>
-                <Box textAlign="center" sx={{}}>
-                  <Typography variant="body2">Add To Common Items</Typography>
+                <Box textAlign="center" sx={{ flexGrow: 3 }}>
+                  <Typography variant="body2">Add To Common Items?</Typography>
                   <Switch
                     aria-label="Add to Common Items Catalog"
                     checked={!!checked}
@@ -252,17 +262,16 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 </Box>
               </>
             )}
-
-            <IconButton
-              aria-label="Close Item Preview"
+            <Box
               sx={{
-                color: "primary.dark",
-                ml: "auto",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexGrow: 2,
               }}
-              onClick={handleClose}
             >
-              <CloseIcon />
-            </IconButton>
+              <EditItem {...groceryStoreItem} />
+            </Box>
           </Box>
         </DialogActions>
       </Dialog>
