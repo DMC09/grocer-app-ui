@@ -24,12 +24,13 @@ import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 import CommonItem from "../groceryStore/commonItem/commonItem";
 import NoCommonItems from "../utils/commonitems/noCommonItems";
+import { fetchAllItems, fetchAllGroceryStores } from "@/helpers/groceryStore";
 
 export default function CommonItemsDialog({
-  storeId,
+  storeId = null,
   selectId,
 }: {
-  storeId: number;
+  storeId: number | null;
   selectId: string | null;
 }) {
   // hooks
@@ -56,8 +57,8 @@ export default function CommonItemsDialog({
   }, []);
 
   const mappedItems = itemsToSubmit.map((item) => ({
-    cid: item.id,
-    store_id: storeId,
+    common_item_id: item.id,
+    store_id: storeId ? storeId : null,
     name: item.name,
     notes: item.notes,
     quantity: Number(item.quantity),
@@ -66,7 +67,8 @@ export default function CommonItemsDialog({
   }));
 
   async function fetchData() {
-    await fetchAllCommonItems(supabase); 
+    await fetchAllItems(supabase);
+    await fetchAllGroceryStores(supabase);
   }
 
   async function handleAddCommonItems() {
@@ -115,7 +117,7 @@ export default function CommonItemsDialog({
             p: 0,
           }}
         >
-          <Box sx={{ height: "90%", overflowY: "scroll", border: 1 }}>
+          <Box sx={{ height: "90%", overflowY: "scroll" }}>
             {commonItemsCatalog.length > 0 ? (
               commonItemsToRender
             ) : (
@@ -136,7 +138,9 @@ export default function CommonItemsDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
-          <Button onClick={handleAddCommonItems}>Add</Button>
+          <Button variant="contained" onClick={handleAddCommonItems}>
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     </>
