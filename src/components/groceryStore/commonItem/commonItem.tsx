@@ -23,7 +23,6 @@ export default function CommonItem(item: CommonItemType) {
   const [uniqueId, setUniqueId] = useState<number | null>(null);
   const itemsToSubmit = CommonItemsDataStore((state) => state.itemsToSubmit);
 
-
   const addItemToSubmit = CommonItemsDataStore(
     (state) => state.addItemToSubmit
   );
@@ -34,7 +33,6 @@ export default function CommonItem(item: CommonItemType) {
   const removeItemToSubmit = CommonItemsDataStore(
     (state) => state.removeItemToSubmit
   );
-
 
   const memoizedItemToAdd = useMemo(() => {
     const itemToAdd = {
@@ -72,7 +70,7 @@ export default function CommonItem(item: CommonItemType) {
     if (!selected) {
       setSelected(true);
 
-      generateUiD(); 
+      generateUiD();
     } else {
       setSelected(false);
     }
@@ -119,56 +117,45 @@ export default function CommonItem(item: CommonItemType) {
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 3,
-
     m: 1,
+    height:"15%"
   };
 
   const selectedStyle = {
-    border: 2,
+    border: 3,
     borderColor: "primary.main",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 3,
     m: 1,
+    height:"15%"
   };
 
   return (
     <>
       <Card raised={!!selected} sx={selected ? selectedStyle : normalStyle}>
         <CardActionArea
+          sx={{ p: 1 }}
           onClick={() => {
             handleChecked();
           }}
         >
-          <CardContent
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              p: 0,
-            }}
-          >
-            <Checkbox
-              size="small"
-              onChange={handleChecked}
-              checked={!!selected}
-            />
-            <Box sx={{}}>
-              <Typography sx={{ width: "100%" }} variant="h6">
-                {item.item_name}
-              </Typography>
-              <Typography sx={{ width: "100%" }} variant="body2">
-                {item.item_notes}
-              </Typography>
-            </Box>
-          </CardContent>
+          <Box sx={{}}>
+            <Typography sx={{}} color="primary.main" variant="h5">
+              {item.item_name}
+            </Typography>
+            <Typography sx={{}} color="secondary.dark" variant="body1">
+              {item.item_notes}
+            </Typography>
+          </Box>
         </CardActionArea>
 
         <CardActions sx={{}}>
           <Box
             sx={{
               display: "flex",
-              flexFlow: "column",
+              justifyContent: "center",
               alignItems: "center",
             }}
           >
@@ -202,7 +189,7 @@ export default function CommonItem(item: CommonItemType) {
                 handleQuantityChange(e);
               }}
               disabled={selected ? false : true}
-              value={quantity}
+              value={selected ? quantity : 0}
               type="tel"
               InputLabelProps={{
                 shrink: true,
