@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 "use client";
 // Imports
 import { DashboardView, GroceryStoreType, ProfileType } from "@/types";
@@ -21,6 +22,7 @@ import { useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddNewStore from "../dialogs/addNewStoreDialog";
 import AddNewItemDialog from "../dialogs/addNewItemDialog";
+import CommonItemsDialog from "../dialogs/commonItemsDialog";
 
 export default function DashboardHeaderMenu() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -35,7 +37,8 @@ export default function DashboardHeaderMenu() {
 
   const open = Boolean(anchorEl);
 
-  const { openNewStoreDialog, openNewItemDialog } = useDialog();
+  const { openNewStoreDialog, openNewItemDialog, openCommonItemsDialog } =
+    useDialog();
 
   async function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -101,12 +104,21 @@ export default function DashboardHeaderMenu() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {dashboardView === DashboardView.AllItemsView && (
-          <MenuItem onClick={openNewItemDialog}>
-            <ListItemIcon>
-              <ControlPointIcon fontSize="small" />
-            </ListItemIcon>
-            Add Item
-          </MenuItem>
+          <div>
+            <MenuItem onClick={openNewItemDialog}>
+              <ListItemIcon>
+                <ControlPointIcon fontSize="small" />
+              </ListItemIcon>
+              Add Item
+            </MenuItem>
+
+            <MenuItem onClick={() => openCommonItemsDialog()}>
+              <ListItemIcon>
+                <ControlPointIcon fontSize="small" />
+              </ListItemIcon>
+              Add Common Item
+            </MenuItem>
+          </div>
         )}
 
         {dashboardView === DashboardView.StoreView && (
@@ -163,6 +175,9 @@ export default function DashboardHeaderMenu() {
           <AddNewStore select_id={profileData?.select_id} />
         )}
         <AddNewItemDialog />
+        {profileData?.select_id && (
+          <CommonItemsDialog storeId={null} selectId={profileData?.select_id} />
+        )}
       </>
     </>
   );
