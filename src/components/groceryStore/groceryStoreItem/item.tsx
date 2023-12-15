@@ -17,7 +17,7 @@ import {
 } from "@/helpers/commonItem";
 import { ChangeEvent, useEffect, useState } from "react";
 import { GroceryStoreItemProps } from "@/types";
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
@@ -78,25 +78,17 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           m: 1.5,
           border: 1,
           borderColor: "primary.main",
-          backgroundColor:"primary.main",
           display: "flex",
         }}
       >
-        <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Box
+             <Box
               sx={{
-                flexGrow: 1,
                 backgroundColor: "primary.main",
-                border: 2,
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "center",
+                alignItems: "center",
+                width: "20%",
+                maxWidth: "200px",
               }}
             >
               <Typography
@@ -104,16 +96,24 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                   color: "secondary.main",
                 }}
                 variant="h5"
-
->
+              >
                 {groceryStoreItem?.quantity}
               </Typography>
             </Box>
+        <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            
+       
             <Box
               sx={{
-                pl:1,
+                pl: 1,
                 flexGrow: 3,
-                backgroundColor:"background.default"
+                backgroundColor: "background.paper",
               }}
             >
               <Typography align="left" sx={{}} variant="h5">
@@ -125,7 +125,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 sx={{}}
                 variant="body1"
               >
-                {groceryStoreItem?.notes}
+                {groceryStoreItem?.notes ? groceryStoreItem?.notes : "-"}
               </Typography>
             </Box>
           </Box>
@@ -136,12 +136,11 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             justifyContent: "center",
             alignItems: "center",
             marginLeft: "auto",
-            backgroundColor:"green"
+            backgroundColor: "green",
           }}
         >
           <IconButton
-            sx={{color:"white"}}
-
+            sx={{ color: "white" }}
             onClick={() => handleDelete(groceryStoreItem.id.toString())}
             aria-label={`Complete ${groceryStoreItem.name}`}
           >
@@ -170,7 +169,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           >
             <Box
               sx={{
-                border: 3,
                 borderColor: "primary.main",
                 backgroundColor: "primary.main",
                 flexGrow: 2,
