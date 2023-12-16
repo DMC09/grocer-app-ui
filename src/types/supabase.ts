@@ -9,6 +9,30 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          id: number
+          image: string | null
+          name: string
+          quantity: number | null
+          select_id: string | null
+        }
+        Insert: {
+          id?: number
+          image?: string | null
+          name: string
+          quantity?: number | null
+          select_id?: string | null
+        }
+        Update: {
+          id?: number
+          image?: string | null
+          name?: string
+          quantity?: number | null
+          select_id?: string | null
+        }
+        Relationships: []
+      }
       commonitems: {
         Row: {
           category: string | null
@@ -38,7 +62,9 @@ export interface Database {
       }
       grocerystoreitems: {
         Row: {
-          cid: number | null
+          category: string | null
+          category_id: number | null
+          common_item_id: number | null
           created_at: string | null
           id: number
           image: string | null
@@ -47,10 +73,12 @@ export interface Database {
           notes: string | null
           quantity: number | null
           select_id: string | null
-          store_id: number
+          store_id: number | null
         }
         Insert: {
-          cid?: number | null
+          category?: string | null
+          category_id?: number | null
+          common_item_id?: number | null
           created_at?: string | null
           id?: number
           image?: string | null
@@ -59,10 +87,12 @@ export interface Database {
           notes?: string | null
           quantity?: number | null
           select_id?: string | null
-          store_id: number
+          store_id?: number | null
         }
         Update: {
-          cid?: number | null
+          category?: string | null
+          category_id?: number | null
+          common_item_id?: number | null
           created_at?: string | null
           id?: number
           image?: string | null
@@ -71,18 +101,27 @@ export interface Database {
           notes?: string | null
           quantity?: number | null
           select_id?: string | null
-          store_id?: number
+          store_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "grocerystoreitems_cid_fkey"
-            columns: ["cid"]
+            foreignKeyName: "grocerystoreitems_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grocerystoreitems_common_item_id_fkey"
+            columns: ["common_item_id"]
+            isOneToOne: false
             referencedRelation: "commonitems"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "grocerystoreitems_store_id_fkey"
             columns: ["store_id"]
+            isOneToOne: false
             referencedRelation: "grocerystores"
             referencedColumns: ["id"]
           }
@@ -168,6 +207,7 @@ export interface Database {
           {
             foreignKeyName: "groups_profile_id_fkey"
             columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -178,8 +218,6 @@ export interface Database {
           avatar_url: string | null
           created_at: string
           email: string
-          expanded_dashboard: boolean
-          expanded_groceryitem: boolean
           first_name: string | null
           id: string
           in_group: boolean | null
@@ -187,13 +225,13 @@ export interface Database {
           phone: string | null
           select_id: string | null
           updated_at: string
+          view_all: boolean
+          view_by_category: boolean
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           email: string
-          expanded_dashboard?: boolean
-          expanded_groceryitem?: boolean
           first_name?: string | null
           id: string
           in_group?: boolean | null
@@ -201,13 +239,13 @@ export interface Database {
           phone?: string | null
           select_id?: string | null
           updated_at?: string
+          view_all?: boolean
+          view_by_category?: boolean
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           email?: string
-          expanded_dashboard?: boolean
-          expanded_groceryitem?: boolean
           first_name?: string | null
           id?: string
           in_group?: boolean | null
@@ -215,6 +253,8 @@ export interface Database {
           phone?: string | null
           select_id?: string | null
           updated_at?: string
+          view_all?: boolean
+          view_by_category?: boolean
         }
         Relationships: []
       }
