@@ -70,7 +70,9 @@ test.describe("Multi User Scenarios", () => {
       await expect(firstAccount).toHaveURL("/dashboard", {
         timeout: 120000,
       });
-      await expect(firstAccount.getByText("No Stores added....")).toBeVisible();
+      await expect(
+        firstAccount.getByText("No stores available...")
+      ).toBeVisible();
     });
 
     await test.step("FA: Add Aldi Store", async () => {
