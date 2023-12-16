@@ -58,7 +58,7 @@ export default function DashboardHeaderMenu() {
       <IconButton
         sx={{ color: "primary.main", marginLeft: "auto" }}
         aria-label={
-          open ? "Close grocery store menu" : "Open grocery store menu"
+          open ? "Close dashboard menu" : "Open dashboard menu"
         }
         id="long-button"
         aria-controls={open ? "long-menu" : undefined}
