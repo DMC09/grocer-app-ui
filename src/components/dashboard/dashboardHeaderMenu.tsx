@@ -69,6 +69,7 @@ export default function DashboardHeaderMenu() {
         {!open ? <MenuIcon /> : <CloseIcon />}
       </IconButton>
       <Menu
+      aria-label="Dashboard Menu"
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -109,14 +110,14 @@ export default function DashboardHeaderMenu() {
               <ListItemIcon>
                 <ControlPointIcon fontSize="small" />
               </ListItemIcon>
-              Add Item
+              Add item
             </MenuItem>
 
             <MenuItem onClick={() => openCommonItemsDialog()}>
               <ListItemIcon>
                 <ControlPointIcon fontSize="small" />
               </ListItemIcon>
-              Add Common Item
+              Add common item
             </MenuItem>
           </div>
         )}
@@ -126,7 +127,7 @@ export default function DashboardHeaderMenu() {
             <ListItemIcon>
               <ControlPointIcon fontSize="small" />
             </ListItemIcon>
-            Add Store
+            Add new store
           </MenuItem>
         )}
         {dashboardView === DashboardView.CategoryView && (
@@ -134,7 +135,7 @@ export default function DashboardHeaderMenu() {
             <ListItemIcon>
               <ControlPointIcon fontSize="small" />
             </ListItemIcon>
-            Add Category
+            Add new category
           </MenuItem>
         )}
         <Divider />
