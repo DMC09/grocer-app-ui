@@ -141,7 +141,7 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
           <ListItemIcon>
             <ListAltIcon fontSize="small" />
           </ListItemIcon>
-          Add Common Items
+          Add Common Item
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleDeleteGroceryStore}>

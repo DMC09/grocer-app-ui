@@ -13,6 +13,7 @@ import { getGroupData } from "@/helpers/group";
 import { getProfileData } from "@/helpers/profile";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 import { fetchAllCommonItems } from "@/helpers/commonItem";
+import { ItemDataStore } from "@/stores/ItemStore";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -32,6 +33,7 @@ export default function SupabaseListener({
 
   // Grocery store
   const resetGroceryState = GroceryDataStore((state) => state.resetStore);
+  const resetItemState = ItemDataStore((state) => state.resetStore);
   const GroceryStoreData = GroceryDataStore((state) => state.data);
   const CommonItemCatalog = CommonItemsDataStore((state) => state.catalog);
 
@@ -69,7 +71,7 @@ export default function SupabaseListener({
           getProfileData(supabase, session?.user?.id);
           // fetch Grocery Store Data and common Item Data
           getAllGroceryStoresData(supabase);
-          getAllItems()
+          getAllItems();
           fetchAllCommonItems(supabase);
         }
 
@@ -174,7 +176,7 @@ export default function SupabaseListener({
           (payload) => {
             if (payload) {
               getAllGroceryStoresData(supabase);
-              getAllItems()
+              getAllItems();
             }
           }
         )
@@ -248,14 +250,14 @@ export default function SupabaseListener({
         const profile = await getProfileData(supabase, session.user.id);
         if (profile) {
           router.push("/dashboard");
+          await fetchAllItems(supabase);
+          await getAllGroceryStoresData(supabase);
           if (profile.in_group) {
             await getGroupData(supabase);
           }
         } else {
-
           throw new Error("No Profile found");
         }
-
       }
     });
 
@@ -264,6 +266,7 @@ export default function SupabaseListener({
         router.push("/login");
         console.log("Signed Out Event in the listener or no session detected ");
         resetGroceryState();
+        resetItemState();
         resetProfileState();
       }
     });
