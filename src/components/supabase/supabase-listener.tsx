@@ -250,11 +250,11 @@ export default function SupabaseListener({
         const profile = await getProfileData(supabase, session.user.id);
         if (profile) {
           router.push("/dashboard");
-          await fetchAllItems(supabase);
-          await getAllGroceryStoresData(supabase);
           if (profile.in_group) {
             await getGroupData(supabase);
           }
+          await fetchAllItems(supabase);
+          await getAllGroceryStoresData(supabase);
         } else {
           throw new Error("No Profile found");
         }
