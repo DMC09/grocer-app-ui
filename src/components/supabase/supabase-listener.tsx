@@ -234,6 +234,8 @@ export default function SupabaseListener({
         (payload) => {
           console.log(payload, "group data changed?");
           getGroupData(supabase);
+          fetchAllItems(supabase);
+          getAllGroceryStoresData(supabase);
         }
       )
       .subscribe();
