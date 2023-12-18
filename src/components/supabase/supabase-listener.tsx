@@ -234,8 +234,6 @@ export default function SupabaseListener({
         (payload) => {
           console.log(payload, "group data changed?");
           getGroupData(supabase);
-          fetchAllItems(supabase);
-          getAllGroceryStoresData(supabase);
         }
       )
       .subscribe();
@@ -251,12 +249,13 @@ export default function SupabaseListener({
       if (event == "SIGNED_IN" && session && session.user) {
         const profile = await getProfileData(supabase, session.user.id);
         if (profile) {
+          await fetchAllItems(supabase);
+          await getAllGroceryStoresData(supabase);
           router.push("/dashboard");
           if (profile.in_group) {
             await getGroupData(supabase);
           }
-          await fetchAllItems(supabase);
-          await getAllGroceryStoresData(supabase);
+          
         } else {
           throw new Error("No Profile found");
         }
@@ -293,6 +292,7 @@ export default function SupabaseListener({
     supabase,
     resetProfileState,
     resetGroceryState,
+    resetItemState,
   ]);
   return null;
 }
