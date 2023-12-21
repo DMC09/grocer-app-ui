@@ -208,16 +208,6 @@ test.describe("Single User Scenarios", () => {
       });
     });
 
-    // await test.step("Change View ", async () => {
-    //   await page.getByLabel("Dashboard Menu").click({ delay: 500 });
-    //   await page.getByLabel("View All").click({ delay: 500 });
-    // });
-
-    // await test.step("Add Item", async () => {
-    //   await page.getByLabel("Dashboard Menu").click({ delay: 500 });
-    //   await page.pause();
-    // });
-
     await test.step("Sign Out", async () => {
       await page.getByLabel("Profile Menu").click();
       await page.getByRole("menuitem", { name: "Sign Out" }).click();
