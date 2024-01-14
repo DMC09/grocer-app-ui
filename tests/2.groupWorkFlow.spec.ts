@@ -53,11 +53,11 @@ test.describe("Multi User Scenarios", () => {
     });
 
     await test.step("FA: Verify no stores placeholder text", async () => {
-      await expect(fA.getByText("No Stores added....")).toBeVisible();
+      await expect(fA.getByText("No stores available...")).toBeVisible();
     });
 
     await test.step("SA: Verify no stores placeholder text", async () => {
-      await expect(sA.getByText("No Stores added....")).toBeVisible();
+      await expect(sA.getByText("No stores available...")).toBeVisible();
     });
 
     await test.step("FA: Go to Common item catalog", async () => {
@@ -126,9 +126,9 @@ test.describe("Multi User Scenarios", () => {
     });
 
     await test.step("SA: Go in to Kroger store", async () => {
-      await expect(fA.getByRole("button", { name: "Kroger" })).toBeVisible();
+      await expect(sA.getByRole("button", { name: "Kroger" })).toBeVisible();
       await sA.getByRole("button", { name: "Kroger" }).click({ delay: 500 });
-      await expect(fA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
+      await expect(sA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
         timeout: 1200000,
       });
     });
@@ -168,6 +168,7 @@ test.describe("Multi User Scenarios", () => {
       await expect(fA.getByText("Z Fighters")).toBeVisible({
         timeout: 2000,
       });
+      // Set Share code
     });
 
     await test.step("SA: Join Group (Z fighters)", async () => {
