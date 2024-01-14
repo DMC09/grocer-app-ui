@@ -168,7 +168,9 @@ test.describe("Multi User Scenarios", () => {
       await expect(fA.getByText("Z Fighters")).toBeVisible({
         timeout: 2000,
       });
-      // Set Share code
+      await fA.getByRole("button", { name: "Share Code" }).click();
+      await fA.getByLabel("Share Code").click();
+      code = await fA.getByLabel("Share Code").innerText();
     });
 
     await test.step("SA: Join Group (Z fighters)", async () => {
