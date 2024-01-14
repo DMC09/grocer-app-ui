@@ -122,7 +122,7 @@ test.describe("Single User Scenarios", () => {
       await page.getByLabel("To Home").click();
       await page.getByRole("button", { name: "Wally World" }).click();
       await page.getByLabel("Open grocery store menu").click();
-      await page.getByRole("menuitem", { name: "Add Common Items" }).click();
+      await page.getByRole("menuitem", { name: "Add Common Item" }).click();
       await page.getByRole('button', { name: 'Rice Jasmine' }).click();
       await page.getByRole('button', { name: 'Milk Soy' }).click();
       await page.getByLabel('Increment Milk').click();    
@@ -150,7 +150,7 @@ test.describe("Single User Scenarios", () => {
       await page.getByLabel("To Home").click();
       await page.getByRole("button", { name: "Wally World" }).click();
       await page.getByLabel("Open grocery store menu").click();
-      await page.getByRole("menuitem", { name: "Add Common Items" }).click();
+      await page.getByRole("menuitem", { name: "Add Common Item" }).click();
       await page.getByRole("button", { name: "Quinoa White" }).click();
       await page.getByLabel("Increment Quinoa").click();
       await page.getByRole("button", { name: "Add" }).click();
