@@ -262,11 +262,16 @@ test.describe("Multi User Scenarios", () => {
       await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
       await sA
         .getByRole("menuitem", { name: "Add Item" })
-        .click({ delay: 500 });
+        .click({ delay: 1000 });
       await fA.getByLabel("Name").fill("Salsa");
       await fA.getByLabel("Notes").fill("Tostitos");
       await fA.getByLabel("Quantity").fill("1");
+      await fA.pause()
       // TODO: use dropdown to select "Whole foods"
+      // INFO: the drop down is not showing whole foods. 
+      // 1. edit logic to fetch the stores when opening an add item
+      // 2. edit validation to includes special characters.
+      // pull to refresh on the common items
       await fA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
     });
 
