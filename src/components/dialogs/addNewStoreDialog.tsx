@@ -65,7 +65,7 @@ export default function AddNewStore({ select_id }: { select_id: string }) {
     storeName: Yup.string()
       .required("Store name is required")
       .matches(
-        /^$|^[a-zA-Z0-9 _\-!\$]+$/i,
+        /^$|^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
         "Please only use letters and numbers"
       ),
     file: mixed()

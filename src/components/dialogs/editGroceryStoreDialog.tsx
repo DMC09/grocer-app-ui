@@ -55,7 +55,7 @@ export default function EditGroceryStoreDialog(groceryStore: GroceryStoreType) {
   const validationSchema = Yup.object().shape({
     storeName: Yup.string()
       .required("Must have a store name")
-      .matches(/^[a-zA-Z0-9 _\-!\$]+$/i, "Please only use letters and numbers"),
+      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i, "Please only use letters and numbers"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
