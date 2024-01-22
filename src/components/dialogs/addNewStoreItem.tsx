@@ -36,11 +36,7 @@ import {
 } from "@/types";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
 import { addNewGroceryStoreItem, addNewItem } from "@/helpers/ItemUtils";
-import {
-  fetchAllGroceryStores,
-  fetchAllItems,
-
-} from "@/helpers/groceryStore";
+import { fetchAllGroceryStores, fetchAllItems } from "@/helpers/groceryStore";
 import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -74,9 +70,15 @@ export default function AddNewItemDialog({
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
       .required("Item name is required")
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i, "Please only use letters and numbers"),
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        "Please only use letters and numbers"
+      ),
     itemNotes: Yup.string()
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i, "Please only use letters and numbers")
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        "Please only use letters and numbers"
+      )
       .notRequired(),
     itemQuantity: Yup.number()
       .required("Quantity is required")
@@ -204,12 +206,9 @@ export default function AddNewItemDialog({
     setImagePath(null);
   }
 
-
-useEffect(() => {
-  fetchData()
-},[showNewItemDialog])
-
-
+  useEffect(() => {
+    fetchAllGroceryStores(supabase);
+  }, [showNewItemDialog]);
 
   return (
     <>
