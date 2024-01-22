@@ -263,16 +263,13 @@ test.describe("Multi User Scenarios", () => {
       await sA
         .getByRole("menuitem", { name: "Add Item" })
         .click({ delay: 1000 });
-      await fA.getByLabel("Name").fill("Salsa");
-      await fA.getByLabel("Notes").fill("Tostitos");
-      await fA.getByLabel("Quantity").fill("1");
-      await fA.pause()
+      await sA.getByLabel("Name").fill("Salsa");
+      await sA.getByLabel("Notes").fill("Tostitos");
+      await sA.getByLabel("Quantity").fill("1");
+      await sA.getByRole("listbox", { name: "Whole Foods" }).click();
+      await sA.pause();
       // TODO: use dropdown to select "Whole foods"
-      // INFO: the drop down is not showing whole foods. 
-      // 1. edit logic to fetch the stores when opening an add item
-      // 2. edit validation to includes special characters.
-      // pull to refresh on the common items
-      await fA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+      await sA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
     });
 
     await test.step("SA:Add (Tortilla chips - Blue Corn) item w/out a store in all items view", async () => {
@@ -280,10 +277,10 @@ test.describe("Multi User Scenarios", () => {
       await sA
         .getByRole("menuitem", { name: "Add Item" })
         .click({ delay: 500 });
-      await fA.getByLabel("Name").fill("Tortilla chips");
-      await fA.getByLabel("Notes").fill("Blue Corn");
-      await fA.getByLabel("Quantity").fill("1");
-      await fA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+      await sA.getByLabel("Name").fill("Tortilla chips");
+      await sA.getByLabel("Notes").fill("Blue Corn");
+      await sA.getByLabel("Quantity").fill("1");
+      await sA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
     });
 
     await test.step("FA: Add (Salsa - Tostitos) to common item catalog via flag ", async () => {
@@ -295,7 +292,6 @@ test.describe("Multi User Scenarios", () => {
     });
 
     await test.step("SA:Verify (Salsa - Tostitos) was added to common item catalog", async () => {
-      // TODO:
       await sA.getByLabel("Profile Menu").click({ delay: 2000 });
       await sA.getByRole("menuitem", { name: "Settings" }).click();
       await expect(sA).toHaveURL("/settings", {
