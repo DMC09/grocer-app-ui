@@ -206,9 +206,7 @@ export default function AddNewItemDialog({
     setImagePath(null);
   }
 
-  useEffect(() => {
-    fetchAllGroceryStores(supabase);
-  }, [showNewItemDialog]);
+
 
   return (
     <>

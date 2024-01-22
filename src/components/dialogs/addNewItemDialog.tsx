@@ -22,7 +22,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { theme } from "@/helpers/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useDialog } from "@/context/DialogContext";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -71,9 +71,15 @@ export default function AddNewItemDialog() {
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
       .required("Item name is required")
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i, "Please only use letters and numbers"),
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        "Please only use letters and numbers"
+      ),
     itemNotes: Yup.string()
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i, "Please only use letters and numbers")
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        "Please only use letters and numbers"
+      )
       .notRequired(),
     itemQuantity: Yup.number()
       .required("Quantity is required")
@@ -152,6 +158,10 @@ export default function AddNewItemDialog() {
     }
   }
 
+  useEffect(() => {
+    fetchAllGroceryStores(supabase);
+  }, [showNewItemDialog]);
+
   async function onSubmit(data: any, selectId: string | null) {
     try {
       setShowLoader(true);
@@ -206,7 +216,6 @@ export default function AddNewItemDialog() {
   async function handleSetStore(e: any) {
     setStoreIdToUse(e.target.value);
   }
-
 
   const [storeIdToUse, setStoreIdToUse] = useState<number | null>(null);
 
@@ -276,7 +285,7 @@ export default function AddNewItemDialog() {
             </DialogContent>
             <DialogContent>
               <TextField
-                defaultValue={null}
+                defaultValue={""}
                 fullWidth
                 select
                 error={errors.itemStore ? true : false}
