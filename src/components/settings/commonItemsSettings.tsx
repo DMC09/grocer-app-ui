@@ -1,12 +1,12 @@
-import { Container } from "@mui/material";
+import { Container, CircularProgress } from "@mui/material";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { CommonItemType } from "@/types";
 import ManagedCommonItem from "../groceryStore/commonItem/managedCommonItem";
-
 import { fetchAllCommonItems } from "@/helpers/commonItem";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddCommonItem from "../dialogs/addCommonItemDialog";
 import NoManagedCommonItem from "../utils/commonitems/noManagedCommonItems";
+import PullToRefresh from "react-simple-pull-to-refresh";
 
 export default function CommonItemsSettings() {
   const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
@@ -41,12 +41,19 @@ export default function CommonItemsSettings() {
         <>
           <AddCommonItem />
         </>
-
-        {commonItemsCatalog.length > 0 ? (
-          commonItemsToRender
-        ) : (
-          <NoManagedCommonItem />
-        )}
+        <PullToRefresh
+          refreshingContent={<CircularProgress />}
+          pullingContent={""}
+          onRefresh={handleRefresh}
+        >
+          <>
+            {commonItemsCatalog.length > 0 ? (
+              commonItemsToRender
+            ) : (
+              <NoManagedCommonItem />
+            )}
+          </>
+        </PullToRefresh>
       </Container>
     </>
   );
