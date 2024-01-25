@@ -3,265 +3,424 @@ import { test, expect } from "@playwright/test";
 test.describe("Multi User Scenarios", () => {
   test("Group  Work Flow", async ({ browser }) => {
     const firstContext = await browser.newContext();
-    const firstAccount = await firstContext.newPage();
+    const fA = await firstContext.newPage();
 
     const secondContext = await browser.newContext();
-    const secondAccount = await secondContext.newPage();
+    const sA = await secondContext.newPage();
 
     let code: string | null = null;
 
-    await test.step("FA: Sign In", async () => {
-      await firstAccount.goto("/");
-      await expect(firstAccount).toHaveURL("/login", {
+    await test.step("FA: Sign in and redirect to homepage", async () => {
+      await fA.goto("/");
+      await expect(fA).toHaveURL("/login", {
         timeout: 120000,
       });
-      await firstAccount
-        .getByPlaceholder("Your email address")
-        .click({ delay: 500 });
-      await firstAccount
+      await fA.getByPlaceholder("Your email address").click({ delay: 500 });
+      await fA
         .getByPlaceholder("Your email address")
         .fill(process.env.PLAYWRIGHT_USERNAME as string, { timeout: 5000 });
-      await firstAccount
-        .getByPlaceholder("Your password")
-        .click({ delay: 500 });
-      await firstAccount
+      await fA.getByPlaceholder("Your password").click({ delay: 500 });
+      await fA
         .getByPlaceholder("Your password")
         .fill(process.env.PLAYWRIGHT_PASSWORD as string, { timeout: 5000 });
-      await firstAccount
+      await fA
         .getByRole("button", { name: "Sign in", exact: true })
         .click({ delay: 500 });
-      await expect(firstAccount).toHaveURL("/dashboard", {
+      await expect(fA).toHaveURL("/dashboard", {
         timeout: 20000,
       });
     });
 
-    await test.step("FA: Create a Group", async () => {
-      await firstAccount.getByLabel("Profile Menu").click();
-      await firstAccount.getByRole("menuitem", { name: "Settings" }).click();
-      await expect(firstAccount).toHaveURL("/settings", {
+    await test.step("SA: Sign in and redirect to homepage", async () => {
+      await sA.goto("/");
+      await expect(sA).toHaveURL("/login", {
         timeout: 120000,
       });
-      await firstAccount.getByRole("tab", { name: "Group" }).click();
-      await firstAccount.getByLabel("Create new group").click();
-      await firstAccount.getByLabel("Group Name").fill("Z Fighters");
-      await firstAccount.getByRole("button", { name: "Submit" }).click();
-      await expect(firstAccount.getByText("Z Fighters")).toBeVisible();
-    });
-
-    await test.step("FA: Generate Share Code", async () => {
-      await firstAccount.getByRole("button", { name: "Share Code" }).click();
-      await firstAccount.getByLabel("Share Code").click();
-      code = await firstAccount.getByLabel("Share Code").innerText();
-    });
-
-    await test.step("FA: Add a new Common Item (Butter - Kerry Gold)", async () => {
-      await expect(firstAccount).toHaveURL("/settings", {
-        timeout: 120000,
-      });
-      await firstAccount.getByRole("tab", { name: "Common Items" }).click();
-      await firstAccount.getByLabel("Add New Common item").click();
-      await firstAccount.getByLabel("Name").fill("Butter");
-      await firstAccount.getByLabel("Notes").fill("Kerry Gold");
-      await firstAccount.getByRole("button", { name: "Submit" }).click();
-    });
-
-    await test.step("FA: Go to the Home Page", async () => {
-      await firstAccount.getByLabel("To Home").click();
-      await expect(firstAccount).toHaveURL("/dashboard", {
-        timeout: 120000,
-      });
-      await expect(firstAccount.getByText("No Stores added....")).toBeVisible();
-    });
-
-    await test.step("FA: Add Aldi Store", async () => {
-      await firstAccount.getByLabel("Add New Store").click({ delay: 500 });
-      await firstAccount.getByLabel("Name").fill("Aldi");
-      await firstAccount.getByRole("button", { name: "Submit" }).click();
-    });
-
-    await test.step("FA: Go in the Aldi Store", async () => {
-      await expect(
-        firstAccount.getByRole("button", { name: "Aldi" })
-      ).toBeVisible();
-      await firstAccount
-        .getByRole("button", { name: "Aldi" })
-        .click({ delay: 500 });
-
-      await expect(firstAccount).toHaveURL(
-        new RegExp("/dashboard/grocerystores/*"),
-        {
-          timeout: 1200000,
-        }
-      );
-    });
-
-    await test.step("FA: Add Item (Water - Fiji)", async () => {
-      await firstAccount
-        .getByLabel("Open grocery store menu")
-        .click({ delay: 500 });
-      await firstAccount
-        .getByRole("menuitem", { name: "Add Item" })
-        .click({ delay: 500 });
-      await firstAccount.getByLabel("Name").fill("Water");
-      await firstAccount.getByLabel("Notes").fill("Fiji");
-      await firstAccount.getByLabel("Quantity").fill("1");
-      await firstAccount
-        .getByRole("button", { name: "Submit" })
-        .click({ delay: 500 });
-    });
-
-    await test.step("SA: Sign in to the second account", async () => {
-      await secondAccount.goto("/");
-      await expect(secondAccount).toHaveURL("/login", {
-        timeout: 120000,
-      });
-      await secondAccount
-        .getByPlaceholder("Your email address")
-        .click({ delay: 500 });
-      await secondAccount
+      await sA.getByPlaceholder("Your email address").click({ delay: 500 });
+      await sA
         .getByPlaceholder("Your email address")
         .fill(process.env.PLAYWRIGHTALT_USERNAME as string, { timeout: 5000 });
-      await secondAccount
-        .getByPlaceholder("Your password")
-        .click({ delay: 500 });
-      await secondAccount
+      await sA.getByPlaceholder("Your password").click({ delay: 500 });
+      await sA
         .getByPlaceholder("Your password")
         .fill(process.env.PLAYWRIGHTALT_PASSWORD as string, { timeout: 5000 });
-      await secondAccount
+      await sA
         .getByRole("button", { name: "Sign in", exact: true })
         .click({ delay: 500 });
-      await expect(secondAccount).toHaveURL("/dashboard", {
+      await expect(sA).toHaveURL("/dashboard", {
         timeout: 20000,
       });
     });
 
-    await test.step("SA: Join Group", async () => {
-      await secondAccount.getByLabel("Profile Menu").click();
-      await secondAccount.getByRole("menuitem", { name: "Settings" }).click();
-      await expect(secondAccount).toHaveURL("/settings", {
+    await test.step("FA: Verify no stores placeholder text", async () => {
+      await expect(fA.getByText("No stores available...")).toBeVisible();
+    });
+
+    await test.step("SA: Verify no stores placeholder text", async () => {
+      await expect(sA.getByText("No stores available...")).toBeVisible();
+    });
+
+    await test.step("FA: Go to Common item catalog", async () => {
+      await fA.getByLabel("Profile Menu").click({ delay: 2000 });
+      await fA.getByRole("menuitem", { name: "Settings" }).click();
+      await expect(fA).toHaveURL("/settings", {
         timeout: 120000,
       });
-      await secondAccount.getByRole("tab", { name: "Group" }).click();
-      await secondAccount.getByLabel("Join a group").click();
-      await secondAccount
-        .getByLabel("Share Code", { exact: true })
+      await fA.getByRole("tab", { name: "Common Items" }).click();
+    });
+
+    await test.step("SA: Go to Common item catalog", async () => {
+      await sA.getByLabel("Profile Menu").click({ delay: 2000 });
+      await sA.getByRole("menuitem", { name: "Settings" }).click();
+      await expect(sA).toHaveURL("/settings", {
+        timeout: 120000,
+      });
+      await sA.getByRole("tab", { name: "Common Items" }).click();
+    });
+
+    await test.step("FA: Add a new Common Item (Butter - Kerrygold Unsalted)", async () => {
+      await fA.getByLabel("Add New Common item").click();
+      await fA.getByLabel("Name").fill("Butter");
+      await fA.getByLabel("Notes").fill("Kerrygold Unsalted");
+      await fA.getByRole("button", { name: "Submit" }).click();
+    });
+
+    await test.step("SA: Add a new Common Item (Butter - Kerrygold Salted)", async () => {
+      await expect(sA).toHaveURL("/settings", {
+        timeout: 120000,
+      });
+      await sA.getByLabel("Add New Common item").click();
+      await sA.getByLabel("Name").fill("Butter");
+      await sA.getByLabel("Notes").fill("Kerrygold Salted");
+      await sA.getByRole("button", { name: "Submit" }).click();
+    });
+
+    await test.step("FA: Go to the Home page", async () => {
+      await fA.getByLabel("To Home").click();
+    });
+
+    await test.step("SA: Go to the Home page", async () => {
+      await sA.getByLabel("To Home").click();
+    });
+
+    await test.step("FA: Add new store - Aldi", async () => {
+      await fA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await fA.getByRole("menuitem", { name: "Add new store" }).click();
+      await fA.getByLabel("Name").fill("Aldi");
+      await fA.getByRole("button", { name: "Submit" }).click();
+    });
+
+    await test.step("SA: add new store - Kroger", async () => {
+      await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await sA.getByRole("menuitem", { name: "Add new store" }).click();
+      await sA.getByLabel("Name").fill("Kroger");
+      await sA.getByRole("button", { name: "Submit" }).click();
+    });
+
+    await test.step("FA: Go in to Aldi store", async () => {
+      await expect(fA.getByRole("button", { name: "Aldi" })).toBeVisible();
+      await fA.getByRole("button", { name: "Aldi" }).click({ delay: 500 });
+      await expect(fA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
+        timeout: 1200000,
+      });
+    });
+
+    await test.step("SA: Go in to Kroger store", async () => {
+      await expect(sA.getByRole("button", { name: "Kroger" })).toBeVisible();
+      await sA.getByRole("button", { name: "Kroger" }).click({ delay: 500 });
+      await expect(sA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
+        timeout: 1200000,
+      });
+    });
+
+    await test.step("FA: Add new Item (Eggs - Large white) to Aldi store", async () => {
+      await fA.getByLabel("Open grocery store menu").click({ delay: 500 });
+      await fA
+        .getByRole("menuitem", { name: "Add Item" })
         .click({ delay: 500 });
+      await fA.getByLabel("Name").fill("Eggs");
+      await fA.getByLabel("Notes").fill("Large white");
+      await fA.getByLabel("Quantity").fill("1");
+      await fA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+    });
 
-      await secondAccount
-        .getByLabel("Share Code", { exact: true })
-        .fill(code as string);
-      await secondAccount.getByRole("button", { name: "Submit" }).click();
+    await test.step("SA: Add new Item (Eggs - Large brown) to Kroger store", async () => {
+      await sA.getByLabel("Open grocery store menu").click({ delay: 500 });
+      await sA
+        .getByRole("menuitem", { name: "Add Item" })
+        .click({ delay: 500 });
+      await sA.getByLabel("Name").fill("Eggs");
+      await sA.getByLabel("Notes").fill("Large brown");
+      await sA.getByLabel("Quantity").fill("1");
+      await sA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+    });
 
-      await expect(secondAccount.getByText("Z Fighters")).toBeVisible({
+    await test.step("FA: Create Group (Z fighters)", async () => {
+      await fA.getByLabel("Profile Menu").click();
+      await fA.getByRole("menuitem", { name: "Settings" }).click();
+      await expect(fA).toHaveURL("/settings", {
+        timeout: 120000,
+      });
+      await fA.getByRole("tab", { name: "Group" }).click();
+      await fA.getByLabel("Create new group").click();
+      await fA.getByLabel("Group Name").fill("Z Fighters");
+      await fA.getByRole("button", { name: "Submit" }).click();
+      await expect(fA.getByText("Z Fighters")).toBeVisible({
+        timeout: 2000,
+      });
+      await fA.getByRole("button", { name: "Share Code" }).click();
+      await fA.getByLabel("Share Code").click();
+      code = await fA.getByLabel("Share Code").innerText();
+    });
+
+    await test.step("SA: Join Group (Z fighters)", async () => {
+      await sA.getByLabel("Profile Menu").click();
+      await sA.getByRole("menuitem", { name: "Settings" }).click();
+      await expect(sA).toHaveURL("/settings", {
+        timeout: 120000,
+      });
+      await sA.getByRole("tab", { name: "Group" }).click();
+      await sA.getByLabel("Join a group").click();
+      await sA.getByLabel("Share Code", { exact: true }).click({ delay: 500 });
+
+      await sA.getByLabel("Share Code", { exact: true }).fill(code as string);
+      await sA.getByRole("button", { name: "Submit" }).click();
+
+      await expect(sA.getByText("Z Fighters")).toBeVisible({
         timeout: 20000,
       });
     });
 
-    await test.step("SA: Verify Common Item  (Butter - Kerry Gold ) was added in settings", async () => {
-      await expect(secondAccount).toHaveURL("/settings", {
+    await test.step("FA: Go to the home page", async () => {
+      await fA.getByLabel("To Home").click();
+    });
+
+    await test.step("SA: Go to the home page", async () => {
+      await sA.getByLabel("To Home").click();
+    });
+
+    await test.step("FA: Verify no stores place holder message", async () => {
+      await expect(fA).toHaveURL("/dashboard", {
+        timeout: 20000,
+      });
+      await expect(fA.getByText("No stores available...")).toBeVisible();
+    });
+
+    await test.step("SA: Verify no stores place holder message", async () => {
+      await expect(sA).toHaveURL("/dashboard", {
+        timeout: 20000,
+      });
+      await expect(sA.getByText("No stores available...")).toBeVisible();
+    });
+
+    await test.step("SA:Switch view to all items", async () => {
+      await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await sA.getByRole("menuitem", { name: "View all" }).first().click();
+    });
+
+    await test.step("SA: Verify no items message", async () => {
+      await expect(sA.getByText("No items available...")).toBeVisible();
+    });
+
+    await test.step("FA: Add new Store Whole Foods", async () => {
+      await fA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await fA.getByRole("menuitem", { name: "Add new store" }).click();
+      await fA.getByLabel("Name").fill("Whole Foods");
+      await fA.getByRole("button", { name: "Submit" }).click();
+    });
+
+    await test.step("FA: Go in to Whole Foods store", async () => {
+      await expect(
+        fA.getByRole("button", { name: "Whole Foods" })
+      ).toBeVisible();
+      await fA
+        .getByRole("button", { name: "Whole Foods" })
+        .click({ delay: 500 });
+      await expect(fA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
+        timeout: 1200000,
+      });
+    });
+
+    await test.step("FA: Add (Sour Cream - Light) to Whole Foods store", async () => {
+      await fA.getByLabel("Open grocery store menu").click({ delay: 500 });
+      await fA
+        .getByRole("menuitem", { name: "Add Item" })
+        .click({ delay: 500 });
+      await fA.getByLabel("Name").fill("Sour Cream");
+      await fA.getByLabel("Notes").fill("Light");
+      await fA.getByLabel("Quantity").fill("1");
+      await fA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+    });
+
+    await test.step("SA:Verify Sour Cream Light was added when in all items view", async () => {
+      await expect(
+        sA.getByRole("button", { name: "Sour Cream Light" })
+      ).toBeVisible({ timeout: 2000 });
+    });
+
+    await test.step("SA:Add (Salsa - Tostitos) item to Whole Foods store", async () => {
+      await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await sA
+        .getByRole("menuitem", { name: "Add Item" })
+        .click({ delay: 1000 });
+      await sA.getByLabel("Name").fill("Salsa");
+      await sA.getByLabel("Notes").fill("Tostitos");
+      await sA.getByLabel("Quantity").fill("1");
+      await sA.getByLabel("Store").click();
+      await sA.getByRole("option", { name: "Whole Foods" }).click();
+      await sA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+    });
+
+    await test.step("SA:Add (Tortilla chips - Blue Corn) item w/out a store in all items view", async () => {
+      await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await sA
+        .getByRole("menuitem", { name: "Add Item" })
+        .click({ delay: 500 });
+      await sA.getByLabel("Name").fill("Tortilla chips");
+      await sA.getByLabel("Notes").fill("Blue Corn");
+      await sA.getByLabel("Quantity").fill("1");
+      await sA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
+    });
+
+    await test.step("FA: Add (Salsa - Tostitos) to common item catalog via flag ", async () => {
+      await fA.getByRole("button", { name: "Salsa Tostitos" }).click();
+      await fA
+        .getByRole("checkbox", { name: "Add to Common Items Catalog" })
+        .check();
+      await fA.keyboard.press("Escape");
+    });
+
+    await test.step("SA:Verify (Salsa - Tostitos) was added to common item catalog", async () => {
+      await sA.getByLabel("Profile Menu").click({ delay: 2000 });
+      await sA.getByRole("menuitem", { name: "Settings" }).click();
+      await expect(sA).toHaveURL("/settings", {
         timeout: 120000,
       });
-      await secondAccount.getByRole("tab", { name: "Common Items" }).click();
+      await sA.getByRole("tab", { name: "Common Items" }).click();
       await expect(
-        secondAccount.getByRole("button", {
-          name: "Image of Butter Butter Kerry Gold",
+        sA.getByRole("button", {
+          name: "Image of Salsa Salsa Tostitos",
         })
-      ).toBeVisible();
-    });
-
-    await test.step("SA: Go to the Home Page and Verify Aldi Store", async () => {
-      await secondAccount.getByLabel("To Home").click();
-      await expect(secondAccount).toHaveURL("/dashboard", {
-        timeout: 120000,
-      });
-      await expect(
-        secondAccount.getByRole("button", { name: "Aldi" })
-      ).toBeVisible();
-    });
-
-    await test.step("SA: Add Item 2x (Kerry Gold butter) to Aldi Store via Catalog", async () => {
-      await secondAccount
-        .getByRole("button", { name: "Aldi" })
-        .click({ delay: 500 });
-
-      await expect(secondAccount).toHaveURL(
-        new RegExp("/dashboard/grocerystores/*"),
-        {
-          timeout: 1200000,
-        }
-      );
-
-      await secondAccount
-        .getByLabel("Open grocery store menu")
-        .click({ delay: 500 });
-
-      await secondAccount
-        .getByRole("menuitem", { name: "Add Common Items" })
-        .click();
-      await secondAccount
-        .getByRole("button", { name: "Butter Kerry Gold" })
-        .click();
-      await secondAccount.getByLabel("Increment Butter").click();
-      await secondAccount.getByRole("button", { name: "Add" }).click();
-    });
-
-    await test.step("FA: Verify Item 2x (Kerry Gold butter) in Aldi Store", async () => {
-      await expect(
-        firstAccount.getByRole("button", { name: "2 Butter" })
-      ).toBeVisible();
-    });
-
-    await test.step("FA: Delete Store", async () => {
-      await firstAccount.getByLabel("Open grocery store menu").click();
-      await firstAccount
-        .getByRole("menuitem", { name: "Delete Store" })
-        .click();
-      await expect(firstAccount).toHaveURL("/dashboard", {
-        timeout: 120000,
-      });
+      ).toBeVisible({ timeout: 2000 });
     });
 
     await test.step("FA: Leave Group", async () => {
-      await firstAccount.getByLabel("Profile Menu").click();
-      await firstAccount.getByRole("menuitem", { name: "Settings" }).click();
-      await firstAccount.getByRole("tab", { name: "Group" }).click();
-      await firstAccount.getByRole("button", { name: "Leave Group" }).click();
+      await fA.getByLabel("Profile Menu").click();
+      await fA.getByRole("menuitem", { name: "Settings" }).click();
+      await fA.getByRole("tab", { name: "Group" }).click();
+      await fA.getByRole("button", { name: "Leave Group" }).click();
     });
 
-    await test.step("FA: Sign Out", async () => {
-      await firstAccount.getByLabel("Profile Menu").click();
-      await firstAccount.getByRole("menuitem", { name: "Sign Out" }).click();
-      await expect(firstAccount).toHaveURL("/login", {
-        timeout: 120000,
-      });
-      await firstAccount.close();
+    await test.step("SA: Leave group ", async () => {
+      await sA.getByLabel("Profile Menu").click();
+      await sA.getByRole("menuitem", { name: "Settings" }).click();
+      await sA.getByRole("tab", { name: "Group" }).click();
+      await sA.getByRole("button", { name: "Leave Group" }).click();
     });
 
-    await test.step("SA: Delete Common Item", async () => {
-      await secondAccount.getByLabel("Profile Menu").click();
-      await secondAccount.getByRole("menuitem", { name: "Settings" }).click();
-      await expect(secondAccount).toHaveURL("/settings", {
-        timeout: 120000,
-      });
-      await secondAccount.getByRole("tab", { name: "Common Items" }).click();
+    await test.step("FA: Verify Common Item Butter Kerrygold Unsalted ", async () => {
+      await fA.getByRole("tab", { name: "Common Items" }).click();
+      await expect(
+        fA.getByRole("button", {
+          name: "Image of Butter Butter Kerrygold Unsalted",
+        })
+      ).toBeVisible({ timeout: 2000 });
+    });
 
-      await secondAccount
-        .getByRole("button", { name: "Image of Butter Butter Kerry Gold" })
+    await test.step("SA: Verify Butter Kerrygold Salted Common Item ", async () => {
+      await sA.getByRole("tab", { name: "Common Items" }).click();
+      await expect(
+        sA.getByRole("button", {
+          name: "Image of Butter Butter Kerrygold Salted",
+        })
+      ).toBeVisible({ timeout: 2000 });
+    });
+
+    await test.step("FA: Delete Butter Kerrygold Unsalted Common Item ", async () => {
+      await fA
+        .getByRole("button", {
+          name: "Image of Butter Butter Kerrygold Unsalted",
+        })
         .click();
-      await secondAccount.getByLabel("Delete Common Item").click();
-    });
-    await test.step("SA: Leave Group", async () => {
-      await secondAccount.getByRole("tab", { name: "Group" }).click();
-      await secondAccount.getByRole("button", { name: "Leave Group" }).click();
+      await fA.getByLabel("Delete Common Item").click();
     });
 
-    await test.step("SA: Sign Out", async () => {
-      await secondAccount.getByLabel("Profile Menu").click();
-      await secondAccount.getByRole("menuitem", { name: "Sign Out" }).click();
-      await expect(secondAccount).toHaveURL("/login", {
+    await test.step("SA: Delete Butter Kerrygold Salted Common Item ", async () => {
+      await sA
+        .getByRole("button", {
+          name: "Image of Butter Butter Kerrygold Salted",
+        })
+        .click();
+      await sA.getByLabel("Delete Common Item").click();
+    });
+
+    await test.step("FA: Go to home page ", async () => {
+      await fA.getByLabel("To Home").click();
+    });
+
+    await test.step("SA: Go to home page ", async () => {
+      await sA.getByLabel("To Home").click();
+    });
+
+    await test.step("FA: Verify Aldi store is still there ", async () => {
+      await expect(fA.getByRole("button", { name: "Aldi" })).toBeVisible();
+    });
+
+    await test.step("SA:Switch store view ", async () => {
+      await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await sA.getByRole("menuitem", { name: "View by store" }).first().click();
+    });
+
+    await test.step("SA: Verify Kroger store is still there", async () => {
+      await expect(sA.getByRole("button", { name: "Kroger" })).toBeVisible();
+    });
+
+    await test.step("FA: Go in to Aldi  Store ", async () => {
+      await fA.getByRole("button", { name: "Aldi" }).click({ delay: 500 });
+      await expect(fA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
+        timeout: 1200000,
+      });
+    });
+
+    await test.step("SA: Go in to Kroger Store ", async () => {
+      await sA.getByRole("button", { name: "Kroger" }).click({ delay: 500 });
+      await expect(sA).toHaveURL(new RegExp("/dashboard/grocerystores/*"), {
+        timeout: 1200000,
+      });
+    });
+
+    await test.step("FA: Delete Aldi store", async () => {
+      await fA.getByLabel("Open grocery store menu").click();
+      await fA.getByRole("menuitem", { name: "Delete Store" }).click();
+      await expect(fA).toHaveURL("/dashboard", {
         timeout: 120000,
       });
-      await secondAccount.close();
+    });
+
+    await test.step("SA: Delete Kroger store", async () => {
+      await sA.getByLabel("Open grocery store menu").click();
+      await sA.getByRole("menuitem", { name: "Delete Store" }).click();
+      await expect(sA).toHaveURL("/dashboard", {
+        timeout: 120000,
+      });
+    });
+
+    await test.step("FA: Sign out ", async () => {
+      await fA.getByLabel("Profile Menu").click();
+      await fA.getByRole("menuitem", { name: "Sign Out" }).click();
+      await expect(fA).toHaveURL("/login", {
+        timeout: 120000,
+      });
+      await fA.close();
+    });
+
+    await test.step("SA: Sign out ", async () => {
+      await sA.getByLabel("Profile Menu").click();
+      await sA.getByRole("menuitem", { name: "Sign Out" }).click();
+      await expect(sA).toHaveURL("/login", {
+        timeout: 120000,
+      });
+      await sA.close();
     });
   });
 });
