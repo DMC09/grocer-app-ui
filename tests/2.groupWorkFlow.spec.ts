@@ -266,9 +266,8 @@ test.describe("Multi User Scenarios", () => {
       await sA.getByLabel("Name").fill("Salsa");
       await sA.getByLabel("Notes").fill("Tostitos");
       await sA.getByLabel("Quantity").fill("1");
-      await sA.getByRole("listbox", { name: "Whole Foods" }).click();
-      await sA.pause();
-      // TODO: use dropdown to select "Whole foods"
+      await sA.getByLabel("Store").click();
+      await sA.getByRole("option", { name: "Whole Foods" }).click();
       await sA.getByRole("button", { name: "Submit" }).click({ delay: 500 });
     });
 
@@ -365,6 +364,11 @@ test.describe("Multi User Scenarios", () => {
 
     await test.step("FA: Verify Aldi store is still there ", async () => {
       await expect(fA.getByRole("button", { name: "Aldi" })).toBeVisible();
+    });
+
+    await test.step("SA:Switch store view ", async () => {
+      await sA.getByLabel("Open dashboard menu").first().click({ delay: 500 });
+      await sA.getByRole("menuitem", { name: "View by store" }).first().click();
     });
 
     await test.step("SA: Verify Kroger store is still there", async () => {
