@@ -81,25 +81,25 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           display: "flex",
         }}
       >
-             <Box
-              sx={{
-                backgroundColor: "primary.main",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "20%",
-                maxWidth: "200px",
-              }}
-            >
-              <Typography
-                sx={{
-                  color: "secondary.main",
-                }}
-                variant="h5"
-              >
-                {groceryStoreItem?.quantity}
-              </Typography>
-            </Box>
+        <Box
+          sx={{
+            backgroundColor: "primary.main",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "20%",
+            maxWidth: "200px",
+          }}
+        >
+          <Typography
+            sx={{
+              color: "secondary.main",
+            }}
+            variant="h5"
+          >
+            {groceryStoreItem?.quantity}
+          </Typography>
+        </Box>
         <CardActionArea onClick={handleClickOpen} sx={{ p: 0, m: 0 }}>
           <Box
             sx={{
@@ -107,8 +107,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               alignItems: "center",
             }}
           >
-            
-       
             <Box
               sx={{
                 pl: 1,
@@ -176,6 +174,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 justifyContent: "center",
                 alignItems: "center",
                 flexFlow: "column",
+                p: 1.5,
               }}
             >
               <Typography
@@ -210,13 +209,15 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 borderColor: "primary.main",
-                backgroundColor: "background.default",
-                flexGrow: 1,
+                backgroundColor: "primary.main",
+                flexGrow: 2,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
               }}
-            ></Box>
+            >
+              <EditItem {...groceryStoreItem} />
+            </Box>
           </Box>
           <CardMedia
             component="img"
@@ -245,9 +246,9 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               justifyContent: "space-between",
             }}
           >
-            {!groceryStoreItem.common_item_id && (
-              <>
-                <Box textAlign="center" sx={{ flexGrow: 3 }}>
+            <Box textAlign="center" sx={{ flexGrow: 3 }}>
+              {!groceryStoreItem.common_item_id && (
+                <>
                   <Typography variant="body2">Add To Common Items?</Typography>
                   <Switch
                     aria-label="Add to Common Items Catalog"
@@ -257,18 +258,8 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                       title: "Add to Common Items Catalog?",
                     }}
                   />
-                </Box>
-              </>
-            )}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexGrow: 2,
-              }}
-            >
-              <EditItem {...groceryStoreItem} />
+                </>
+              )}
             </Box>
           </Box>
         </DialogActions>
