@@ -1,4 +1,4 @@
-import { Container, CircularProgress } from "@mui/material";
+import { Container, CircularProgress, Box } from "@mui/material";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
 import { CommonItemType } from "@/types";
 import ManagedCommonItem from "../groceryStore/commonItem/managedCommonItem";
@@ -28,32 +28,33 @@ export default function CommonItemsSettings() {
           display: "flex",
           flexFlow: "column",
           alignItems: "center",
+          justifyContent: "center",
           borderColor: "primary.main",
           backgroundColor: "background.default",
-          px: 4,
-          mt: 1,
           boxShadow: 2,
           height: "80%",
           overflowY: "scroll",
           gap: 2,
+          width: "100%",
         }}
       >
-        <>
+        <Box>
           <AddCommonItem />
-        </>
-        <PullToRefresh
-          refreshingContent={<CircularProgress />}
-          pullingContent={""}
-          onRefresh={handleRefresh}
-        >
-          <>
-            {commonItemsCatalog.length > 0 ? (
-              commonItemsToRender
-            ) : (
-              <NoManagedCommonItem />
-            )}
-          </>
-        </PullToRefresh>
+        </Box>
+
+          <PullToRefresh
+            refreshingContent={<CircularProgress />}
+            pullingContent={""}
+            onRefresh={handleRefresh}
+          >
+            <>
+              {commonItemsCatalog.length > 0 ? (
+                commonItemsToRender
+              ) : (
+                <NoManagedCommonItem />
+              )}
+            </>
+          </PullToRefresh>
       </Container>
     </>
   );
