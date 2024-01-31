@@ -51,10 +51,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
         sx={{
           borderRadius: 3,
           border: 3,
-          maxWidth: 350,
-          width: "100%",
-          height: "fit-content",
-          overflow: "visible",
+          maxWidth: 500
         }}
       >
         {/* open dialog */}
