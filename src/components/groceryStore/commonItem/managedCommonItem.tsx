@@ -51,7 +51,7 @@ export default function ManagedCommonItem(item: CommonItemType) {
         sx={{
           borderRadius: 3,
           border: 3,
-          maxWidth: 500
+          height: "15%",
         }}
       >
         {/* open dialog */}
@@ -115,17 +115,6 @@ export default function ManagedCommonItem(item: CommonItemType) {
               backgroundColor: "#454545",
             }}
           >
-            <IconButton
-              aria-label="Delete Common Item"
-              sx={{
-                color: "red",
-                flexGrow: 2,
-              }}
-              onClick={handleDelete}
-            >
-              <DeleteForeverIcon />
-            </IconButton>
-
             <Box
               sx={{
                 height: "100%",
@@ -148,15 +137,6 @@ export default function ManagedCommonItem(item: CommonItemType) {
                 {item.item_notes}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                flexGrow: 2,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <EditCommonItem {...item} />
-            </Box>
           </Box>
           <CardMedia
             component="img"
@@ -170,8 +150,13 @@ export default function ManagedCommonItem(item: CommonItemType) {
             }}
           />
         </Box>
-        <DialogActions>
-          <IconButton
+        <DialogActions
+          sx={{
+            display: "flex",
+            backgroundColor: "#454545",
+          }}
+        >
+          {/* <IconButton
             sx={{
               color: "primary.dark",
             }}
@@ -179,7 +164,36 @@ export default function ManagedCommonItem(item: CommonItemType) {
             aria-label="Close Item Preview"
           >
             <CloseIcon />
-          </IconButton>
+          </IconButton> */}
+          <Box
+            sx={{
+              backgroundColor: "#454545",
+              display: "flex",
+              justifyContent: "center",
+              flexGrow: 1,
+            }}
+          >
+            <IconButton
+              aria-label="Delete Common Item"
+              sx={{
+                color: "red",
+              }}
+              onClick={handleDelete}
+            >
+              <DeleteForeverIcon />
+            </IconButton>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              justifyContent: "center",
+              backgroundColor: "#454545",
+            }}
+          >
+            <EditCommonItem {...item} />
+          </Box>
         </DialogActions>
       </Dialog>
     </>
