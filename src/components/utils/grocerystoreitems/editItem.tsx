@@ -49,12 +49,18 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
       .required("Item name is required")
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-, "Please only use letters and numbers"),
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
+        "Please only use letters and numbers"
+      ),
     itemNotes: Yup.string()
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-, "Please only use letters and numbers")
-      .notRequired(),
+      .notRequired()
+      .nullable()
+      .transform((value) => (!!value ? value : null))
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
+        "Please only use letters and numbers"
+      ),
     itemQuantity: Yup.number()
       .required("Quantity is required")
       .min(1, "must have at least 1 "),
@@ -159,7 +165,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   useEffect(() => {
     reset({
       itemName: groceryStoreItem.name || "",
-      itemNotes: groceryStoreItem.notes,
+      itemNotes: groceryStoreItem.notes || "",
       itemQuantity: Number(groceryStoreItem?.quantity),
     });
   }, [
@@ -171,15 +177,15 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
 
   return (
     <>
-    <Box >
-      <IconButton
-        sx={{ color: "background.default" }}
-        aria-label="Edit Item"
-        onClick={handleClickOpen}
+      <Box>
+        <IconButton
+          sx={{ color: "background.default" }}
+          aria-label="Edit Item"
+          onClick={handleClickOpen}
         >
-        <EditIcon sx={{  }} />
-      </IconButton>
-        </Box>
+          <EditIcon sx={{}} />
+        </IconButton>
+      </Box>
 
       <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}>
         <Backdrop
@@ -207,6 +213,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
           </DialogContent>
           <DialogContent>
             <TextField
+              defaultValue={null}
               error={errors.itemNotes ? true : false}
               margin="dense"
               id="Notes"
