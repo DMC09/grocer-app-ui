@@ -192,9 +192,6 @@ export default function AddCommonItem() {
         aria-label="Add New Common item"
         endIcon={<AddCircleIcon />}
         size="large"
-        sx={{
-          marginLeft: "auto",
-        }}
       />
       {alert ? (
         <>
