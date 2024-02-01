@@ -72,19 +72,19 @@ export default function AddNewItemDialog() {
     itemName: Yup.string()
       .required("Item name is required")
       .matches(
-        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
         "Please only use letters and numbers"
       ),
     itemNotes: Yup.string()
       .matches(
-        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
         "Please only use letters and numbers"
       )
       .notRequired(),
     itemQuantity: Yup.number()
       .required("Quantity is required")
       .min(1, "must have at least 1 "),
-    itemStore: Yup.number().nullable(),
+    itemStore: Yup.number().nullable("Must use store iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {

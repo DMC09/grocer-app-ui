@@ -71,12 +71,14 @@ export default function AddNewItemDialog({
     itemName: Yup.string()
       .required("Item name is required")
       .matches(
-        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
+,
         "Please only use letters and numbers"
       ),
     itemNotes: Yup.string()
       .matches(
-        /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
+,
         "Please only use letters and numbers"
       )
       .notRequired(),

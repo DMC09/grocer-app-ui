@@ -43,11 +43,13 @@ export default function EditProfileSettings(profile: ProfileType) {
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().matches(
-      /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+      /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
+,
       "Please only use letters and numbers"
     ), // only space and letters
     lastName: Yup.string().matches(
-      /^[a-zA-Z0-9 _\-!\$\.\;\#\&]+$/i,
+      /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
+,
       "Please only use letters and numbers"
     ), // only space and letters
     phone: Yup.string().phone("US", "Please enter a valid phone number"),
