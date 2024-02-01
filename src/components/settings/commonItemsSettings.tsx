@@ -23,39 +23,51 @@ export default function CommonItemsSettings() {
 
   return (
     <>
-      <Container
-        sx={{
-          display: "flex",
-          flexFlow: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          borderColor: "primary.main",
-          backgroundColor: "background.default",
-          boxShadow: 2,
-          height: "80%",
-          overflowY: "scroll",
-          gap: 2,
-          width: "100%",
-        }}
+      <PullToRefresh
+        refreshingContent={<CircularProgress />}
+        pullingContent={""}
+        onRefresh={handleRefresh}
       >
-        <Box>
-          <AddCommonItem />
-        </Box>
+        <Container
+          sx={{
+            display: "flex",
+            flexFlow: "column",
+            borderColor: "primary.main",
+            backgroundColor: "background.default",
 
-          <PullToRefresh
-            refreshingContent={<CircularProgress />}
-            pullingContent={""}
-            onRefresh={handleRefresh}
-          >
-            <>
-              {commonItemsCatalog.length > 0 ? (
-                commonItemsToRender
-              ) : (
-                <NoManagedCommonItem />
-              )}
-            </>
-          </PullToRefresh>
-      </Container>
+            width: "100%",
+            mt: 2,
+            overflowY: "scroll",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+        >
+            <AddCommonItem />
+          </Box>
+
+          {commonItemsCatalog.length > 0 ? (
+            <Container
+              sx={{
+                gap: 2,
+                height: "90%",
+                overflowY: "scroll",
+                display: "flex",
+                flexFlow: "column",
+                py:2,
+                my:2
+              }}
+            >
+              {commonItemsToRender}
+            </Container>
+          ) : (
+            <NoManagedCommonItem />
+          )}
+        </Container>
+      </PullToRefresh>
     </>
   );
 }
