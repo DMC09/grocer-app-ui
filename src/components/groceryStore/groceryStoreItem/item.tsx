@@ -110,6 +110,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 pl: 1,
+                py:1,
                 flexGrow: 3,
                 backgroundColor: "background.paper",
               }}
@@ -169,7 +170,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               sx={{
                 borderColor: "primary.main",
                 backgroundColor: "primary.main",
-                flexGrow: 2,
+                flexGrow: 1,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -189,6 +190,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 pl: 2,
+                py:1,
                 height: "100%",
                 display: "flex",
                 flexFlow: "column",
@@ -210,7 +212,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               sx={{
                 borderColor: "primary.main",
                 backgroundColor: "primary.main",
-                flexGrow: 2,
+                flexGrow: 1,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -237,17 +239,17 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             m: 0,
           }}
         >
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              p: 1,
-              m: 0,
-              justifyContent: "space-between",
-            }}
-          >
-            <Box textAlign="center" sx={{ flexGrow: 3 }}>
-              {!groceryStoreItem.common_item_id && (
+          {!groceryStoreItem.common_item_id && (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                p: 1,
+                m: 0,
+                justifyContent: "space-between",
+              }}
+            >
+              <Box textAlign="center" sx={{ flexGrow: 3 }}>
                 <>
                   <Typography variant="body2">Add To Common Items?</Typography>
                   <Switch
@@ -259,9 +261,9 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                     }}
                   />
                 </>
-              )}
+              </Box>
             </Box>
-          </Box>
+          )}
         </DialogActions>
       </Dialog>
     </>
