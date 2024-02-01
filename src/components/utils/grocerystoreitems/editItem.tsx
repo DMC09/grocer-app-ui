@@ -173,7 +173,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     <>
     <Box >
       <IconButton
-        sx={{ color: "primary.dark" }}
+        sx={{ color: "background.default" }}
         aria-label="Edit Item"
         onClick={handleClickOpen}
         >
