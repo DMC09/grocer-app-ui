@@ -4,9 +4,9 @@ export default function NoManagedCommonItem() {
   return (
     <>
       <Typography sx={{
-        width: "80%",
+mt:2
       }} align="center" variant="h5" color="primary.main">
-        No Common Items created yet....
+        No common items found ...
       </Typography>
     </>
   );
