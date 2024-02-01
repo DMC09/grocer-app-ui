@@ -99,6 +99,7 @@ export default function AddNewItemDialog() {
     register,
     reset,
     handleSubmit,
+    clearErrors,
     formState: { errors, isSubmitSuccessful },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -177,7 +178,7 @@ export default function AddNewItemDialog() {
         selectId &&
         (await addNewItem(
           supabase,
-          storeIdToUse,
+          storeIdToUse === 0 ? null : storeIdToUse,
           data.itemName,
           data.itemNotes.trim(),
           Number(data.itemQuantity),
@@ -277,7 +278,8 @@ export default function AddNewItemDialog() {
                 label="Notes"
                 type="search"
                 variant="outlined"
-                {...register("itemNotes")}
+                {...(register("itemNotes"),
+                { onChange: () => clearErrors("itemNotes") })}
               />
               <Typography variant="inherit" color="red">
                 {errors.itemNotes?.message}
@@ -285,7 +287,7 @@ export default function AddNewItemDialog() {
             </DialogContent>
             <DialogContent>
               <TextField
-                defaultValue={""}
+                defaultValue={0}
                 fullWidth
                 select
                 error={errors.itemStore ? true : false}
