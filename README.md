@@ -23,7 +23,20 @@ Originally I was using the notes features in iOS to share grocery lists between 
 
 ## Demo   
 
-https://github.com/DMC09/grocer-app-ui/assets/43209397/4143bd28-af19-49d6-a1ef-251ee0a7d2ec
+### Single User Workflow
+
+
+https://github.com/DMC09/grocer-app-ui/assets/43209397/4d64524b-81b5-489c-b566-d4c52ee9053c
+
+
+
+### Group Workflow
+
+
+https://github.com/DMC09/grocer-app-ui/assets/43209397/27ddd574-4006-4df6-807f-e6f1cfd7514c
+
+
+
 
 ### Features 
 
