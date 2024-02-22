@@ -7,6 +7,7 @@ import ProfileSettings from "@/components/settings/profileSettings";
 import useZustandStore from "@/hooks/useZustandStore";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import CommonItemsSettings from "@/components/settings/commonItemsSettings";
+import CategoriesSettings from "@/components/settings/categoriesSettings";
 
 
 export default function Settings() {
@@ -52,6 +53,7 @@ export default function Settings() {
           <GroupSettings {...profileData} />
           )}
           {currentTabIndex === 2 && <CommonItemsSettings />}
+          {currentTabIndex === 3 && <CategoriesSettings />}
       </Container>
     </>
   );
