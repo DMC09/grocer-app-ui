@@ -44,6 +44,7 @@ export default function Settings() {
             <Tab label="Profile" />
             <Tab label="Group" />
             <Tab label="Common Items" />
+            <Tab label="Categories" />
           </Tabs>
         </Box>
         {currentTabIndex === 0 && <ProfileSettings />}
