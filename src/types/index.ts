@@ -1,5 +1,6 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import { string } from "yup";
+
 export type Json =
   | string
   | number
@@ -8,7 +9,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       categories: {
@@ -37,7 +38,7 @@ export interface Database {
       }
       commonitems: {
         Row: {
-          category: string | null
+          category_id: number | null
           id: number
           image: string | null
           item_name: string | null
@@ -45,7 +46,7 @@ export interface Database {
           select_id: string | null
         }
         Insert: {
-          category?: string | null
+          category_id?: number | null
           id?: number
           image?: string | null
           item_name?: string | null
@@ -53,14 +54,22 @@ export interface Database {
           select_id?: string | null
         }
         Update: {
-          category?: string | null
+          category_id?: number | null
           id?: number
           image?: string | null
           item_name?: string | null
           item_notes?: string | null
           select_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_commonitems_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       grocerystoreitems: {
         Row: {
@@ -107,13 +116,6 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "grocerystoreitems_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "grocerystoreitems_common_item_id_fkey"
             columns: ["common_item_id"]
             isOneToOne: false
@@ -125,6 +127,13 @@ export interface Database {
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "grocerystores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_grocerystoreitems_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
             referencedColumns: ["id"]
           }
         ]
@@ -302,6 +311,86 @@ export interface Database {
   }
 }
 
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
+      Database["public"]["Views"])
+  ? (Database["public"]["Tables"] &
+      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof Database["public"]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
+  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : never
+
 
 export type GroceryStoreType =
   Database["public"]["Tables"]["grocerystores"]["Row"];
@@ -311,7 +400,8 @@ export type ProfileType = Database["public"]["Tables"]["profiles"]["Row"];
 export type GroupType = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupMemberType =
   Database["public"]["Views"]["group_members_view"]["Row"];
-export type CommonItemType = Database["public"]["Tables"]["commonitems"]["Row"];
+export type CommonItemType = Database["public"]["Tables"]["categories"]["Row"];
+export type CategoryType = Database["public"]["Tables"]["commonitems"]["Row"];
 
 export type CommonItemToAdd = {
   uniqueItemId: number;
@@ -326,10 +416,10 @@ export type GroceryStoreProps = {
   groceryStore: GroceryStoreType;
   expanded?: boolean | null;
 };
+
 export type GroceryStoreItemProps = {
   groceryStoreItem: GroceryStoreItemType;
 };
-
 export interface GroceryStoreWithItemsType extends GroceryStoreType {
   grocerystoreitems: GroceryStoreItemType[];
 }
