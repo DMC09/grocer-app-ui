@@ -38,7 +38,7 @@ export default function SettingsSkeleton() {
       >
         <Skeleton
           variant="rounded"
-          width={"30%"}
+          width={"25%"}
           height={40}
           sx={{
             maxWidth: "200px",
@@ -46,17 +46,24 @@ export default function SettingsSkeleton() {
         />
         <Skeleton
           variant="rounded"
-          width={"30%"}
+          width={"25%"}
           height={40}
           sx={{
             maxWidth: "200px",
-            mx:1
-
+            mx: 1,
           }}
         />
         <Skeleton
           variant="rounded"
-          width={"30%"}
+          width={"25%"}
+          height={40}
+          sx={{
+            maxWidth: "200px",
+          }}
+        />
+        <Skeleton
+          variant="rounded"
+          width={"25%"}
           height={40}
           sx={{
             maxWidth: "200px",
