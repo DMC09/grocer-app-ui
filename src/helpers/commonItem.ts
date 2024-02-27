@@ -178,7 +178,7 @@ export async function deleteCommonItem(
   if (error) {
     throw new Error(error.message);
   } else {
-    console.log(data, "data after deleting a common id ");
+    console.log(data, "data after deleting a common item ");
     return data;
   }
 }
