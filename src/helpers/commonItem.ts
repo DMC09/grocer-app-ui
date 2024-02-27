@@ -3,8 +3,7 @@ import { CommonItemType, Database, GroceryStoreItemType } from "@/types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { fetchAllItems, getAllGroceryStoresData } from "./groceryStore";
 
-export async function addFromCommonItems(supabase: SupabaseClient<Database>) {
-}
+export async function addFromCommonItems(supabase: SupabaseClient<Database>) {}
 
 export async function addToCommonItemCatalog(
   supabase: SupabaseClient<Database>,
@@ -17,6 +16,7 @@ export async function addToCommonItemCatalog(
       item_notes: groceryStoreItem.notes,
       select_id: groceryStoreItem.select_id,
       image: groceryStoreItem.image,
+      category_id: groceryStoreItem?.category_id || null,
     })
     .select()
     .single();
@@ -79,8 +79,10 @@ export async function updateCommonItem(
   id: number,
   name: string,
   notes: string | null,
-  imagePath: string | null
+  imagePath: string | null,
+  categoryId: number | null
 ) {
+
   if (imagePath) {
     console.log(imagePath, "image path");
     const { data, error } = await supabase
@@ -89,6 +91,7 @@ export async function updateCommonItem(
         item_name: name,
         item_notes: notes,
         image: imagePath,
+        category_id: categoryId || null,
       })
       .eq("id", id)
       .select()
@@ -106,6 +109,7 @@ export async function updateCommonItem(
       .update({
         item_name: name,
         item_notes: notes,
+        category_id: categoryId || null,
       })
       .eq("id", id)
       .select()
@@ -125,7 +129,8 @@ export async function addCommonItem(
   name: string,
   notes: string,
   selectId: string,
-  image: string | null
+  image: string | null,
+  categoryId: number | null
 ) {
   if (image) {
     const { data, error } = await supabase
@@ -135,6 +140,7 @@ export async function addCommonItem(
         item_notes: notes,
         select_id: selectId,
         image,
+        category_id: categoryId || null,
       })
       .select()
       .single();
@@ -151,6 +157,7 @@ export async function addCommonItem(
         item_name: name,
         item_notes: notes,
         select_id: selectId,
+        category_id: categoryId || null,
       })
       .select()
       .single();
