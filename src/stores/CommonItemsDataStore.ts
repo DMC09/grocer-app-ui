@@ -26,7 +26,7 @@ type CommonItemsActions = {
 const initialCommonItemsState: CommonItemsState = {
   catalog: [
     {
-      category: "",
+      category_id: null,
       id: 0,
       image: "",
       item_name: "",
