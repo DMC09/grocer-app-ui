@@ -11,6 +11,8 @@ import PullToRefresh from "react-simple-pull-to-refresh";
 export default function CommonItemsSettings() {
   const commonItemsCatalog = CommonItemsDataStore((state) => state.catalog);
   const { supabase, session } = useSupabase();
+
+  
   const commonItemsToRender = commonItemsCatalog.map(
     (commonItem: CommonItemType) => {
       return <ManagedCommonItem key={commonItem.id} {...commonItem} />;
