@@ -78,21 +78,19 @@ export default function AddNewItemDialog({
     itemName: Yup.string()
       .required("Item name is required")
       .matches(
-        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-,
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
         "Please only use letters and numbers"
       ),
     itemNotes: Yup.string()
       .matches(
-        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-,
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
         "Please only use letters and numbers"
       )
       .notRequired(),
     itemQuantity: Yup.number()
       .required("Quantity is required")
       .min(1, "must have at least 1 "),
-      itemCategory: Yup.number().nullable("Must use category iD"),
+    itemCategory: Yup.number().nullable("Must use category iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -222,7 +220,6 @@ export default function AddNewItemDialog({
     setCategoryIdToUse(e.target.value);
   }
 
-
   return (
     <>
       {alert ? (
@@ -288,24 +285,24 @@ export default function AddNewItemDialog({
           </DialogContent>
 
           <DialogContent>
-              <TextField
-                defaultValue={0}
-                fullWidth
-                select
-                error={errors.itemCategory ? true : false}
-                label="Category"
-                {...register("itemCategory", { onChange: handleSetCategory })}
-              >
-                {CategoryData?.map((category: CategoryType) => (
-                  <MenuItem value={category.id} key={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <Typography variant="inherit" color="red">
-                {errors.itemCategory?.message}
-              </Typography>
-            </DialogContent>
+            <TextField
+              defaultValue={0}
+              fullWidth
+              select
+              error={errors.itemCategory ? true : false}
+              label="Category"
+              {...register("itemCategory", { onChange: handleSetCategory })}
+            >
+              {CategoryData?.map((category: CategoryType) => (
+                <MenuItem value={category.id} key={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <Typography variant="inherit" color="red">
+              {errors.itemCategory?.message}
+            </Typography>
+          </DialogContent>
           <DialogContent
             sx={{
               display: "flex",
