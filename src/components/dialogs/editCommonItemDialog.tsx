@@ -84,7 +84,7 @@ export default function EditCommonItem(item: CommonItemType) {
     defaultValues: {
       itemName: item.item_name || "",
       itemNotes: item.item_notes,
-      itemCategory: 0,
+      itemCategory: item.category_id,
     },
   });
 
