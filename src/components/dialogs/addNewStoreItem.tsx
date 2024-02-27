@@ -30,6 +30,7 @@ import {
   AlertMsgType,
   AlertType,
   BucketType,
+  CategoryType,
   GroceryStoreType,
   ImageType,
   SnackBarPropsType,
@@ -44,6 +45,7 @@ import { mixed } from "yup";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import useZustandStore from "@/hooks/useZustandStore";
 import { useParams } from "next/navigation";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 
 export default function AddNewItemDialog({
   groceryStoreId,
@@ -55,6 +57,7 @@ export default function AddNewItemDialog({
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [storeNameToSet, setStoreNameToSet] = useState<string | null>("");
   const [alert, setAlert] = useState<boolean>(false);
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
   const [snackbar, setSnackbar] = useState<SnackBarPropsType>({
     msg: null,
     type: null,
@@ -66,6 +69,10 @@ export default function AddNewItemDialog({
   });
 
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
+  );
 
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
@@ -85,6 +92,7 @@ export default function AddNewItemDialog({
     itemQuantity: Yup.number()
       .required("Quantity is required")
       .min(1, "must have at least 1 "),
+      itemCategory: Yup.number().nullable("Must use category iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -106,6 +114,7 @@ export default function AddNewItemDialog({
       itemName: "",
       itemNotes: " ",
       itemQuantity: 1,
+      itemCategory: 0,
     },
   });
 
@@ -173,6 +182,7 @@ export default function AddNewItemDialog({
         (await addNewItem(
           supabase,
           Number(groceryStoreId),
+          Number(categoryIdToUse),
           data.itemName,
           data.itemNotes.trim(),
           Number(data.itemQuantity),
@@ -208,6 +218,9 @@ export default function AddNewItemDialog({
     setImagePath(null);
   }
 
+  async function handleSetCategory(e: any) {
+    setCategoryIdToUse(e.target.value);
+  }
 
 
   return (
@@ -273,6 +286,26 @@ export default function AddNewItemDialog({
               {errors.itemNotes?.message}
             </Typography>
           </DialogContent>
+
+          <DialogContent>
+              <TextField
+                defaultValue={0}
+                fullWidth
+                select
+                error={errors.itemCategory ? true : false}
+                label="Category"
+                {...register("itemCategory", { onChange: handleSetCategory })}
+              >
+                {CategoryData?.map((category: CategoryType) => (
+                  <MenuItem value={category.id} key={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Typography variant="inherit" color="red">
+                {errors.itemCategory?.message}
+              </Typography>
+            </DialogContent>
           <DialogContent
             sx={{
               display: "flex",

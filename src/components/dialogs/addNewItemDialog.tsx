@@ -31,6 +31,7 @@ import {
   AlertMsgType,
   AlertType,
   BucketType,
+  CategoryType,
   GroceryStoreType,
   ImageType,
   SnackBarPropsType,
@@ -46,12 +47,15 @@ import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import useZustandStore from "@/hooks/useZustandStore";
 import { useParams } from "next/navigation";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 
 export default function AddNewItemDialog() {
   //Component State
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [alert, setAlert] = useState<boolean>(false);
+  const [storeIdToUse, setStoreIdToUse] = useState<number | null>(null);
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
   const [snackbar, setSnackbar] = useState<SnackBarPropsType>({
     msg: null,
     type: null,
@@ -62,7 +66,12 @@ export default function AddNewItemDialog() {
     raw: "",
   });
 
+  // State
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
+  );
   const groceryStoreData = useZustandStore(
     GroceryDataStore,
     (state) => state?.groceryStores
@@ -85,6 +94,7 @@ export default function AddNewItemDialog() {
       .required("Quantity is required")
       .min(1, "must have at least 1 "),
     itemStore: Yup.number().nullable("Must use store iD"),
+    itemCategory: Yup.number().nullable("Must use category iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -108,6 +118,7 @@ export default function AddNewItemDialog() {
       itemNotes: " ",
       itemQuantity: 1,
       itemStore: 0,
+      itemCategory: 0,
     },
   });
 
@@ -178,7 +189,8 @@ export default function AddNewItemDialog() {
         selectId &&
         (await addNewItem(
           supabase,
-          storeIdToUse === 0 ? null : storeIdToUse,
+          Number(storeIdToUse),
+          Number(categoryIdToUse),
           data.itemName,
           data.itemNotes.trim(),
           Number(data.itemQuantity),
@@ -218,7 +230,9 @@ export default function AddNewItemDialog() {
     setStoreIdToUse(e.target.value);
   }
 
-  const [storeIdToUse, setStoreIdToUse] = useState<number | null>(null);
+  async function handleSetCategory(e: any) {
+    setCategoryIdToUse(e.target.value);
+  }
 
   return (
     <>
@@ -278,8 +292,7 @@ export default function AddNewItemDialog() {
                 label="Notes"
                 type="search"
                 variant="outlined"
-                {...(register("itemNotes"),
-                { onChange: () => clearErrors("itemNotes") })}
+                {...register("itemNotes")}
               />
               <Typography variant="inherit" color="red">
                 {errors.itemNotes?.message}
@@ -302,6 +315,25 @@ export default function AddNewItemDialog() {
               </TextField>
               <Typography variant="inherit" color="red">
                 {errors.itemStore?.message}
+              </Typography>
+            </DialogContent>
+            <DialogContent>
+              <TextField
+                defaultValue={0}
+                fullWidth
+                select
+                error={errors.itemCategory ? true : false}
+                label="Category"
+                {...register("itemCategory", { onChange: handleSetCategory })}
+              >
+                {CategoryData?.map((category: CategoryType) => (
+                  <MenuItem value={category.id} key={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Typography variant="inherit" color="red">
+                {errors.itemCategory?.message}
               </Typography>
             </DialogContent>
             <DialogContent
@@ -374,8 +406,8 @@ export default function AddNewItemDialog() {
             {profileData && profileData?.select_id && (
               <Button
                 variant="contained"
-                onClick={handleSubmit((d) =>
-                  onSubmit(d, profileData?.select_id)
+                onClick={handleSubmit((data) =>
+                  onSubmit(data, profileData?.select_id)
                 )}
               >
                 Submit
