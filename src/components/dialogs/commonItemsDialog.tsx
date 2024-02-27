@@ -160,8 +160,6 @@ export default function CommonItemsDialog({
           <Container
             sx={{
               display: "flex",
-              borderBottom: 2,
-              borderTop: 2,
               py: 1,
               gap: 0.5,
               overflowX: "scroll",
