@@ -14,6 +14,7 @@ import {
   Backdrop,
   CircularProgress,
   Snackbar,
+  MenuItem,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -27,6 +28,7 @@ import {
   AlertMsgType,
   AlertType,
   BucketType,
+  CategoryType,
   ImageType,
   SnackBarPropsType,
 } from "@/types";
@@ -35,6 +37,8 @@ import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
+import useZustandStore from "@/hooks/useZustandStore";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 
 export default function AddCommonItem() {
   // Component State
@@ -47,26 +51,35 @@ export default function AddCommonItem() {
     color: "",
   });
   const [imagePath, setImagePath] = useState<string | null>(null);
-
   const [image, setImage] = useState({
     preview: "",
     raw: "",
   });
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
 
   // Hooks
   const { supabase, session } = useSupabase();
   const selectId = ProfileDataStore((state) => state?.data?.select_id);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
+  );
 
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
       .required("Item name is required")
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-, "Please only use letters and numbers"),
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
+        "Please only use letters and numbers"
+      ),
     itemNotes: Yup.string()
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-, "Please only use letters and numbers")
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
+        "Please only use letters and numbers"
+      )
       .notRequired(),
+    itemCategory: Yup.number().nullable("Must use category iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -87,6 +100,7 @@ export default function AddCommonItem() {
     defaultValues: {
       itemName: "",
       itemNotes: " ",
+      itemCategory: 0,
     },
   });
 
@@ -159,7 +173,8 @@ export default function AddCommonItem() {
           data.itemName,
           data.itemNotes,
           selectId,
-          imagePath
+          imagePath,
+          categoryIdToUse
         );
 
         if (item) {
@@ -183,6 +198,10 @@ export default function AddCommonItem() {
       setAlert(true);
       handleClose();
     }
+  }
+
+  async function handleSetCategory(e: any) {
+    setCategoryIdToUse(e.target.value);
   }
 
   return (
@@ -251,6 +270,28 @@ export default function AddCommonItem() {
             />
             <Typography variant="inherit" color="red">
               {errors.itemNotes?.message}
+            </Typography>
+          </DialogContent>
+          <DialogContent>
+            <TextField
+              defaultValue={0}
+              fullWidth
+              select
+              error={errors.itemCategory ? true : false}
+              label="Category"
+              {...register("itemCategory", { onChange: handleSetCategory })}
+            >
+              <MenuItem value={0} key={null}>
+                --
+              </MenuItem>
+              {CategoryData?.map((category: CategoryType) => (
+                <MenuItem value={category.id} key={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <Typography variant="inherit" color="red">
+              {errors.itemCategory?.message}
             </Typography>
           </DialogContent>
           <DialogContent
