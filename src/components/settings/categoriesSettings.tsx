@@ -1,13 +1,32 @@
 import { Box, CircularProgress, Container } from "@mui/material";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import AddCommonItem from "../dialogs/addCommonItemDialog";
-import NoManagedCommonItem from "../utils/commonitems/noManagedCommonItems";
-import AddNewCategory from "../dialogs/addNewCategory";
+{
+}
+import AddNewCategory from "../dialogs/addNewCategoryDialog";
+import { fetchAllCategories } from "@/helpers/category";
+import { useSupabase } from "../supabase/supabase-provider";
+import { CategoryType } from "@/types";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
+import Category from "../utils/category";
+import { useEffect } from "react";
+import NoCategories from "../utils/group/noCategories";
 
 export default function CategoriesSettings() {
-  function handleRefresh(): Promise<any> {
-    throw new Error("Function not implemented.");
+  const { supabase, session } = useSupabase();
+
+  const categories = CategoryDataStore((state) => state?.categories);
+
+  async function handleRefresh() {
+    fetchAllCategories(supabase);
   }
+
+  const categoriesToRender = categories?.map((category: CategoryType) => {
+    return <Category key={category.id} {...category} />;
+  });
+
+  useEffect(() => {
+    console.log(categories, "tst");
+  }, []);
 
   return (
     <>
@@ -36,7 +55,25 @@ export default function CategoriesSettings() {
               }}
             ></Box>
             <AddNewCategory />
-            <p>testing</p>
+            {categories && categories.length > 0 ? (
+              <Container
+                sx={{
+                  gap: 2,
+                  height: "90%",
+                  overflowY: "scroll",
+                  display: "flex",
+                  flexFlow: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  py: 2,
+                  my: 2,
+                }}
+              >
+                {categoriesToRender}
+              </Container>
+            ) : (
+              <NoCategories />
+            )}
           </Container>
         </PullToRefresh>
       </>
