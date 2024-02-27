@@ -272,7 +272,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
               {...register("itemCategory", { onChange: handleSetCategory })}
             >
               <MenuItem value={0} key={null}>
-                
+                --
               </MenuItem>
               {CategoryData?.map((category: CategoryType) => (
                 <MenuItem value={category.id} key={category.id}>

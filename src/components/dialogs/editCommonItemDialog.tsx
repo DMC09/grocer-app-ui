@@ -1,4 +1,4 @@
-import { BucketType, CommonItemType, ImageType } from "@/types";
+import { BucketType, CategoryType, CommonItemType, ImageType } from "@/types";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   IconButton,
@@ -15,6 +15,7 @@ import {
   Typography,
   Backdrop,
   CircularProgress,
+  MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -27,6 +28,8 @@ import { useForm, Controller, useFormState } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
+import useZustandStore from "@/hooks/useZustandStore";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 export default function EditCommonItem(item: CommonItemType) {
   // component State
   const [open, setOpen] = useState(false);
@@ -37,21 +40,30 @@ export default function EditCommonItem(item: CommonItemType) {
     preview: item?.image,
     raw: "",
   });
-
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
   // Hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const selectId = ProfileDataStore((state) => state.data.select_id);
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
+  );
 
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
       .required("Item name is required")
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-, "Please only use letters and numbers"),
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
+        "Please only use letters and numbers"
+      ),
     itemNotes: Yup.string()
-      .matches(/^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i
-, "Please only use letters and numbers")
+      .matches(
+        /^[a-zA-Z0-9 _\-!\$\.\;\#\&\/\\]+$/i,
+        "Please only use letters and numbers"
+      )
       .notRequired(),
+    itemCategory: Yup.number().nullable("Must use category iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -72,6 +84,7 @@ export default function EditCommonItem(item: CommonItemType) {
     defaultValues: {
       itemName: item.item_name || "",
       itemNotes: item.item_notes,
+      itemCategory: 0,
     },
   });
 
@@ -131,7 +144,8 @@ export default function EditCommonItem(item: CommonItemType) {
         item.id,
         data.itemName,
         data.itemNotes,
-        imagePath
+        imagePath,
+        categoryIdToUse
       );
 
       console.log(updatedCommonItem, "updated item");
@@ -145,6 +159,9 @@ export default function EditCommonItem(item: CommonItemType) {
     }
   }
 
+  async function handleSetCategory(e: any) {
+    setCategoryIdToUse(e.target.value);
+  }
 
   return (
     <>
@@ -194,7 +211,28 @@ export default function EditCommonItem(item: CommonItemType) {
               {errors.itemNotes?.message}
             </Typography>
           </DialogContent>
-
+          <DialogContent>
+            <TextField
+              defaultValue={item?.category_id || 0}
+              fullWidth
+              select
+              error={errors.itemCategory ? true : false}
+              label="Category"
+              {...register("itemCategory", { onChange: handleSetCategory })}
+            >
+              <MenuItem value={0} key={null}>
+                --
+              </MenuItem>
+              {CategoryData?.map((category: CategoryType) => (
+                <MenuItem value={category.id} key={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <Typography variant="inherit" color="red">
+              {errors.itemCategory?.message}
+            </Typography>
+          </DialogContent>
           <DialogContent
             sx={{
               display: "flex",
