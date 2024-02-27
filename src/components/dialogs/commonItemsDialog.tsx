@@ -10,6 +10,8 @@ import {
   DialogActions,
   useMediaQuery,
   Box,
+  Chip,
+  Container,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { CommonItemsDataStore } from "@/stores/CommonItemsDataStore";
@@ -18,13 +20,15 @@ import {
   fetchAllCommonItems,
   isCommonItemDataStoreEmpty,
 } from "@/helpers/commonItem";
-import { CommonItemType } from "@/types";
+import { CategoryType, CommonItemType } from "@/types";
 import { theme } from "@/helpers/theme";
 import { GroceryDataStore } from "@/stores/GroceryDataStore";
 
 import CommonItem from "../groceryStore/commonItem/commonItem";
 import NoCommonItems from "../utils/commonitems/noCommonItems";
 import { fetchAllItems, fetchAllGroceryStores } from "@/helpers/groceryStore";
+import useZustandStore from "@/hooks/useZustandStore";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 
 export default function CommonItemsDialog({
   storeId = null,
@@ -33,6 +37,10 @@ export default function CommonItemsDialog({
   storeId: number | null;
   selectId: string | null;
 }) {
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
+
   // hooks
   const { supabase, session } = useSupabase();
   const { showCommonItemsDialog, closeCommonItemsDialog } = useDialog();
@@ -42,6 +50,11 @@ export default function CommonItemsDialog({
   const itemsToSubmit = CommonItemsDataStore((state) => state.itemsToSubmit);
   const clearItemsToSubmit = CommonItemsDataStore(
     (state) => state.clearItemsToSubmit
+  );
+
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
   );
 
   //Refresh data
@@ -86,7 +99,39 @@ export default function CommonItemsDialog({
     }
   }
 
-  const commonItemsToRender = commonItemsCatalog.map(
+  const categoriesToRender = CategoryData?.map((category: CategoryType) => {
+    return (
+      <>
+        <Chip
+          color="primary"
+          key={category.id}
+          variant={selectedCategoryId === category.id ? "filled" : "outlined"}
+          label={category.name}
+          onClick={() => handleSetCategory(category?.id)}
+        />
+      </>
+    );
+  });
+
+  function handleSetCategory(categoryId: number): void {
+    if (categoryId == selectedCategoryId) {
+      setSelectedCategoryId(null);
+    } else {
+      setSelectedCategoryId(categoryId);
+    }
+  }
+
+  const filteredCommonItems = commonItemsCatalog.filter(
+    (item) => item.category_id === selectedCategoryId
+  );
+
+  const unfilteredCommonItemsToRender = commonItemsCatalog.map(
+    (commonItem: CommonItemType) => {
+      return <CommonItem key={commonItem.id} {...commonItem} />;
+    }
+  );
+
+  const filteredCommonItemsToRender = filteredCommonItems.map(
     (commonItem: CommonItemType) => {
       return <CommonItem key={commonItem.id} {...commonItem} />;
     }
@@ -111,7 +156,20 @@ export default function CommonItemsDialog({
         }}
       >
         <DialogTitle align="center">Add Common Items</DialogTitle>
-
+        {categoriesToRender && categoriesToRender?.length > 0 ? (
+          <Container
+            sx={{
+              display: "flex",
+              borderBottom: 2,
+              borderTop: 2,
+              py: 1,
+              gap: 0.5,
+              overflowX: "scroll",
+            }}
+          >
+            {categoriesToRender}
+          </Container>
+        ) : null}
         <DialogContent
           sx={{
             p: 0,
@@ -119,21 +177,14 @@ export default function CommonItemsDialog({
         >
           <Box sx={{ height: "90%", overflowY: "scroll" }}>
             {commonItemsCatalog.length > 0 ? (
-              commonItemsToRender
+              <>
+                {selectedCategoryId
+                  ? filteredCommonItemsToRender
+                  : unfilteredCommonItemsToRender}
+              </>
             ) : (
               <NoCommonItems />
             )}
-            {/* <Box
-            sx={{
-              border: 1,
-              borderRadius: 5,
-              width: "90%",
-              height: "75%",
-              overflowY: "scroll",
-            }}
-          >
-         
-          </Box> */}
           </Box>
         </DialogContent>
         <DialogActions>
