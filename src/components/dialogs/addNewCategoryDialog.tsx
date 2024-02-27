@@ -9,6 +9,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
   TextField,
   Typography,
   useMediaQuery,
@@ -33,7 +34,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { mixed } from "yup";
 import * as Yup from "yup";
-
+import { addCategory, fetchAllCategories } from "@/helpers/category";
 
 export default function AddNewCategory() {
   const [open, setOpen] = useState<boolean>(false);
@@ -43,12 +44,6 @@ export default function AddNewCategory() {
     msg: null,
     type: null,
     color: "",
-  });
-  const [imagePath, setImagePath] = useState<string | null>(null);
-
-  const [image, setImage] = useState({
-    preview: "",
-    raw: "",
   });
 
   // Hooks
@@ -78,8 +73,7 @@ export default function AddNewCategory() {
 
   // Data
   async function fetchData() {
-    //TODO:
-    // await fetchAllCategories(supabase);
+    await fetchAllCategories(supabase);
   }
 
   // Handlers
@@ -99,60 +93,23 @@ export default function AddNewCategory() {
     await resetComponentState();
   }
 
-  async function resetComponentState() {
-    setImagePath("");
-    setImage({
-      preview: "",
-      raw: "",
-    });
-  }
-
-  async function handleSetImage(event: any) {
-    if (event.target.files.length && selectId) {
-      const generatedPath = await generateImagePath(selectId, ImageType.Item);
-
-      const sizeInMB = event.target.files[0].size / 1048576;
-      console.log("Size of image", sizeInMB);
-
-      if (sizeInMB > 50) {
-        setImage({ preview: "", raw: "" });
-        setImagePath(null);
-      } else {
-        setImagePath(generatedPath);
-        setImage({
-          preview: URL.createObjectURL(event.target.files[0]),
-          raw: event.target.files[0],
-        });
-      }
-    }
-  }
+  async function resetComponentState() {}
 
   async function onSubmit(data: any) {
     // TODO: finish with new helpers for categories!
     try {
       setShowLoader(true);
       if (selectId) {
-        if (image.raw && imagePath) {
-          await handleImageUpload(
-            supabase,
-            imagePath,
-            image?.raw,
-            BucketType.Store
-          );
-        }
-
-        const item = await addCommonItem(
+        const categoryToAdd = await addCategory(
           supabase,
-          data.itemName,
-          data.itemNotes,
-          selectId,
-          imagePath
+          data.categoryName,
+          selectId
         );
 
-        if (item) {
+        if (categoryToAdd) {
           await fetchData();
           setSnackbar({
-            msg: AlertMsgType.AddNewItemSuccess,
+            msg: AlertMsgType.AddNewCategorySuccess,
             type: AlertType.Success,
             color: "green",
           });
@@ -161,7 +118,7 @@ export default function AddNewCategory() {
     } catch (error) {
       console.error(error);
       setSnackbar({
-        msg: AlertMsgType.AddNewItemFail,
+        msg: AlertMsgType.AddNewCategoryFail,
         type: AlertType.Fail,
         color: "red",
       });
@@ -176,10 +133,30 @@ export default function AddNewCategory() {
     <>
       <Button
         onClick={handleClickOpen}
-        aria-label="Add New Common item"
+        aria-label="Add New Category"
         endIcon={<AddCircleIcon />}
         size="large"
       />
+      {alert ? (
+        <>
+          <Snackbar
+            sx={{
+              textAlign: "center",
+            }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={alert}
+            ContentProps={{
+              sx: {
+                color: "white",
+                backgroundColor: snackbar.color,
+              },
+            }}
+            autoHideDuration={2000}
+            onClose={handleAlert}
+            message={snackbar.msg}
+          />
+        </>
+      ) : null}
 
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
         <Backdrop
