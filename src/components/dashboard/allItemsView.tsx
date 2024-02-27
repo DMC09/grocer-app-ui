@@ -1,21 +1,83 @@
-import { GroceryStoreItemType } from "@/types";
+import { CategoryType, GroceryStoreItemType } from "@/types";
 import Item from "../groceryStore/groceryStoreItem/item";
-import { Container, Typography } from "@mui/material";
+import { Badge, Chip, Container, Typography } from "@mui/material";
 import NoItems from "../utils/noItems";
+import useZustandStore from "@/hooks/useZustandStore";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
+import { useState } from "react";
 
-export default function allItemsView({
+export default function AllItemsView({
   items,
 }: {
   items: GroceryStoreItemType[] | [] | undefined;
 }) {
-  const itemToRender = items?.map((item) => {
+  // State
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
+
+  // Global State
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
+  );
+  // Computed
+  const filteredItems = items?.filter(
+    (item) => item.category_id === selectedCategoryId
+  );
+
+  const unfilteredItemsToRender = items?.map((item) => {
     return <Item groceryStoreItem={item} key={item.id} />;
   });
 
+  const filteredItemsToRender = filteredItems?.map(
+    (item: GroceryStoreItemType) => {
+      return <Item key={item.id} groceryStoreItem={item} />;
+    }
+  );
 
+  const categoriesToRender = CategoryData?.map((category: CategoryType) => {
+    return (
+      <>
+      {/* <Badge overlap="circular" badgeContent={4} color="primary"> */}
+
+        <Chip
+          color="primary"
+          key={category.id}
+          variant={selectedCategoryId === category.id ? "filled" : "outlined"}
+          label={category.name}
+          onClick={() => handleSetCategory(category?.id)}
+        />
+{/* </Badge> */}
+      </>
+    );
+  });
+
+  //handlers
+  function handleSetCategory(categoryId: number): void {
+    if (categoryId == selectedCategoryId) {
+      setSelectedCategoryId(null);
+    } else {
+      setSelectedCategoryId(categoryId);
+    }
+  }
 
   return (
     <>
+      {categoriesToRender && categoriesToRender?.length > 0 ? (
+        <Container
+          sx={{
+            display: "flex",
+            borderBottom: 2,
+            borderTop: 2,
+            py: 1,
+            gap: 0.5,
+            overflowX: "scroll",
+          }}
+        >
+          {categoriesToRender}
+        </Container>
+      ) : null}
       {items && items.length > 0 ? (
         <Container
           disableGutters
@@ -30,7 +92,12 @@ export default function allItemsView({
             overflowY: "scroll",
           }}
         >
-          <ul style={{width: "100%",}}>{itemToRender}</ul>
+          <ul style={{ width: "100%" }}>
+            {" "}
+            {selectedCategoryId
+              ? filteredItemsToRender
+              : unfilteredItemsToRender}
+          </ul>
         </Container>
       ) : (
         <NoItems />
