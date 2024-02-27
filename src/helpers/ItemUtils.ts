@@ -8,7 +8,8 @@ export async function updateGroceryStoreItem(
   notes: string | null = null,
   quantity: number = 1,
   modified_at: string,
-  imagePath: string | null = null
+  imagePath: string | null = null,
+  categoryId: number | null = null
 ) {
   if (imagePath) {
     const { data, error } = await supabase
@@ -19,6 +20,7 @@ export async function updateGroceryStoreItem(
         quantity: Number(quantity),
         modified_at,
         image: imagePath,
+        category_id: categoryId ? categoryId : null,
       })
       .eq("id", itemId)
       .select()
@@ -37,6 +39,7 @@ export async function updateGroceryStoreItem(
         notes,
         quantity: Number(quantity),
         modified_at,
+        category_id: categoryId ? categoryId : null,
       })
       .eq("id", itemId)
       .select()

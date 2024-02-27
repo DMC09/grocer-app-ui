@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  MenuItem,
   TextField,
   Typography,
   useMediaQuery,
@@ -17,7 +18,12 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../../supabase/supabase-provider";
-import { BucketType, GroceryStoreItemType, ImageType } from "@/types";
+import {
+  BucketType,
+  CategoryType,
+  GroceryStoreItemType,
+  ImageType,
+} from "@/types";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { generateImagePath, handleImageUpload } from "@/helpers/image";
@@ -28,12 +34,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { mixed } from "yup";
 import { theme } from "@/helpers/theme";
+import useZustandStore from "@/hooks/useZustandStore";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 
 export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   // Component State
   const [open, setOpen] = useState(false);
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
   const [image, setImage] = useState({
     preview: groceryStoreItem?.image,
     raw: "",
@@ -45,6 +54,11 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   const handleClickOpen = () => {
     setOpen(true);
   };
+
+  const CategoryData = useZustandStore(
+    CategoryDataStore,
+    (state) => state?.categories
+  );
 
   const validationSchema = Yup.object().shape({
     itemName: Yup.string()
@@ -64,6 +78,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     itemQuantity: Yup.number()
       .required("Quantity is required")
       .min(1, "must have at least 1 "),
+    itemCategory: Yup.number().nullable("Must use category iD"),
     file: mixed()
       .notRequired()
       .test("fileSize", "The file is too large", (value: any) => {
@@ -85,6 +100,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       itemName: groceryStoreItem.name || "",
       itemNotes: groceryStoreItem.notes || "",
       itemQuantity: groceryStoreItem.quantity || 0,
+      itemCategory: 0,
     },
   });
 
@@ -128,6 +144,10 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
     }
   }
 
+  async function handleSetCategory(e: any) {
+    setCategoryIdToUse(e.target.value);
+  }
+
   async function onSubmit(data: any) {
     try {
       setShowLoader(true);
@@ -147,7 +167,8 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
         data.itemNotes,
         data.itemQuantity,
         now,
-        imagePath
+        imagePath,
+        Number(categoryIdToUse)
       );
 
       if (updatedItem) {
@@ -241,6 +262,28 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
               {errors.itemQuantity?.message}
             </Typography>
           </DialogContent>
+          <DialogContent>
+            <TextField
+              defaultValue={groceryStoreItem?.category_id || 0}
+              fullWidth
+              select
+              error={errors.itemCategory ? true : false}
+              label="Category"
+              {...register("itemCategory", { onChange: handleSetCategory })}
+            >
+              <MenuItem value={0} key={null}>
+                
+              </MenuItem>
+              {CategoryData?.map((category: CategoryType) => (
+                <MenuItem value={category.id} key={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <Typography variant="inherit" color="red">
+              {errors.itemCategory?.message}
+            </Typography>
+          </DialogContent>
           <DialogContent
             sx={{
               display: "flex",
@@ -294,4 +337,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
       </Dialog>
     </>
   );
+}
+function handleSetCategory(event: any): void {
+  throw new Error("Function not implemented.");
 }
