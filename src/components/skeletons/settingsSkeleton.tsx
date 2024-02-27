@@ -59,6 +59,7 @@ export default function SettingsSkeleton() {
           height={40}
           sx={{
             maxWidth: "200px",
+            mx: 1,
           }}
         />
         <Skeleton
@@ -67,6 +68,7 @@ export default function SettingsSkeleton() {
           height={40}
           sx={{
             maxWidth: "200px",
+            mx: 1,
           }}
         />
       </Box>
