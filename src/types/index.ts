@@ -1,5 +1,4 @@
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
-import { string } from "yup";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"
 
 export type Json =
   | string
@@ -73,7 +72,6 @@ export type Database = {
       }
       grocerystoreitems: {
         Row: {
-          category: string | null
           category_id: number | null
           common_item_id: number | null
           created_at: string | null
@@ -87,7 +85,6 @@ export type Database = {
           store_id: number | null
         }
         Insert: {
-          category?: string | null
           category_id?: number | null
           common_item_id?: number | null
           created_at?: string | null
@@ -101,7 +98,6 @@ export type Database = {
           store_id?: number | null
         }
         Update: {
-          category?: string | null
           category_id?: number | null
           common_item_id?: number | null
           created_at?: string | null
@@ -392,6 +388,7 @@ export type Enums<
   : never
 
 
+
 export type GroceryStoreType =
   Database["public"]["Tables"]["grocerystores"]["Row"];
 export type GroceryStoreItemType =
@@ -400,8 +397,8 @@ export type ProfileType = Database["public"]["Tables"]["profiles"]["Row"];
 export type GroupType = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupMemberType =
   Database["public"]["Views"]["group_members_view"]["Row"];
-export type CommonItemType = Database["public"]["Tables"]["categories"]["Row"];
-export type CategoryType = Database["public"]["Tables"]["commonitems"]["Row"];
+export type CommonItemType = Database["public"]["Tables"]["commonitems"]["Row"];
+export type CategoryType = Database["public"]["Tables"]["categories"]["Row"]; 
 
 export type CommonItemToAdd = {
   uniqueItemId: number;
@@ -453,7 +450,9 @@ export enum AlertMsgType {
   AddNewStoreSuccess = "Store added",
   AddNewStoreFail = "Unable to add store.. ",
   AddNewItemSuccess = "Item added",
-  AddNewItemFail = "Unable to add item"
+  AddNewCategorySuccess = "Category added",
+  AddNewItemFail = "Unable to add item",
+  AddNewCategoryFail = "Unable to add Category"
 }
 
 export type SnackBarPropsType = {
