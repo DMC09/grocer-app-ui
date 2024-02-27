@@ -84,7 +84,7 @@ export default function EditCommonItem(item: CommonItemType) {
     defaultValues: {
       itemName: item.item_name || "",
       itemNotes: item.item_notes,
-      itemCategory: item.category_id,
+      itemCategory: item.category_id || 0,
     },
   });
 
@@ -213,7 +213,7 @@ export default function EditCommonItem(item: CommonItemType) {
           </DialogContent>
           <DialogContent>
             <TextField
-              defaultValue={item?.category_id || 0}
+              defaultValue={item?.category_id}
               fullWidth
               select
               error={errors.itemCategory ? true : false}

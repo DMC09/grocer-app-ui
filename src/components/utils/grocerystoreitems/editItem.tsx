@@ -264,7 +264,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
           </DialogContent>
           <DialogContent>
             <TextField
-              defaultValue={groceryStoreItem?.category_id || 0}
+              defaultValue={groceryStoreItem?.category_id }
               fullWidth
               select
               error={errors.itemCategory ? true : false}
