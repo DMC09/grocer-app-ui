@@ -18,7 +18,6 @@ import {
 import { ChangeEvent, useEffect, useState } from "react";
 import { GroceryStoreItemProps } from "@/types";
 import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import { useSupabase } from "@/components/supabase/supabase-provider";
 import EditItem from "@/components/utils/grocerystoreitems/editItem";
 import { fetchAllGroceryStores, fetchAllItems } from "@/helpers/groceryStore";
@@ -110,7 +109,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 pl: 1,
-                py:1,
+                py: 1,
                 flexGrow: 3,
                 backgroundColor: "background.paper",
               }}
@@ -164,13 +163,15 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               display: "flex",
               justifyContent: "space-between",
               backgroundColor: "background.default",
+              border: 3,
             }}
           >
             <Box
               sx={{
                 borderColor: "primary.main",
                 backgroundColor: "primary.main",
-                flexGrow: 1,
+                flexGrow: 0.5,
+                border: 3,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -190,14 +191,13 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 pl: 2,
-                py:1,
+                py: 1,
                 height: "100%",
                 display: "flex",
                 flexFlow: "column",
                 justifyContent: "space-around",
                 alignItems: "flexStart",
-                flexGrow: 3,
-
+                flexGrow: 5,
                 borderColor: "primary.main",
               }}
             >
@@ -211,8 +211,9 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             <Box
               sx={{
                 borderColor: "primary.main",
-                backgroundColor: "primary.main",
-                flexGrow: 1,
+                backgroundColor: "#FFC000",
+                flexGrow: 0.5,
+                borderLeft: 3,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -220,18 +221,39 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             >
               <EditItem {...groceryStoreItem} />
             </Box>
+            <Box
+              sx={{
+                borderColor: "primary.main",
+                borderLeft: 3,
+                backgroundColor: "green",
+                flexGrow: 0.5,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <IconButton
+                sx={{ color: "white" }}
+                onClick={() => handleDelete(groceryStoreItem.id.toString())}
+                aria-label={`Complete ${groceryStoreItem.name}`}
+              >
+                <CheckIcon />
+              </IconButton>
+            </Box>
           </Box>
-          <CardMedia
-            component="img"
-            height={250}
-            image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
-            alt={`Image of ${groceryStoreItem.name} `}
-            sx={{
-              objectFit: "fill",
-              borderTop: 1,
-              borderBottom: 1,
-            }}
-          />
+          <Box sx={{ border: 1 }}>
+            <CardMedia
+              component="img"
+              height={250}
+              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
+              alt={`Image of ${groceryStoreItem.name} `}
+              sx={{
+                objectFit: "fill",
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+              }}
+            />
+          </Box>
         </Box>
         <DialogActions
           sx={{

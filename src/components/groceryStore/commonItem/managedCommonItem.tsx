@@ -108,11 +108,9 @@ export default function ManagedCommonItem(item: CommonItemType) {
         <Box sx={{ display: "flex", flexFlow: "column" }}>
           <Box
             sx={{
-              border: 1,
-              p: 1,
+              border: 3,
               display: "flex",
-              justifyContent: "space-between",
-              backgroundColor: "#454545",
+              backgroundColor: "#b7b7b7",
             }}
           >
             <Box
@@ -120,22 +118,52 @@ export default function ManagedCommonItem(item: CommonItemType) {
                 height: "100%",
                 display: "flex",
                 flexFlow: "column",
-
                 justifyContent: "space-around",
-                alignItems: "center",
-                flexGrow: 3,
+                alignItems: "flex-start",
+                flexGrow: 5,
+                pl: 2,
+                py: 1,
+                
               }}
             >
-              <Typography
-                color="background.default"
-                variant="h5"
-                align="center"
-              >
+              <Typography color="primary.main" variant="h5" align="center">
                 {item?.item_name}
               </Typography>
-              <Typography color="background.default" variant="subtitle1">
+              <Typography color="primary.main" variant="subtitle1">
                 {item.item_notes}
               </Typography>
+            </Box>
+            <Box
+              sx={{
+                borderLeft: 3,
+
+                display: "flex",
+                flexGrow: 0.5,
+                justifyContent: "center",
+                backgroundColor: "#FFC000",
+              }}
+            >
+              <EditCommonItem {...item} />
+            </Box>
+            <Box
+              sx={{
+                borderLeft: 3,
+
+                backgroundColor: "#8B0000",
+                display: "flex",
+                justifyContent: "center",
+                flexGrow: 0.5,
+              }}
+            >
+              <IconButton
+                aria-label="Delete Common Item"
+                sx={{
+                  color: "white",
+                }}
+                onClick={handleDelete}
+              >
+                <DeleteForeverIcon />
+              </IconButton>
             </Box>
           </Box>
           <CardMedia
@@ -150,51 +178,6 @@ export default function ManagedCommonItem(item: CommonItemType) {
             }}
           />
         </Box>
-        <DialogActions
-          sx={{
-            display: "flex",
-            backgroundColor: "#454545",
-          }}
-        >
-          {/* <IconButton
-            sx={{
-              color: "primary.dark",
-            }}
-            onClick={handleClose}
-            aria-label="Close Item Preview"
-          >
-            <CloseIcon />
-          </IconButton> */}
-          <Box
-            sx={{
-              backgroundColor: "#454545",
-              display: "flex",
-              justifyContent: "center",
-              flexGrow: 1,
-            }}
-          >
-            <IconButton
-              aria-label="Delete Common Item"
-              sx={{
-                color: "red",
-              }}
-              onClick={handleDelete}
-            >
-              <DeleteForeverIcon />
-            </IconButton>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexGrow: 1,
-              justifyContent: "center",
-              backgroundColor: "#454545",
-            }}
-          >
-            <EditCommonItem {...item} />
-          </Box>
-        </DialogActions>
       </Dialog>
     </>
   );
