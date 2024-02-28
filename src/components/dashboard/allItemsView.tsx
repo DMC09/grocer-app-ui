@@ -39,7 +39,7 @@ export default function AllItemsView({
   const categoriesToRender = CategoryData?.map((category: CategoryType) => {
     return (
       <>
-      {/* <Badge overlap="circular" badgeContent={4} color="primary"> */}
+        {/* <Badge overlap="circular" badgeContent={4} color="primary"> */}
 
         <Chip
           color="primary"
@@ -48,7 +48,7 @@ export default function AllItemsView({
           label={category.name}
           onClick={() => handleSetCategory(category?.id)}
         />
-{/* </Badge> */}
+        {/* </Badge> */}
       </>
     );
   });
@@ -68,8 +68,6 @@ export default function AllItemsView({
         <Container
           sx={{
             display: "flex",
-            borderBottom: 2,
-            borderTop: 2,
             py: 1,
             gap: 0.5,
             overflowX: "scroll",
