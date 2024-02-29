@@ -15,8 +15,6 @@ import { deleteCategory, fetchAllCategories } from "@/helpers/category";
 import { useSupabase } from "../supabase/supabase-provider";
 
 export default function Category(category: CategoryType) {
-
-
   const { supabase, session } = useSupabase();
 
   async function handleDelete() {
@@ -32,7 +30,7 @@ export default function Category(category: CategoryType) {
           borderRadius: 3,
           border: 3,
           height: "100%",
-          width: "90%",
+          width: "80%",
           display: "flex",
           alignItems: "center",
         }}
@@ -43,7 +41,7 @@ export default function Category(category: CategoryType) {
             alignItems: "center",
             p: 0,
             m: 0,
-            flexGrow: 5,
+            width: "80%",
           }}
         >
           <Box sx={{ pl: 2 }}>
@@ -57,32 +55,49 @@ export default function Category(category: CategoryType) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            flexGrow: 1,
             p: 0,
             "&:last-child": { pb: 0 },
-            border:1
+            width: "20%",
           }}
         >
-            <EditCategory {...category} />
-          <IconButton
-            aria-label="Delete Category"
+          <Box
             sx={{
+              borderLeft: 3,
               width: "50%",
-              height: "100%",
-              borderRadius: 0,
-              borderBottomRightRadius:3,
-              borderTopRightRadius:3,
-              color: "background.default",
-              backgroundColor: "#8B0000",
-              border:0,
-              borderColor:"black"
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: "#FFC000",
             }}
-            onClick={handleDelete}
           >
-            <DeleteForeverIcon />
-          </IconButton>
-          
-
+            <EditCategory {...category} />
+          </Box>
+          <Box
+            sx={{
+              borderLeft: 3,
+              width: "50%",
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: "#8B0000",
+            }}
+          >
+            <IconButton
+              aria-label="Delete Category"
+              sx={{
+                width: "50%",
+                height: "100%",
+                borderRadius: 0,
+                borderBottomRightRadius: 3,
+                borderTopRightRadius: 3,
+                color: "background.default",
+                backgroundColor: "#8B0000",
+                border: 0,
+                borderColor: "black",
+              }}
+              onClick={handleDelete}
+            >
+              <DeleteForeverIcon />
+            </IconButton>
+          </Box>
         </CardContent>
       </Card>
     </>
