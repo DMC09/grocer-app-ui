@@ -43,7 +43,6 @@ const initialGroceryStoreState: GroceryStoreState = {
           quantity: 0,
           select_id: null,
           store_id: 0,
-          category: null,
         },
       ],
     },
