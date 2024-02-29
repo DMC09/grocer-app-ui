@@ -41,7 +41,7 @@ export default function Category(category: CategoryType) {
             alignItems: "center",
             p: 0,
             m: 0,
-            width: "80%",
+            width: "70%",
           }}
         >
           <Box sx={{ pl: 2 }}>
@@ -57,7 +57,7 @@ export default function Category(category: CategoryType) {
             alignItems: "center",
             p: 0,
             "&:last-child": { pb: 0 },
-            width: "20%",
+            width: "30%",
           }}
         >
           <Box
