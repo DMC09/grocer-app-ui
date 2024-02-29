@@ -71,6 +71,7 @@ export default function CommonItemsDialog({
 
   const mappedItems = itemsToSubmit.map((item) => ({
     common_item_id: item.id,
+    category_id: item.categoryId ? item.categoryId : null,
     store_id: storeId ? storeId : null,
     name: item.name,
     notes: item.notes,

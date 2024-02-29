@@ -42,6 +42,7 @@ export default function CommonItem(item: CommonItemType) {
       notes: item.item_notes,
       quantity,
       image: item.image,
+      categoryId: item.category_id ? item.category_id : null,
     };
 
     console.log(itemToAdd, "Memoized Value Calculated");
