@@ -407,6 +407,7 @@ export type CommonItemToAdd = {
   notes: string;
   quantity: number;
   image: string;
+  categoryId: number | null;
 };
 
 export type GroceryStoreProps = {
