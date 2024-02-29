@@ -139,6 +139,7 @@ export default function CommonItemsDialog({
   );
 
   function handleClose(): void {
+    setSelectedCategoryId(null);
     closeCommonItemsDialog();
     clearItemsToSubmit();
   }
