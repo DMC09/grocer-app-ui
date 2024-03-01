@@ -8,7 +8,8 @@ import {
 } from "@/types";
 import { supabase } from "@supabase/auth-ui-shared";
 import { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+
 
 
 export async function addNewGroceryStore(
