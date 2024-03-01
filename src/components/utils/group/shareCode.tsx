@@ -14,17 +14,20 @@ export default function ShareCode(profile: ProfileType | null) {
       .substring(0, 4)
       .toLocaleUpperCase();
 
-    const { data, error } = await supabase
-      .from("groups")
-      .update({ share_code: firstFourCharacters })
-      .eq("profile_id", profile?.id)
-      .select();
+    if (profile?.id) {
+      const { data, error } = await supabase
+        .from("groups")
+        .update({ share_code: firstFourCharacters })
+        .eq("profile_id", profile?.id)
+        .select();
 
-    if (data && data?.length > 0) {
-      setShareCode(firstFourCharacters);
-    } else {
-      throw new Error(error?.message);
+      if (data && data?.length > 0) {
+        setShareCode(firstFourCharacters);
+      } else {
+        throw new Error(error?.message);
+      }
     }
+    throw new Error("No profile id found");
   }
   return (
     <>
