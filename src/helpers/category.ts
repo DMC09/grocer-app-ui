@@ -59,8 +59,10 @@ export async function updateCategory(
   id: number,
   updatedName: string,
   selectId: string
-) {
+) { 
   console.log(updatedName, "name to udpate");
+
+
   const { data, error } = await supabase
     .from("categories")
     .update({ name: updatedName })

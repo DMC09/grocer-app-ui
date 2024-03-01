@@ -44,24 +44,28 @@ export default function EditCategory(category: CategoryType) {
   }
 
   async function onSubmit(data: any) {
-    try {
-      setShowLoader(true);
-      const updatedCategory = await updateCategory(
-        supabase,
-        category.id,
-        data.categoryName,
-        selectId
-      );
+    if (selectId) {
+      try {
+        setShowLoader(true);
+        const updatedCategory = await updateCategory(
+          supabase,
+          category.id,
+          data.categoryName,
+          selectId
+        );
 
-      console.log(updatedCategory, "updated category");
-      if (updatedCategory) {
-        await fetchData();
+        console.log(updatedCategory, "updated category");
+        if (updatedCategory) {
+          await fetchData();
+        }
+      } catch (error) {
+      } finally {
+        setShowLoader(false);
+        //   await handleClose();
+        await setOpen(false);
       }
-    } catch (error) {
-    } finally {
-      setShowLoader(false);
-      //   await handleClose();
-      await setOpen(false);
+    } else {
+      throw new Error("No SelectId ");
     }
   }
 
