@@ -99,7 +99,7 @@ export default function EditProfileSettings(profile: ProfileType) {
   }
 
   async function getData() {
-    await getProfileData(supabase, session?.user.id);
+    await getProfileData(supabase, session?.user?.id);
   }
 
   async function handleSetImage(event: any) {

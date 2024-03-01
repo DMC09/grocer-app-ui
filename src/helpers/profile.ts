@@ -6,16 +6,20 @@ export async function getProfileData(
   supabase: SupabaseClient<Database>,
   userId?: string
 ) {
-  const { data: profileData, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .single();
-  if (error) {
-    throw new Error(error.message);
+  if (userId) {
+    const { data: profileData, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      ProfileDataStore.setState({ data: profileData as ProfileType });
+      return profileData;
+    }
   } else {
-    ProfileDataStore.setState({ data: profileData as ProfileType });
-    return profileData;
+    throw new Error("No user ID found");
   }
 }
 export async function editProfileData(
@@ -65,7 +69,6 @@ export async function editProfileData(
   }
 }
 
-
 export async function updateDashboardView(
   supabase: SupabaseClient<Database>,
   profileId: string,
@@ -73,7 +76,6 @@ export async function updateDashboardView(
 ) {
   switch (view) {
     case DashboardView.AllItemsView:
-
       const { data: AllViewData, error: AllViewError } = await supabase
         .from("profiles")
         .update({ view_by_category: false, view_all: true })
