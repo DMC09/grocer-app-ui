@@ -1,7 +1,7 @@
 import { GroceryStoreType } from "@/types";
 import GroceryStore from "../groceryStore/groceryStore";
 import { Container } from "@mui/material";
-import NoStores from "../utils/noStores";
+import NoStores from "../utils/placeholders/noStores";
 
 export default function allStoresView({
   groceryStores,

@@ -7,7 +7,7 @@ import { theme } from "@/helpers/theme";
 import useZustandStore from "@/hooks/useZustandStore";
 import Item from "@/components/groceryStore/groceryStoreItem/item";
 import { ItemDataStore } from "@/stores/ItemStore";
-import NoItems from "@/components/utils/noItems";
+import NoItems from "@/components/utils/placeholders/noItems";
 import { CategoryDataStore } from "@/stores/categoryDataStore";
 import { useState } from "react";
 

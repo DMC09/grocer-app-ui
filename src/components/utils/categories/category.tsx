@@ -8,11 +8,11 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import item from "../groceryStore/groceryStoreItem/item";
-import EditCategory from "../dialogs/editCategory";
+import item from "../../groceryStore/groceryStoreItem/item";
+import EditCategory from "../../dialogs/editCategory";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { deleteCategory, fetchAllCategories } from "@/helpers/category";
-import { useSupabase } from "../supabase/supabase-provider";
+import { useSupabase } from "../../supabase/supabase-provider";
 
 export default function Category(category: CategoryType) {
   const { supabase, session } = useSupabase();

@@ -1,7 +1,7 @@
 import { CategoryType, GroceryStoreItemType } from "@/types";
 import Item from "../groceryStore/groceryStoreItem/item";
 import { Badge, Chip, Container, Typography } from "@mui/material";
-import NoItems from "../utils/noItems";
+import NoItems from "../utils/placeholders/noItems";
 import useZustandStore from "@/hooks/useZustandStore";
 import { CategoryDataStore } from "@/stores/categoryDataStore";
 import { useState } from "react";

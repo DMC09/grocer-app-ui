@@ -7,9 +7,9 @@ import { fetchAllCategories } from "@/helpers/category";
 import { useSupabase } from "../supabase/supabase-provider";
 import { CategoryType } from "@/types";
 import { CategoryDataStore } from "@/stores/categoryDataStore";
-import Category from "../utils/category";
+import Category from "../utils/categories/category";
 import { useEffect } from "react";
-import NoCategories from "../utils/group/noCategories";
+import NoCategories from "../utils/placeholders/noCategories";
 
 export default function CategoriesSettings() {
   const { supabase, session } = useSupabase();
