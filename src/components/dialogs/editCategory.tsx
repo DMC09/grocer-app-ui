@@ -107,7 +107,7 @@ export default function EditCategory(category: CategoryType) {
           backgroundColor: "#FFC000",
           borderColor: "black",
         }}
-        aria-label="Edit Category"
+        aria-label={`Edit ${category.name} category`}
         onClick={handleClickOpen}
       >
         <EditIcon sx={{ fontSize: 25 }} />

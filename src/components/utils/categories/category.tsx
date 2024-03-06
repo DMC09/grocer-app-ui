@@ -81,7 +81,7 @@ export default function Category(category: CategoryType) {
             }}
           >
             <IconButton
-              aria-label="Delete Category"
+              aria-label={`Delete ${category.name} category`}
               sx={{
                 width: "50%",
                 height: "100%",
