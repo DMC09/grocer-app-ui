@@ -100,6 +100,7 @@ test.describe("Single User Scenarios", () => {
     });
     await test.step("Edit Meet Category to Meat", async () => {
       await page.getByRole("button", { name: "Edit Meet category" }).click();
+      await page.getByLabel("Name").fill("Meat");
       await page.getByRole("button", { name: "Submit" }).click();
     });
     await test.step("Go to home page", async () => {
