@@ -274,11 +274,12 @@ export default function AddCommonItem() {
           </DialogContent>
           <DialogContent>
             <TextField
+              id="Notes"
+              label="Category"
               defaultValue={0}
               fullWidth
               select
               error={errors.itemCategory ? true : false}
-              label="Category"
               {...register("itemCategory", { onChange: handleSetCategory })}
             >
               <MenuItem value={0} key={null}>
