@@ -276,6 +276,7 @@ export default function AddCommonItem() {
             <TextField
               id="Notes"
               label="Category"
+              aria-label="Category"
               defaultValue={0}
               fullWidth
               select
