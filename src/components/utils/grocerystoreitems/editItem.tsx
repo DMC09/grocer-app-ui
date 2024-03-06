@@ -264,11 +264,13 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
           </DialogContent>
           <DialogContent>
             <TextField
-              defaultValue={groceryStoreItem?.category_id }
+              defaultValue={groceryStoreItem?.category_id}
               fullWidth
               select
               error={errors.itemCategory ? true : false}
+              id="Category"
               label="Category"
+              aria-label="Category"
               {...register("itemCategory", { onChange: handleSetCategory })}
             >
               <MenuItem value={0} key={null}>
