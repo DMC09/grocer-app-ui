@@ -274,7 +274,7 @@ export default function AddCommonItem() {
           </DialogContent>
           <DialogContent>
             <TextField
-              id="Notes"
+              id="Category"
               label="Category"
               aria-label="Category"
               defaultValue={0}
