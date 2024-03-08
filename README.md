@@ -20,33 +20,12 @@ The Grocer App is a full-stack application that can be used to manage grocery li
 Originally I was using the notes features in iOS to share grocery lists between my brother and I. However it proved to be very clunky and I could not find a good free and simple solution. So I created my own in order to better manage our groceries. It's my first time building an app in a while so I wanted to explore new technologies.
 	
 
-
-## Demo   
-
-### Single User Workflow
-
-
-https://github.com/DMC09/grocer-app-ui/assets/43209397/4d64524b-81b5-489c-b566-d4c52ee9053c
-
-
-
-### Group Workflow
-
-
-https://github.com/DMC09/grocer-app-ui/assets/43209397/27ddd574-4006-4df6-807f-e6f1cfd7514c
-
-
-
-
 ### Features 
 
-* Adding/Editing/Deleting stores
-* Adding/Editing/Completing items 
+* Full CRUD capabilities for different stores and items
+* Categories
 * Common Item Catalog
 * Group Sharing
-	* In the settings you can either create a new group or join a group via share code to share grocery lists between 	          people
-	 
-
 
 ### Technologies
 
