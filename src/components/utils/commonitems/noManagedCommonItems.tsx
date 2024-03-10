@@ -1,13 +1,25 @@
-import { Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 
 export default function NoManagedCommonItem() {
   return (
     <>
-      <Typography sx={{
-mt:2
-      }} align="center" variant="h5" color="primary.main">
+
+<Container
+        sx={{
+          display: "flex",
+          flexFlow: "column",
+          justifyContent: "center",
+          alignItems:"center",
+          textAlign: "center",
+          height: "80%",
+          p: 1,
+        }}
+      >
+        <Typography variant="h4" color="text.secondary">
         No common items found ...
-      </Typography>
+        </Typography>
+      </Container>
+    
     </>
   );
 }
