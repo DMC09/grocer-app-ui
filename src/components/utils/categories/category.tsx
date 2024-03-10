@@ -30,7 +30,7 @@ export default function Category(category: CategoryType) {
           borderRadius: 3,
           border: 3,
           height: "100%",
-          width: "80%",
+          width: "90%",
           display: "flex",
           alignItems: "center",
         }}
