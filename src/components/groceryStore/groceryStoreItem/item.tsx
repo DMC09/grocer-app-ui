@@ -114,13 +114,29 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 backgroundColor: "background.paper",
               }}
             >
-              <Typography align="left" sx={{}} variant="h5">
+              <Typography
+                align="left"
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                }}
+                variant="h6"
+              >
                 {groceryStoreItem?.name}
               </Typography>
               <Typography
                 color="secondary.dark"
                 align="left"
-                sx={{}}
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                }}
                 variant="body1"
               >
                 {groceryStoreItem?.notes ? groceryStoreItem?.notes : "-"}
@@ -135,6 +151,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             alignItems: "center",
             marginLeft: "auto",
             backgroundColor: "green",
+
           }}
         >
           <IconButton
@@ -163,15 +180,56 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               display: "flex",
               justifyContent: "space-between",
               backgroundColor: "background.default",
-              border: 3,
             }}
           >
             <Box
               sx={{
+                width: "50%",
+                borderColor: "primary.main",
+                backgroundColor: "#FFC000",
+
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <EditItem {...groceryStoreItem} />
+            </Box>
+            <Box
+              sx={{
+                width: "50%",
+                borderColor: "primary.main",
+
+                backgroundColor: "green",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <IconButton
+                sx={{ color: "white" }}
+                onClick={() => handleDelete(groceryStoreItem.id.toString())}
+                aria-label={`Complete ${groceryStoreItem.name}`}
+              >
+                <CheckIcon />
+              </IconButton>
+            </Box>
+          </Box>
+          <Box sx={{  }}>
+            <CardMedia
+              component="img"
+              height={250}
+              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
+              alt={`Image of ${groceryStoreItem.name} `}
+              sx={{
+                objectFit: "fill",
+
+              }}
+            />
+            <Box
+              sx={{
                 borderColor: "primary.main",
                 backgroundColor: "primary.main",
-                flexGrow: 0.5,
-                border: 3,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -187,7 +245,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 {groceryStoreItem.quantity}
               </Typography>
             </Box>
-
             <Box
               sx={{
                 pl: 2,
@@ -208,51 +265,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
                 {groceryStoreItem.notes}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                borderColor: "primary.main",
-                backgroundColor: "#FFC000",
-                flexGrow: 0.5,
-                borderLeft: 3,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <EditItem {...groceryStoreItem} />
-            </Box>
-            <Box
-              sx={{
-                borderColor: "primary.main",
-                borderLeft: 3,
-                backgroundColor: "green",
-                flexGrow: 0.5,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <IconButton
-                sx={{ color: "white" }}
-                onClick={() => handleDelete(groceryStoreItem.id.toString())}
-                aria-label={`Complete ${groceryStoreItem.name}`}
-              >
-                <CheckIcon />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box sx={{ border: 1 }}>
-            <CardMedia
-              component="img"
-              height={250}
-              image={`${process?.env?.NEXT_PUBLIC_SUPABASE_GROCERYSTORE}/${groceryStoreItem?.image}`}
-              alt={`Image of ${groceryStoreItem.name} `}
-              sx={{
-                objectFit: "fill",
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-              }}
-            />
           </Box>
         </Box>
         <DialogActions
@@ -264,6 +276,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           {!groceryStoreItem.common_item_id && (
             <Box
               sx={{
+                borderTop:2,
                 width: "100%",
                 display: "flex",
                 p: 1,
