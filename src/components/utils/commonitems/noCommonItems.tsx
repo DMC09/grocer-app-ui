@@ -1,30 +1,26 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 
 export default function NoCommonItems() {
   return (
     <>
-      <Box
-        sx={{
 
-          height: "100%",
-          display:"flex",
+
+<Container
+        sx={{
+          display: "flex",
           flexFlow: "column",
-          alignItems: "center",
-          justifyContent:"center"
+          justifyContent: "center",
+          alignItems:"center",
+          textAlign: "center",
+          height: "80%",
+          p: 1,
         }}
       >
-        <Typography
-          sx={{
-            width: "80%",
-          }}
-          align="center"
-          variant="h5"
-          color="primary.main"
-        >
-          No Common Items found, add one in the settings, or quickly add one
-          from an existing item.
+        <Typography variant="h4" color="text.secondary">
+        No common items found ...
         </Typography>
-      </Box>
+      </Container>
+    
     </>
   );
 }
