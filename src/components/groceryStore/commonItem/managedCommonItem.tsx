@@ -84,10 +84,31 @@ export default function ManagedCommonItem(item: CommonItemType) {
               }}
             />
             <Box sx={{ pl: 2 }}>
-              <Typography align="left" variant="h5">
+              <Typography
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                }}
+                align="left"
+                variant="h5"
+              >
                 {item.item_name}
               </Typography>
-              <Typography align="left" variant="body2" color="text.secondary">
+              <Typography
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                }}
+                align="left"
+                variant="body2"
+                color="text.secondary"
+              >
                 {item.item_notes}
               </Typography>
             </Box>
@@ -108,37 +129,15 @@ export default function ManagedCommonItem(item: CommonItemType) {
         <Box sx={{ display: "flex", flexFlow: "column" }}>
           <Box
             sx={{
-              border: 3,
               display: "flex",
               backgroundColor: "#b7b7b7",
             }}
           >
             <Box
               sx={{
-                height: "100%",
+                width: "50%",
                 display: "flex",
-                flexFlow: "column",
-                justifyContent: "space-around",
-                alignItems: "flex-start",
-                flexGrow: 5,
-                pl: 2,
-                py: 1,
-                
-              }}
-            >
-              <Typography color="primary.main" variant="h5" align="center">
-                {item?.item_name}
-              </Typography>
-              <Typography color="primary.main" variant="subtitle1">
-                {item.item_notes}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                borderLeft: 3,
 
-                display: "flex",
-                flexGrow: 0.5,
                 justifyContent: "center",
                 backgroundColor: "#FFC000",
               }}
@@ -147,12 +146,10 @@ export default function ManagedCommonItem(item: CommonItemType) {
             </Box>
             <Box
               sx={{
-                borderLeft: 3,
-
+                width: "50%",
                 backgroundColor: "#8B0000",
                 display: "flex",
                 justifyContent: "center",
-                flexGrow: 0.5,
               }}
             >
               <IconButton
@@ -173,10 +170,27 @@ export default function ManagedCommonItem(item: CommonItemType) {
             alt={`Image of ${item.item_name} `}
             sx={{
               objectFit: "fill",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
             }}
           />
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexFlow: "column",
+              justifyContent: "space-around",
+              alignItems: "flex-start",
+
+              pl: 2,
+              py: 1,
+            }}
+          >
+            <Typography color="primary.main" variant="h5" align="center">
+              {item?.item_name}
+            </Typography>
+            <Typography color="primary.main" variant="subtitle1">
+              {item.item_notes}
+            </Typography>
+          </Box>
         </Box>
       </Dialog>
     </>
