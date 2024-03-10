@@ -119,7 +119,7 @@ export default function CommonItem(item: CommonItemType) {
     alignItems: "center",
     borderRadius: 3,
     m: 1,
-    height:"15%"
+    height: "25%",
   };
 
   const selectedStyle = {
@@ -130,7 +130,7 @@ export default function CommonItem(item: CommonItemType) {
     alignItems: "center",
     borderRadius: 3,
     m: 1,
-    height:"15%"
+    height: "25%",
   };
 
   return (
@@ -143,10 +143,30 @@ export default function CommonItem(item: CommonItemType) {
           }}
         >
           <Box sx={{}}>
-            <Typography sx={{}} color="primary.main" variant="h5">
+            <Typography
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: "2",
+                WebkitBoxOrient: "vertical",
+              }}
+              color="primary.main"
+              variant="h5"
+            >
               {item.item_name}
             </Typography>
-            <Typography sx={{}} color="secondary.dark" variant="body1">
+            <Typography
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: "2",
+                WebkitBoxOrient: "vertical",
+              }}
+              color="secondary.dark"
+              variant="body1"
+            >
               {item.item_notes}
             </Typography>
           </Box>
