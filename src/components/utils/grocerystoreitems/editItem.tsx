@@ -268,6 +268,7 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
               fullWidth
               select
               error={errors.itemCategory ? true : false}
+              id="Category"
               label="Category"
               {...register("itemCategory", { onChange: handleSetCategory })}
             >
