@@ -32,7 +32,7 @@ test.describe("Single User Scenarios", () => {
       await page.getByLabel("Profile Menu").click();
       await page.getByRole("menuitem", { name: "Settings" }).click();
       await page.getByRole("tab", { name: "Categories" }).click();
-      await expect(page.getByText("No Categories available...")).toBeVisible();
+      await expect(page.getByText("No categories available...")).toBeVisible();
       await expect(page).toHaveURL("/settings", {
         timeout: 120000,
       });
@@ -313,7 +313,7 @@ test.describe("Single User Scenarios", () => {
       await page.getByLabel("Delete Dairy category").click();
       await page.getByLabel("Delete Fruit category").click();
       await page.getByLabel("Delete Meat category").click();
-      await expect(page.getByText("No Categories available...")).toBeVisible();
+      await expect(page.getByText("No categories available...")).toBeVisible();
     });
     await test.step("Sign out", async () => {
       await page.getByLabel("Profile Menu").click();

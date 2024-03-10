@@ -16,7 +16,7 @@ export default function NoCategories() {
         }}
       >
         <Typography variant="h4" color="text.secondary">
-          No Categories available...
+          No categories available...
         </Typography>
       </Container>
     </>
