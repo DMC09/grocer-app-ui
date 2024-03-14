@@ -14,6 +14,8 @@ import { getProfileData } from "@/helpers/profile";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 import { fetchAllCommonItems } from "@/helpers/commonItem";
 import { ItemDataStore } from "@/stores/ItemStore";
+import { fetchAllCategories } from "@/helpers/category";
+import { CategoryDataStore } from "@/stores/categoryDataStore";
 
 // this component handles refreshing server data when the user logs in or out
 // this method avoids the need to pass a session down to child components
@@ -27,7 +29,7 @@ export default function SupabaseListener({
   const { supabase, session } = useSupabase();
   const router = useRouter();
 
-  //Profile
+  //Profile Store
   const setProfileState = ProfileDataStore((state) => state.setProfileState);
   const resetProfileState = ProfileDataStore((state) => state.resetStore);
 
@@ -37,15 +39,12 @@ export default function SupabaseListener({
   const GroceryStoreData = GroceryDataStore((state) => state.data);
   const CommonItemCatalog = CommonItemsDataStore((state) => state.catalog);
 
-  // Grocery items
-  // commonItems items
+  // Category Store
+  const resetCategoryState = CategoryDataStore((state) => state.resetStore);
 
-  const addToCatalog = CommonItemsDataStore((state) => state.addToCatalog);
-  const removeFromCatalog = CommonItemsDataStore(
-    (state) => state.removeFromCatalog
-  );
-  const updateToCatalog = CommonItemsDataStore(
-    (state) => state.updateToCatalog
+  // Common item Store
+  const resetCommonItemState = CommonItemsDataStore(
+    (state) => state.resetStore
   );
 
   const selectId = useZustandStore(
@@ -69,10 +68,10 @@ export default function SupabaseListener({
         // resetGroceryState();
         if (session?.user && session?.user && session?.user?.id) {
           getProfileData(supabase, session?.user?.id);
-          // fetch Grocery Store Data and common Item Data
+          fetchAllCommonItems(supabase);
+          fetchAllCategories(supabase);
           getAllGroceryStoresData(supabase);
           getAllItems();
-          fetchAllCommonItems(supabase);
         }
 
         console.log(
@@ -91,7 +90,7 @@ export default function SupabaseListener({
   // --------------------------------------------------- Polling Events ---------------------------------------------------
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Refecthing Datat!");
+      console.log("Refetching Grocery Data!");
       getGroceryData();
     }, MINUTE_MS);
 
@@ -255,7 +254,6 @@ export default function SupabaseListener({
           if (profile.in_group) {
             await getGroupData(supabase);
           }
-          
         } else {
           throw new Error("No Profile found");
         }
@@ -269,6 +267,8 @@ export default function SupabaseListener({
         resetGroceryState();
         resetItemState();
         resetProfileState();
+        resetCategoryState();
+        resetCommonItemState();
       }
     });
 
@@ -293,6 +293,8 @@ export default function SupabaseListener({
     resetProfileState,
     resetGroceryState,
     resetItemState,
+    resetCategoryState,
+    resetCommonItemState,
   ]);
   return null;
 }
