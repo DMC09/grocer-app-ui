@@ -19,6 +19,7 @@ import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { ItemDataStore } from "@/stores/ItemStore";
 import AllItemsView from "@/components/dashboard/allItemsView";
 import AllStoresView from "@/components/dashboard/allStoresView";
+import { fetchAllCategories } from "@/helpers/category";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState<boolean | null>(null);
@@ -41,6 +42,7 @@ export default function Dashboard() {
       await fetchAllItems(supabase);
       await fetchAllCommonItems(supabase);
       await fetchAllGroceryStores(supabase);
+      await fetchAllCategories(supabase);
     }
 
     fetchDataInternal();
