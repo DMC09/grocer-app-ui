@@ -298,47 +298,62 @@ export default function AddNewItemDialog() {
                 {errors.itemNotes?.message}
               </Typography>
             </DialogContent>
-            <DialogContent>
-              <TextField
-                defaultValue={0}
-                fullWidth
-                select
-                error={errors.itemStore ? true : false}
-                label="Store"
-                {...register("itemStore", { onChange: handleSetStore })}
-              >
-                {groceryStoreData?.map((store) => (
-                  <MenuItem value={store.id} key={store.id}>
-                    {store.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <Typography variant="inherit" color="red">
-                {errors.itemStore?.message}
-              </Typography>
-            </DialogContent>
-            <DialogContent>
-              <TextField
-                defaultValue={0}
-                fullWidth
-                select
-                error={errors.itemCategory ? true : false}
-                label="Category"
-                {...register("itemCategory", { onChange: handleSetCategory })}
-              >
-                   <MenuItem value={0} key={null}>
-                --
-              </MenuItem>
-                {CategoryData?.map((category: CategoryType) => (
-                  <MenuItem value={category.id} key={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <Typography variant="inherit" color="red">
-                {errors.itemCategory?.message}
-              </Typography>
-            </DialogContent>
+            {groceryStoreData && groceryStoreData.length > 0 ? (
+              <>
+                <DialogContent>
+                  <TextField
+                    defaultValue={0}
+                    fullWidth
+                    select
+                    error={errors.itemStore ? true : false}
+                    label="Store"
+                    {...register("itemStore", { onChange: handleSetStore })}
+                  >
+                     <MenuItem value={0} key={null}>
+                      --
+                    </MenuItem>
+                    {groceryStoreData?.map((store) => (
+                      <MenuItem value={store.id} key={store.id}>
+                        {store.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <Typography variant="inherit" color="red">
+                    {errors.itemStore?.message}
+                  </Typography>{" "}
+                </DialogContent>
+              </>
+            ) : null}
+
+            {CategoryData && CategoryData.length > 0 ? (
+              <>
+                <DialogContent>
+                  <TextField
+                    defaultValue={0}
+                    fullWidth
+                    select
+                    error={errors.itemCategory ? true : false}
+                    label="Category"
+                    {...register("itemCategory", {
+                      onChange: handleSetCategory,
+                    })}
+                  >
+                    <MenuItem value={0} key={null}>
+                      --
+                    </MenuItem>
+                    {CategoryData?.map((category: CategoryType) => (
+                      <MenuItem value={category.id} key={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <Typography variant="inherit" color="red">
+                    {errors.itemCategory?.message}
+                  </Typography>
+                </DialogContent>
+              </>
+            ) : null}
+
             <DialogContent
               sx={{
                 display: "flex",
