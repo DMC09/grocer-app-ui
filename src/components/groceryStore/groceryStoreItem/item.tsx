@@ -151,7 +151,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
             alignItems: "center",
             marginLeft: "auto",
             backgroundColor: "green",
-
           }}
         >
           <IconButton
@@ -215,7 +214,7 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               </IconButton>
             </Box>
           </Box>
-          <Box sx={{  }}>
+          <Box sx={{}}>
             <CardMedia
               component="img"
               height={250}
@@ -223,7 +222,6 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
               alt={`Image of ${groceryStoreItem.name} `}
               sx={{
                 objectFit: "fill",
-
               }}
             />
             <Box
@@ -276,18 +274,22 @@ export default function Item({ groceryStoreItem }: GroceryStoreItemProps) {
           {!groceryStoreItem.common_item_id && (
             <Box
               sx={{
-                borderTop:2,
+                borderTop: 2,
                 width: "100%",
                 display: "flex",
-                p: 1,
+                p: 0,
                 m: 0,
                 justifyContent: "space-between",
               }}
             >
-              <Box textAlign="center" sx={{ flexGrow: 3 }}>
+              <Box
+                textAlign="center"
+                sx={{ p:1,backgroundColor: "secondary.light", width: "100%" }}
+              >
                 <>
                   <Typography variant="body2">Add To Common Items?</Typography>
                   <Switch
+                    color="primary"
                     aria-label="Add to Common Items Catalog"
                     checked={!!checked}
                     onChange={handleChange}
