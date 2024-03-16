@@ -7,10 +7,11 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Settings } from "@mui/icons-material";
 import { useSupabase } from "../../supabase/supabase-provider";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -29,6 +30,8 @@ import {
 import CommonItemsDialog from "@/components/dialogs/commonItemsDialog";
 import EditGroceryStoreDialog from "@/components/dialogs/editGroceryStoreDialog";
 import AddNewStoreItem from "@/components/dialogs/addNewStoreItem";
+import { clearAllItems } from "@/helpers/ItemUtils";
+import { ItemDataStore } from "@/stores/ItemStore";
 
 export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -40,6 +43,14 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
   const open = Boolean(anchorEl);
 
   const GroceryStoreData = GroceryDataStore((state) => state.data);
+  const itemsData = useZustandStore(ItemDataStore, (state) => state?.data);
+  const itemIds = useMemo(() => {
+    if (!itemsData) return []; // Handle empty array
+
+    return itemsData
+      .filter((item) => item.store_id === groceryStore.id)
+      .map((item) => item.id);
+  }, [groceryStore.id, itemsData]); // Recalculate only when itemsData changes
 
   const { openCommonItemsDialog, openNewItemDialog, openStoreSettingsDialog } =
     useDialog();
@@ -66,6 +77,10 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
     if (deletedStoreId) {
       await fetchData();
     }
+  }
+
+  async function clearAll() {
+    await clearAllItems(supabase, itemIds);
   }
 
   return (
@@ -142,6 +157,13 @@ export default function GroceryStoreHeaderMenu(groceryStore: GroceryStoreType) {
             <ListAltIcon fontSize="small" />
           </ListItemIcon>
           Add Common Item
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => clearAll()}>
+          <ListItemIcon>
+            <DisabledByDefaultIcon fontSize="small" />
+          </ListItemIcon>
+          Clear All
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleDeleteGroceryStore}>

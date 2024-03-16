@@ -9,6 +9,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,11 +20,13 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { ProfileDataStore } from "@/stores/ProfileDataStore";
 import { useDialog } from "@/context/DialogContext";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSupabase } from "../supabase/supabase-provider";
 import AddNewStore from "../dialogs/addNewStoreDialog";
 import AddNewItemDialog from "../dialogs/addNewItemDialog";
 import CommonItemsDialog from "../dialogs/commonItemsDialog";
+import { ItemDataStore } from "@/stores/ItemStore";
+import { clearAllItems } from "@/helpers/ItemUtils";
 
 export default function DashboardHeaderMenu() {
   const profileData = useZustandStore(ProfileDataStore, (state) => state?.data);
@@ -31,6 +35,14 @@ export default function DashboardHeaderMenu() {
     (state) => state?.dashboardView
   );
   const { supabase } = useSupabase();
+
+  const itemsData = useZustandStore(ItemDataStore, (state) => state?.data);
+
+  const itemIds = useMemo(() => {
+    if (!itemsData) return []; // Handle empty array
+
+    return itemsData.map((item) => item.id);
+  }, [itemsData]); // Recalculate only when itemsData changes
 
   // State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -53,13 +65,15 @@ export default function DashboardHeaderMenu() {
     }
   }
 
+  async function clearAll() {
+    await clearAllItems(supabase, itemIds);
+  }
+
   return (
     <>
       <IconButton
         sx={{ color: "primary.main", marginLeft: "auto" }}
-        aria-label={
-          open ? "Close dashboard menu" : "Open dashboard menu"
-        }
+        aria-label={open ? "Close dashboard menu" : "Open dashboard menu"}
         id="long-button"
         aria-controls={open ? "long-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
@@ -69,7 +83,7 @@ export default function DashboardHeaderMenu() {
         {!open ? <MenuIcon /> : <CloseIcon />}
       </IconButton>
       <Menu
-      aria-label="Dashboard Menu"
+        aria-label="Dashboard Menu"
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -139,17 +153,6 @@ export default function DashboardHeaderMenu() {
           </MenuItem>
         )}
         <Divider />
-
-        {/* <MenuItem onClick={() => handleChangeView(DashboardView.CategoryView)}>
-          <ListItemIcon>
-            {dashboardView === DashboardView.CategoryView ? (
-              <CheckCircleRoundedIcon fontSize="small" />
-            ) : (
-              <RadioButtonUncheckedIcon fontSize="small" />
-            )}
-          </ListItemIcon>
-          View by category
-        </MenuItem> */}
         <MenuItem onClick={() => handleChangeView(DashboardView.StoreView)}>
           <ListItemIcon>
             {dashboardView === DashboardView.StoreView ? (
@@ -170,6 +173,17 @@ export default function DashboardHeaderMenu() {
           </ListItemIcon>
           View all
         </MenuItem>
+        {dashboardView === DashboardView.AllItemsView ? (
+          <div>
+            <Divider />
+            <MenuItem onClick={() => clearAll()}>
+              <ListItemIcon>
+                <DisabledByDefaultIcon fontSize="small" />
+              </ListItemIcon>
+              Clear All
+            </MenuItem>
+          </div>
+        ) : null}
       </Menu>
       <>
         {profileData?.select_id && (
