@@ -207,3 +207,20 @@ export async function addCategoryItem(
     }
   }
 }
+
+export async function clearAllItems(
+  supabase: SupabaseClient<Database>,
+  idList: number[]
+) {
+  console.log(idList, "we got these!");
+  const { data, error } = await supabase
+    .from("grocerystoreitems")
+    .delete()
+    .in("id", idList);
+
+    if(error) {
+      throw new Error(error.message);
+    } else {
+      console.log("cleared all item ")
+    }
+}
