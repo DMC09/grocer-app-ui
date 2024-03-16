@@ -284,28 +284,32 @@ export default function AddNewItemDialog({
             </Typography>
           </DialogContent>
 
-          <DialogContent>
-            <TextField
-              defaultValue={0}
-              fullWidth
-              select
-              error={errors.itemCategory ? true : false}
-              label="Category"
-              {...register("itemCategory", { onChange: handleSetCategory })}
-            >
-                 <MenuItem value={0} key={null}>
-                --
-              </MenuItem>
-              {CategoryData?.map((category: CategoryType) => (
-                <MenuItem value={category.id} key={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Typography variant="inherit" color="red">
-              {errors.itemCategory?.message}
-            </Typography>
-          </DialogContent>
+          {CategoryData && CategoryData.length > 0 ? (
+            <>
+              <DialogContent>
+                <TextField
+                  defaultValue={0}
+                  fullWidth
+                  select
+                  error={errors.itemCategory ? true : false}
+                  label="Category"
+                  {...register("itemCategory", { onChange: handleSetCategory })}
+                >
+                  <MenuItem value={0} key={null}>
+                    --
+                  </MenuItem>
+                  {CategoryData?.map((category: CategoryType) => (
+                    <MenuItem value={category.id} key={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Typography variant="inherit" color="red">
+                  {errors.itemCategory?.message}
+                </Typography>
+              </DialogContent>
+            </>
+          ) : null}
           <DialogContent
             sx={{
               display: "flex",
