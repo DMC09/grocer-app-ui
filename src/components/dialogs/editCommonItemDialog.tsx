@@ -40,7 +40,10 @@ export default function EditCommonItem(item: CommonItemType) {
     preview: item?.image,
     raw: "",
   });
-  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(
+    item.category_id
+  );
+
   // Hooks
   const { supabase, session } = useSupabase();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -127,6 +130,10 @@ export default function EditCommonItem(item: CommonItemType) {
     }
   }
 
+  async function handleSetCategory(e: any) {
+    setCategoryIdToUse(e.target.value);
+  }
+
   async function onSubmit(data: any) {
     try {
       setShowLoader(true);
@@ -138,7 +145,6 @@ export default function EditCommonItem(item: CommonItemType) {
           BucketType.Store
         );
       }
-
       const updatedCommonItem = await updateCommonItem(
         supabase,
         item.id,
@@ -157,10 +163,6 @@ export default function EditCommonItem(item: CommonItemType) {
       setShowLoader(false);
       await handleClose();
     }
-  }
-
-  async function handleSetCategory(e: any) {
-    setCategoryIdToUse(e.target.value);
   }
 
   return (

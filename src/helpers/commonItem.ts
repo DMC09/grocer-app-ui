@@ -82,7 +82,6 @@ export async function updateCommonItem(
   imagePath: string | null,
   categoryId: number | null
 ) {
-
   if (imagePath) {
     console.log(imagePath, "image path");
     const { data, error } = await supabase
@@ -91,7 +90,7 @@ export async function updateCommonItem(
         item_name: name,
         item_notes: notes,
         image: imagePath,
-        category_id: categoryId || null,
+        category_id: categoryId ? categoryId : null,
       })
       .eq("id", id)
       .select()
@@ -104,12 +103,13 @@ export async function updateCommonItem(
       return data;
     }
   } else {
+
     const { data, error } = await supabase
       .from("commonitems")
       .update({
         item_name: name,
         item_notes: notes,
-        category_id: categoryId || null,
+        category_id: categoryId ? categoryId : null,
       })
       .eq("id", id)
       .select()

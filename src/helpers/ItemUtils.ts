@@ -9,9 +9,10 @@ export async function updateGroceryStoreItem(
   quantity: number = 1,
   modified_at: string,
   imagePath: string | null = null,
-  categoryId: number | null = null
+  categoryId: number | null
 ) {
   if (imagePath) {
+
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .update({
@@ -32,6 +33,7 @@ export async function updateGroceryStoreItem(
       return data;
     }
   } else {
+
     const { data, error } = await supabase
       .from("grocerystoreitems")
       .update({
@@ -218,9 +220,9 @@ export async function clearAllItems(
     .delete()
     .in("id", idList);
 
-    if(error) {
-      throw new Error(error.message);
-    } else {
-      console.log("cleared all item ")
-    }
+  if (error) {
+    throw new Error(error.message);
+  } else {
+    console.log("cleared all item ");
+  }
 }

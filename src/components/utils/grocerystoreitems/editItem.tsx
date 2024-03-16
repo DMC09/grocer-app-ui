@@ -42,7 +42,9 @@ export default function EditItem(groceryStoreItem: GroceryStoreItemType) {
   const [open, setOpen] = useState(false);
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [imagePath, setImagePath] = useState<string | null>(null);
-  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(null);
+  const [categoryIdToUse, setCategoryIdToUse] = useState<number | null>(
+    groceryStoreItem.category_id
+  );
   const [image, setImage] = useState({
     preview: groceryStoreItem?.image,
     raw: "",
