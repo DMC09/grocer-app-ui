@@ -249,7 +249,7 @@ export default function AddNewItemDialog({
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <DialogTitle align="center">Add New Store !Item</DialogTitle>
+        <DialogTitle align="center">Add New Store Item</DialogTitle>
         <Box sx={{}}>
           <DialogContent>
             <TextField
