@@ -7,7 +7,7 @@
 
 
 ## Overview
-The Grocer App is a simple and effectivefull-stack application that can be used to manage grocery lists.
+The Grocer App is a simple and effective full-stack application that can be used to manage grocery lists.
 
 ![Playwright](https://github.com/DMC09/grocer-app-ui/actions/workflows/playwright.yml/badge.svg)
 
@@ -17,7 +17,7 @@ The Grocer App is a simple and effectivefull-stack application that can be used 
 
 ## Motivation
 
-For the longest time I was using the notes app to share grocery lists between my brother and I, but it was always clunky and hard to customize things. Finally decided to make my own app to handle these cusomtizations and make our lives eaiser. 
+For the longest time I was using the notes app to share grocery lists between my brother and I, but it was always clunky and hard to customize things. Finally decided to make my own app to handle these cusomtizations and make our lives easier. 
 	
 
 ### Features 
